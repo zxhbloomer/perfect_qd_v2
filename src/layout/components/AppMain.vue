@@ -3,9 +3,9 @@
     <!-- 过渡动画注释 by zxh -->
     <!-- <transition name="fade-transform" mode="out-in"> -->
     <transition>
-      <keep-alive>
-        <router-view />
-      </keep-alive>
+      <!-- <keep-alive> -->
+      <router-tab />
+      <!-- </keep-alive> -->
     </transition>
   </section>
 </template>

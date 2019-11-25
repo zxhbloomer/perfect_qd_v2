@@ -1,6 +1,6 @@
 <template>
   <div v-cloak id="app">
-    <router-view />
+    <router-tab />
   </div>
 </template>
 

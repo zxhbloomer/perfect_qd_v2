@@ -37,6 +37,10 @@ import commonFunction from './common/commonFunction'
 import constants from './common/constants/constants'
 import EventProxy from 'vue-event-proxy'
 import global from './common/global/global'
+// 引入组件和样式
+import RouterTab from '@/components/RouterTab/install'
+
+Vue.use(RouterTab)
 
 Vue.use(commonFunction)
 Vue.prototype.CONSTANTS = constants
