@@ -218,7 +218,7 @@ export default {
 
     // 解析过渡配置
     getTransOpt(trans) {
-      return typeof trans === 'string' ? { name: trans } : trans
+      // return typeof trans === 'string' ? { name: trans } : trans
     },
 
     // 重载路由视图
@@ -235,12 +235,12 @@ export default {
 
     // 页签过渡结束
     onTabTransitionEnd() {
-      this.adjust()
+      // this.adjust()
     },
 
     // 页面过渡结束
     onPageTransitionEnd() {
-      if (!this.isViewAlive) this.isViewAlive = true
+      // if (!this.isViewAlive) this.isViewAlive = true
     },
 
     // 修复：当快速频繁切换页签时，旧页面离开过渡效果尚未完成，新页面内容无法正常 mount，内容节点为 comment 类型
