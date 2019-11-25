@@ -144,7 +144,6 @@ export default {
     presetTabs() {
       const { tabs, $router } = this
       const ids = {}
-
       this.items = tabs.map((item, index) => {
         const { to, closable, title, tips } = typeof item === 'string'
           ? { to: item }
@@ -175,6 +174,7 @@ export default {
 
     // 更新 tab 数据
     updateTab(key, { route, tab }) {
+      debugger
       const { items } = this
       const matchIdx = items.findIndex(({ id }) => id === key)
 
@@ -191,6 +191,8 @@ export default {
 
     // 从路由地址获取 aliveId
     getIdByPath(path, match = true) {
+      debugger
+
       if (!path) return
 
       const route = this.$router.match(path, this.$router.currentRoute)
@@ -210,6 +212,8 @@ export default {
 
     // 从 route 中获取 tab 数据
     getRouteTab(route, matchRoutes = this.matchRoutes(route)) {
+      debugger
+
       const id = this.getAliveId(route)
       const { title, icon, tips } = matchRoutes.pageRoute.meta
 
