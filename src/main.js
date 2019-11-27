@@ -27,10 +27,6 @@ import * as filters from './filters' // global filters
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
-import { mockXHR } from '../mock'
-if (process.env.NODE_ENV === 'production') {
-  mockXHR()
-}
 
 // add by zxh
 import commonFunction from './common/commonFunction'
@@ -102,7 +98,6 @@ Vue.prototype.$loopChild = function(_nodes, view, _val) {
  * 手动清空缓存，把不用的缓存删除
  */
 Vue.prototype.$clearKeepAliveCache = function(that, view) {
-  debugger
   let vnode = null
   for (let i = 0; i < that.$parent.$children.length; i++) {
     if (that.$parent.$children[i].$vnode.tag.indexOf('-AppMain') > -1) {

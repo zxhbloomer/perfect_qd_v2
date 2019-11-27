@@ -80,7 +80,10 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
-  },
+  }
+]
+
+export const asyncRoutes = [
   {
     path: '/sys',
     component: Layout,
@@ -229,6 +232,18 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
+
+export function convertToOneRouter(orignal, _path) {
+  let path = _path === undefined ? '' : _path + '/'
+  for (const item of orignal) {
+    debugger
+    path = path + item.path
+    if (item.children) {
+      convertToOneRouter(item.children, path)
+    }
+  }
+  return orignal
+}
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

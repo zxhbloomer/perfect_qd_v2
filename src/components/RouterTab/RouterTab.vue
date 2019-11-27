@@ -1,6 +1,5 @@
 <template>
   <div class="router-tab">
-    {{ items }}
     <!-- 页签头部 -->
     <header :class="[ 'router-tab-header', hasScroller && 'is-scroll' ]">
       <div class="router-tab-scroll">
