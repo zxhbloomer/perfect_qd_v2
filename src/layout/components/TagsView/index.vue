@@ -124,9 +124,7 @@ export default {
     refreshSelectedTag(view) {
       this.$store.dispatch('tagsView/delCachedView', view).then(() => {
         const { fullPath } = view
-        this.$deleteKeepAliveNode(view)
         this.$nextTick(() => {
-          this.$deleteKeepAliveNode(view)
           this.$router.replace({
             path: '/redirect' + fullPath
           })
@@ -139,8 +137,6 @@ export default {
           this.toLastView(visitedViews, view)
         }
       })
-      // this.$clearKeepAliveCache(this, view)
-      this.$deleteKeepAliveNode(view)
     },
     closeOthersTags() {
       this.$router.push(this.selectedTag)

@@ -10,6 +10,9 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
+// 获取菜单路由
+// const router = new Router({ routes: asyncRoutes })
+
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -38,7 +41,8 @@ router.beforeEach(async(to, from, next) => {
 
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-          // dynamically add accessible routes
+          // 动态添加路由
+          debugger
           router.addRoutes(accessRoutes)
 
           // hack method to ensure that addRoutes is complete

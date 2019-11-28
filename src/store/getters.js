@@ -13,6 +13,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   /** add by zxh */
   program: state => state.popUpSearchDialog.program,
-  selectedDataJson: state => state.popUpSearchDialog.selectedDataJson
+  selectedDataJson: state => state.popUpSearchDialog.selectedDataJson,
+  menuRouter: state => state.menuRouter.menuRouter
 }
 export default getters

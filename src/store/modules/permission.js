@@ -1,4 +1,5 @@
-import { asyncRoutes, constantRoutes, convertToOneRouter } from '@/router'
+import { asyncRoutes, constantRoutes } from '@/router'
+// import { constantRoutes } from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -43,7 +44,6 @@ const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
-    console.log(convertToOneRouter(asyncRoutes))
   }
 }
 
@@ -58,6 +58,22 @@ const actions = {
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
+      // 获取动态路由
+      // let dynaRouter
+      // for (const value of constantRoutes) {
+      //   if (value.path === '/') {
+      //     dynaRouter = value
+      //   }
+      // }
+
+      // let accessedRoutes
+      // if (roles.includes('admin')) {
+      //   accessedRoutes = dynaRouter || []
+      // } else {
+      //   accessedRoutes = filterAsyncRoutes(dynaRouter, roles)
+      // }
+      // commit('SET_ROUTES', accessedRoutes)
+      // resolve(accessedRoutes)
     })
   }
 }
