@@ -234,7 +234,7 @@ export const asyncRoutesConvertToOneRouter = []
 // })
 
 const createRouter = function() {
-  convertToOneRouter(asyncRoutes)
+  // convertToOneRouter(asyncRoutes)
   return new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),

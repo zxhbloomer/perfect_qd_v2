@@ -1,4 +1,4 @@
-import { asyncRoutesConvertToOneRouter, constantRoutes } from '@/router'
+import { asyncRoutes, convertToOneRouter, constantRoutes } from '@/router'
 // import { constantRoutes } from '@/router'
 
 /**
@@ -61,12 +61,17 @@ const actions = {
       // 获取动态路由
       let accessedRoutes
       if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutesConvertToOneRouter || []
+        accessedRoutes = asyncRoutes || []
       } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutesConvertToOneRouter, roles)
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
+      debugger
+      const ar = convertToOneRouter(accessedRoutes)
+      debugger
+      // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      // 返回的是一级路由，设置到router中
+      resolve(ar)
     })
   }
 }
