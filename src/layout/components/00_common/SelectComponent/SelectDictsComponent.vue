@@ -44,7 +44,7 @@ export default {
     return {
       dataJson: {
         // 资源类型下拉选项json
-        selectOptions: [{}],
+        selectOptions: [],
         searchForm: {
           para: ''
         },

@@ -225,6 +225,8 @@ export const asyncRoutes = [
   }
 ]
 
+export const asyncRoutesConvertToOneRouter = []
+
 // const createRouter = () => new Router({
 //   // mode: 'history', // require service support
 //   scrollBehavior: () => ({ y: 0 }),
@@ -232,7 +234,7 @@ export const asyncRoutes = [
 // })
 
 const createRouter = function() {
-  convertToOneRouter(asyncRoutes, constantRoutes)
+  convertToOneRouter(asyncRoutes)
   return new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
@@ -243,48 +245,20 @@ const createRouter = function() {
 const router = createRouter()
 
 // 按一级路由的方式来设置，并返回
-export function convertToOneRouter(orignal, _constantRoutes, _path) {
-  const _childrens = []
+export function convertToOneRouter(orignal, _path) {
   let path = _path === undefined ? '' : _path + '/'
   for (const item of orignal) {
     path = path + item.path
     if (item.children) {
       // convertToOneRouter(item.children, path)
-      findChilds(item.children, path, _childrens)
+      findChilds(item.children, path, asyncRoutesConvertToOneRouter)
     } else {
       item.path = path
-      _childrens.push(item)
+      asyncRoutesConvertToOneRouter.push(item)
     }
   }
-  // for (const value of _constantRoutes) {
-  //   if (value.path === '/') {
-  //     value.children = [...value.children, ..._childrens]
-  //   }
-  // }
-  // _constantRoutes.push(..._childrens)
-  // orignal为全路径的菜单路由
-  // store.dispatch('menuRouter/setMenuRouter', orignal)
   debugger
-  return _constantRoutes
-}
-
-// 按全路径的方式来设置，并返回
-export function convertFullPathMenuRouter(orignal, _path) {
-  const _childrens = []
-  let path = _path === undefined ? '' : _path + '/'
-  for (const item of orignal) {
-    path = path + item.path
-    if (item.children) {
-      // convertToOneRouter(item.children, path)
-      findChilds(item.children, path, _childrens)
-    } else {
-      item.path = path
-      _childrens.push(item)
-    }
-  }
-  // orignal为全路径的菜单路由
-  // store.dispatch('menuRouter/setMenuRouter', orignal)
-  return orignal
+  return asyncRoutesConvertToOneRouter
 }
 
 // 查找子节点
@@ -300,6 +274,25 @@ function findChilds(children, _path, _childrens) {
     }
   }
 }
+
+// // 按全路径的方式来设置，并返回
+// export function convertFullPathMenuRouter(orignal, _path) {
+//   const _childrens = []
+//   let path = _path === undefined ? '' : _path + '/'
+//   for (const item of orignal) {
+//     path = path + item.path
+//     if (item.children) {
+//       // convertToOneRouter(item.children, path)
+//       findChilds(item.children, path, _childrens)
+//     } else {
+//       item.path = path
+//       _childrens.push(item)
+//     }
+//   }
+//   // orignal为全路径的菜单路由
+//   // store.dispatch('menuRouter/setMenuRouter', orignal)
+//   return orignal
+// }
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

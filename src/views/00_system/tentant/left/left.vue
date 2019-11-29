@@ -152,7 +152,7 @@ export default {
     return {
       dataJson: {
         filterText: '',
-        treeData: [{}]
+        treeData: []
       },
       // 页面设置json
       settings: {

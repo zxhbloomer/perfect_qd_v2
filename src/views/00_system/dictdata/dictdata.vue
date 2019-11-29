@@ -346,7 +346,7 @@ export default {
           columnNameShowIcon: false
         },
         // 资源类型下拉选项json
-        delOptions: [{}]
+        delOptions: []
       },
       popSettingsData: {
         // 弹出窗口状态名称

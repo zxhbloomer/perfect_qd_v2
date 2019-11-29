@@ -32,7 +32,7 @@ export default {
     return {
       dataJson: {
         // 资源类型下拉选项json
-        selectOptions: [{}],
+        selectOptions: [],
         settings: {
           // 页面设置json
           // loading 状态

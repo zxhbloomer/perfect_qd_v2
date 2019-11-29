@@ -285,9 +285,9 @@ export default {
     return {
       dataJson: {
         // 下拉选项json
-        selectOptions: [{}],
+        selectOptions: [],
         filterText: '',
-        treeData: [{}],
+        treeData: [],
         // 单条数据 json
         currentJson: null,
         tempJson: {

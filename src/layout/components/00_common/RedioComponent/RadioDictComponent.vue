@@ -41,7 +41,7 @@ export default {
       modelValue: '',
       dataJson: {
         // 下拉选项json
-        selectOptions: [{}],
+        selectOptions: [],
         searchForm: {
           para: ''
         },
