@@ -257,7 +257,6 @@ export function convertToOneRouter(orignal, _path) {
       asyncRoutesConvertToOneRouter.push(item)
     }
   }
-  debugger
   return asyncRoutesConvertToOneRouter
 }
 
