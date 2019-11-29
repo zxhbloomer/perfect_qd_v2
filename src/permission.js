@@ -47,7 +47,6 @@ router.beforeEach(async(to, from, next) => {
           //     value.children = [...value.children, ...accessRoutes]
           //   }
           // }
-          debugger
           router.addRoutes(accessRoutes)
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record

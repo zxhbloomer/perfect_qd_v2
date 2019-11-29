@@ -65,9 +65,7 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
-      debugger
       const ar = convertToOneRouter(accessedRoutes)
-      debugger
       // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)
       // 返回的是一级路由，设置到router中
