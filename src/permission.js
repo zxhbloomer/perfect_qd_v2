@@ -1,5 +1,4 @@
 import router from './router'
-import { constantRoutes } from '@/router'
 import store from './store'
 import { Message, MessageBox } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -43,11 +42,12 @@ router.beforeEach(async(to, from, next) => {
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           // 动态添加路由
-          for (const value of constantRoutes) {
-            if (value.path === '/') {
-              value.children = [...value.children, ...accessRoutes]
-            }
-          }
+          // for (const value of constantRoutes) {
+          //   if (value.path === '/') {
+          //     value.children = [...value.children, ...accessRoutes]
+          //   }
+          // }
+          debugger
           router.addRoutes(accessRoutes)
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record

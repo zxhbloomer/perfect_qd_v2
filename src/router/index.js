@@ -225,7 +225,14 @@ export const asyncRoutes = [
   }
 ]
 
-export const asyncRoutesConvertToOneRouter = []
+export const asyncRoutesConvertToOneRouter = [
+  {
+    path: '/async',
+    component: Layout,
+    redirect: 'noRedirect',
+    children: []
+  }
+]
 
 // const createRouter = () => new Router({
 //   // mode: 'history', // require service support
@@ -254,7 +261,7 @@ export function convertToOneRouter(orignal, _path) {
       findChilds(item.children, path, asyncRoutesConvertToOneRouter)
     } else {
       item.path = path
-      asyncRoutesConvertToOneRouter.push(item)
+      asyncRoutesConvertToOneRouter[0].children.push(item)
     }
   }
   return asyncRoutesConvertToOneRouter
@@ -269,7 +276,7 @@ function findChilds(children, _path, _childrens) {
       findChilds(_childItem.children, path, _childrens)
     } else {
       _childItem.path = path.endsWith('/') ? (path + _childItem.path) : (path + '/' + _childItem.path)
-      _childrens.push(_childItem)
+      _childrens[0].children.push(_childItem)
     }
   }
 }
