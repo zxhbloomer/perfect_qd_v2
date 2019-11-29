@@ -231,12 +231,14 @@ export const asyncRoutes = [
 //   routes: constantRoutes
 // })
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  // 转换后的一级路由
-  routes: convertToOneRouter(asyncRoutes, constantRoutes)
-})
+const createRouter = function() {
+  convertToOneRouter(asyncRoutes, constantRoutes)
+  return new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
+}
 
 const router = createRouter()
 
@@ -254,11 +256,11 @@ export function convertToOneRouter(orignal, _constantRoutes, _path) {
       _childrens.push(item)
     }
   }
-  for (const value of _constantRoutes) {
-    if (value.path === '/') {
-      value.children = [...value.children, ..._childrens]
-    }
-  }
+  // for (const value of _constantRoutes) {
+  //   if (value.path === '/') {
+  //     value.children = [...value.children, ..._childrens]
+  //   }
+  // }
   // _constantRoutes.push(..._childrens)
   // orignal为全路径的菜单路由
   // store.dispatch('menuRouter/setMenuRouter', orignal)
