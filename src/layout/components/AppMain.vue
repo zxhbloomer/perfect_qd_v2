@@ -4,21 +4,70 @@
     <!-- <transition name="fade-transform" mode="out-in"> -->
     <transition>
       <!-- <keep-alive> -->
-      <router-tab />
+      <router-tab :tabs="tabs" />
       <!-- </keep-alive> -->
     </transition>
   </section>
 </template>
 
 <script>
+import path from 'path'
+
 export default {
   name: 'AppMain',
+  data() {
+    return {
+      tabs: []
+    }
+  },
   computed: {
-    cachedViews() {
-      return this.$store.state.tagsView.cachedViews
+    routes() {
+      return this.$store.state.permission.routes
+    }
+  },
+  created() {
+    this.initTabs()
+  },
+  methods: {
+    // 初始页签数据
+    initTabs() {
+      // 固定标签
+      const affixTags = this.affixTags = this.filterAffixTags(this.routes)
+      affixTags.forEach(tag => {
+        const item = {
+          closable: false,
+          icon: tag.meta.icon,
+          id: tag.path,
+          title: tag.meta.title,
+          to: tag.fullPath,
+          affix: tag.meta.affix
+        }
+        this.tabs.push(item)
+      })
     },
-    key() {
-      return this.$route.fullpath
+    /**
+     * 获取需要固定的标签
+     */
+    filterAffixTags(routes, basePath = '/') {
+      let tags = []
+      routes.forEach(route => {
+        if (route.meta && route.meta.affix) {
+          const tagPath = path.resolve(basePath, route.path)
+          tags.push({
+            fullPath: tagPath,
+            path: tagPath,
+            name: route.name,
+            meta: { ...route.meta }
+          })
+        }
+        if (route.children) {
+          const tempTags = this.filterAffixTags(route.children, route.path)
+          if (tempTags.length >= 1) {
+            tags = [...tags, ...tempTags]
+          }
+        }
+      })
+      return tags
     }
   }
 }
