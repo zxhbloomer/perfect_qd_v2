@@ -258,9 +258,17 @@ export function convertToOneRouter(orignal, _path) {
     path = path + item.path
     if (item.children) {
       // convertToOneRouter(item.children, path)
-      findChilds(item.children, path, asyncRoutesConvertToOneRouter)
+      if (item.meta.fulltitle === undefined) {
+        item.meta.fulltitle = []
+      }
+      item.meta.fulltitle.push(item.meta.title)
+      findChilds(item.children, path, item, asyncRoutesConvertToOneRouter)
     } else {
       item.path = path
+      if (item.meta.fulltitle === undefined) {
+        item.meta.fulltitle = []
+      }
+      item.meta.fulltitle.push(item.meta.title)
       asyncRoutesConvertToOneRouter[0].children.push(item)
     }
   }
@@ -268,14 +276,24 @@ export function convertToOneRouter(orignal, _path) {
 }
 
 // 查找子节点
-function findChilds(children, _path, _childrens) {
+function findChilds(children, _path, _parent, _childrens) {
   let path = _path === undefined ? '' : _path + '/'
   for (const _childItem of children) {
     if (_childItem.children) {
       path = _path + '/' + _childItem.path
-      findChilds(_childItem.children, path, _childrens)
+      if (_childItem.meta.fulltitle === undefined) {
+        _childItem.meta.fulltitle = []
+      }
+      _childItem.meta.fulltitle = [..._parent.meta.fulltitle, _childItem.meta.title]
+      // _childItem.meta.fulltitle.push(_childItem.meta.title)
+      findChilds(_childItem.children, path, _childItem, _childrens)
     } else {
       _childItem.path = path.endsWith('/') ? (path + _childItem.path) : (path + '/' + _childItem.path)
+      if (_childItem.meta.fulltitle === undefined) {
+        _childItem.meta.fulltitle = []
+      }
+      // _childItem.meta.fulltitle.push(_childItem.meta.title)
+      _childItem.meta.fulltitle = [..._parent.meta.fulltitle, _childItem.meta.title]
       _childrens[0].children.push(_childItem)
     }
   }
