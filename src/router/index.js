@@ -7,7 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-import subMenu from '@/views/00_system/submenu'
+// import subMenu from '@/views/00_system/submenu'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -109,7 +109,7 @@ export const asyncRoutes = [
 
       {
         path: 'dic',
-        component: subMenu,
+        // component: subMenu,
         redirect: 'noRedirect',
         // name: 'M00000020', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
         alwaysShow: true,
@@ -133,7 +133,7 @@ export const asyncRoutes = [
       },
       {
         path: 'module',
-        component: subMenu,
+        // component: subMenu,
         redirect: 'noRedirect',
         // name: 'M00000020', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
         alwaysShow: true,
@@ -172,7 +172,7 @@ export const asyncRoutes = [
       },
       {
         path: 'org',
-        component: subMenu,
+        // component: subMenu,
         redirect: 'noRedirect',
         name: 'M00000020', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
         alwaysShow: true,
