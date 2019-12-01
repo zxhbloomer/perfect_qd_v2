@@ -26,7 +26,7 @@
               <span class="tab-title">{{ i18nText(title) || lang.tab.untitled }}</span>
               <i
                 v-if="closable !== false && !(keepLastTab && items.length < 2)"
-                class="tab-close"
+                class="el-icon-close"
                 :title="lang.contextmenu.close"
                 @click.prevent="closeTab(id)"
               />
@@ -141,3 +141,29 @@
 
 <style lang="scss" src="./scss/routerTab.scss"></style>
 <style lang="scss" src="./scss/transition.scss"></style>
+
+<style lang="scss">
+//reset element css of el-icon-close
+.router-tab-nav {
+  .router-tab-item {
+    .el-icon-close {
+      width: 16px;
+      height: 16px;
+      vertical-align: 2px;
+      border-radius: 50%;
+      text-align: center;
+      transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      transform-origin: 100% 50%;
+      &:before {
+        transform: scale(.6);
+        display: inline-block;
+        vertical-align: -3px;
+      }
+      &:hover {
+        background-color: #b4bccc;
+        color: #fff;
+      }
+    }
+  }
+}
+</style>

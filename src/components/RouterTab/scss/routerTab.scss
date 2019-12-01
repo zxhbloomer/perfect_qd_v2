@@ -1,10 +1,10 @@
 // 变量
-$color-primary: #409eff;
+$color-primary: #bfbfbf;
 
 // 页签
 .router-tab {
-	$bgHover: #f5f5f5;
-	$bgActive: #e5e5e5;
+	$bgHover: #409eff;
+	$bgActive: #409eff;
   $h: 32px;
   $slideW: 15px;
 
@@ -68,13 +68,19 @@ $color-primary: #409eff;
     user-select: none;
 
     &.actived {
-      background-color: $color-primary;
-      border-color: $color-primary;
-      color: #fff;
-
-      .tab-close {
-        background-image: url(../icon/close-active.png);
-      }
+      background-color: #bfbfbf;
+        color: #23508e;
+        border-color: #bfbfbf;
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
+        }
 		}
 
 		&:not(.actived) {
