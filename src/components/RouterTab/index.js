@@ -221,7 +221,7 @@ export default {
     },
 
     // 重载路由视图
-    async reloadView(ignoreTransition = false) {
+    async reloadView(ignoreTransition = true) {
       this.isViewAlive = false
 
       // 默认在页面过渡结束后会设置 isViewAlive 为 true
