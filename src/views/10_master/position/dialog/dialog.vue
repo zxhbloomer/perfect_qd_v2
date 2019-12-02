@@ -1,12 +1,13 @@
 <template>
   <el-dialog
+    v-if="listenVisible"
     v-el-drag-dialog
     title="岗位选择页面"
     :visible="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
-    :modal="false"
+    :modal="true"
     width="1200px"
     destroy-on-close
     top="5vh"

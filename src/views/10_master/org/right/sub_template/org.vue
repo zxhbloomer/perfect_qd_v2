@@ -28,7 +28,7 @@
       <el-table-column show-overflow-tooltip min-width="60" prop="type_text" label="分类" />
       <el-table-column show-overflow-tooltip min-width="150" prop="son_count" label="子组织机构数量">
         <template slot-scope="scope">
-          <span>企业数（</span>
+          <span>数量（</span>
           <el-link type="primary" :href="'#/sys/module/button?module_code=' + scope.row.code">{{ scope.row.son_count }}
             <svg-icon v-show="scope.row.columnTypeShowIcon" icon-class="perfect-icon-eye-open1" class="el-icon--right" />
           </el-link>

@@ -59,3 +59,15 @@ export function getCorrectTypeByInsertStatusApi(data) {
     data
   })
 }
+
+/**
+ * 删除子节点
+ * @param {*} data
+ */
+export function deleteApi(data) {
+  return request({
+    url: '/api/v1/org/delete',
+    method: 'post',
+    data
+  })
+}

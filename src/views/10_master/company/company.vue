@@ -107,6 +107,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
       width="800px"
     >
       <el-form

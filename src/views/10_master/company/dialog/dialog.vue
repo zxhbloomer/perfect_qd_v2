@@ -1,12 +1,15 @@
 <template>
   <el-dialog
+    v-if="listenVisible"
     v-el-drag-dialog
     title="企业选择对话框"
     :visible="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
-    :modal="false"
+    :modal="true"
+    :append-to-body="true"
+    :modal-append-to-body="false"
     width="1200px"
     destroy-on-close
     top="5vh"

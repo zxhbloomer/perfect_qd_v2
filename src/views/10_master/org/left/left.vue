@@ -13,7 +13,7 @@
       <el-button-group>
         <el-button type="primary" icon="el-icon-plus" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledInsert" @click="handleInsert" />
         <el-button type="primary" icon="el-icon-edit" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledUpdate" @click="handleUpdate" />
-        <el-button type="danger" icon="el-icon-delete" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledDelete" />
+        <el-button type="danger" icon="el-icon-delete" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledDelete" @click="handleDelete" />
       </el-button-group>
     </div>
     <div :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;" class="mytree">
@@ -53,6 +53,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
       destroy-on-close
       width="500px"
       top="5vh"
@@ -262,7 +264,7 @@
 </style>
 
 <script>
-import { getCorrectTypeByInsertStatusApi, getTreeListApi, insertApi, updateApi } from '@/api/10_master/org/org'
+import { getCorrectTypeByInsertStatusApi, getTreeListApi, insertApi, updateApi, deleteApi } from '@/api/10_master/org/org'
 import event from '@/utils/event'
 import elDragDialog from '@/directive/el-drag-dialog'
 import groupDialog from '@/views/10_master/group/dialog/dialog'
@@ -492,6 +494,7 @@ export default {
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
+      this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson = this.$refs.treeObject.getCurrentNode()
       this.dataJson.currentJson.currentkey = this.$refs.treeObject.getCurrentKey()
       // 通知兄弟组件
@@ -550,6 +553,47 @@ export default {
           this.popSettingsData.searchDialogDataFive.dialogVisible = true
           break
       }
+    },
+    handleDelete() {
+      this.$confirm('请注意：即将删除当前选择节点以及【子节点】的数据，而且不能恢复。', '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.doDelete()
+      }).catch(action => {
+        // 右上角X
+        // if (action !== 'close') {
+        //   //
+        // }
+      })
+    },
+    doDelete() {
+      // 删除当前节点和子节点
+      debugger
+      deleteApi({
+        id: this.dataJson.tempJson.id
+      }).then((_data) => {
+        this.$notify({
+          title: '插入成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        // 查询
+        this.getDataList()
+        this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
+      }, (_error) => {
+        this.$notify({
+          title: '插入错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+        // this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
+      })
     },
     // --------------弹出查询框：开始--------------
     // 集团：关闭对话框：确定

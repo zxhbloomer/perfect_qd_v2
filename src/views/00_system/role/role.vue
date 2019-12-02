@@ -143,6 +143,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
       width="620px"
     >
       <el-form
@@ -188,6 +190,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
       width="620px"
     >
       <el-form
