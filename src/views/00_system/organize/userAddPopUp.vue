@@ -105,7 +105,8 @@ export default {
       // 弹出窗口状态名称
       dialogName: {
         update: '修改',
-        create: '新增'
+        create: '新增',
+        copyInsert: '复制新增'
       },
       name1: '',
       name2: '',

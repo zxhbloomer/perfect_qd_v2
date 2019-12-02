@@ -293,7 +293,8 @@ export default {
         // 弹出窗口状态名称
         textMap: {
           update: '修改',
-          insert: '新增'
+          insert: '新增',
+          copyInsert: '复制新增'
         },
         // 按钮状态
         btnShowStatus: {
@@ -663,6 +664,35 @@ export default {
         }
       })
     },
+    // 复制新增逻辑
+    doCopyInsert() {
+      this.$refs['dataSubmitForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.dataJson.tempJson)
+          this.settings.listLoading = true
+          insertApi(tempData).then((_data) => {
+            this.dataJson.listData.push(_data.data)
+            this.$notify({
+              title: '复制新增成功',
+              message: _data.message,
+              type: 'success',
+              duration: this.settings.duration
+            })
+            this.popSettingsData.dialogFormVisible = false
+            this.settings.listLoading = false
+          }, (_error) => {
+            this.$notify({
+              title: '复制新增错误',
+              message: _error.message,
+              type: 'error',
+              duration: this.settings.duration
+            })
+            // this.popSettingsData.dialogFormVisible = false
+            this.settings.listLoading = false
+          })
+        }
+      })
+    },
     // 重置查询区域
     doResetSearch() {
       this.dataJson.searchForm = {
@@ -777,8 +807,19 @@ export default {
           this.settings.btnShowStatus.showDelete = false
         })
       } else {
-        // 选中数据删除
-        this.handleRealDeleteSelectionData()
+        this.$confirm('请注意：即将删除当前选中的数据，而且不能恢复。', '确认信息', {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '确定删除',
+          cancelButtonText: '取消'
+        }).then(() => {
+          // 选中数据删除
+          this.handleRealDeleteSelectionData()
+        }).catch(action => {
+        // 右上角X
+        // if (action !== 'close') {
+        //   //
+        // }
+        })
       }
     },
     // 选中数据删除

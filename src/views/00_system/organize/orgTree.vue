@@ -158,7 +158,8 @@ export default {
       // 弹出窗口状态名称
       textMap: {
         update: '修改',
-        create: '新增'
+        create: '新增',
+        copyInsert: '复制新增'
       },
       // 以下为pop的内容
       filterText: '',

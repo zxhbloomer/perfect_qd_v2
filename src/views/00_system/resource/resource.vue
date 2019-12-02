@@ -287,7 +287,8 @@ export default {
         // 弹出窗口状态名称
         textMap: {
           update: '修改',
-          insert: '新增'
+          insert: '新增',
+          copyInsert: '复制新增'
         },
         // 按钮状态：是否显示
         btnShowStatus: {

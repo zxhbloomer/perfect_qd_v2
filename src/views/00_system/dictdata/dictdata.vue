@@ -354,7 +354,8 @@ export default {
         // 弹出窗口状态名称
         textMap: {
           update: '修改',
-          insert: '新增'
+          insert: '新增',
+          copyInsert: '复制新增'
         },
         // 按钮状态
         btnShowStatus: {
@@ -840,7 +841,7 @@ export default {
           insertApi(tempData).then((_data) => {
             this.dataJson.listData.push(_data.data)
             this.$notify({
-              title: '更新成功',
+              title: '复制新增成功',
               message: _data.message,
               type: 'success',
               duration: this.settings.duration
@@ -849,7 +850,7 @@ export default {
             this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
-              title: '更新错误',
+              title: '复制新增错误',
               message: _error.message,
               type: 'error',
               duration: this.settings.duration

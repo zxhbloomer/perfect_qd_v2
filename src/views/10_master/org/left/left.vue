@@ -53,8 +53,6 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :show-close="false"
-      :append-to-body="true"
-      :modal-append-to-body="false"
       destroy-on-close
       width="500px"
       top="5vh"
@@ -570,10 +568,7 @@ export default {
     },
     doDelete() {
       // 删除当前节点和子节点
-      debugger
-      deleteApi({
-        id: this.dataJson.tempJson.id
-      }).then((_data) => {
+      deleteApi(this.dataJson.tempJson).then((_data) => {
         this.$notify({
           title: '插入成功',
           message: _data.message,
@@ -581,6 +576,7 @@ export default {
           duration: this.settings.duration
         })
         // 查询
+        this.dataJson.currentJson = null
         this.getDataList()
         this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
