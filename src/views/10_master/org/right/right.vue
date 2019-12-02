@@ -281,7 +281,6 @@ export default {
   mounted() {
     // 描绘完成
     this.$on('global:getDataList', _data => {
-      alert(1111)
     })
   },
   created() {
