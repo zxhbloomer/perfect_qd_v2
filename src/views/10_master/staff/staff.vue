@@ -239,7 +239,7 @@
           </el-tab-pane>
 
           <el-tab-pane>
-            <template slot="label">账号信息<el-badge v-show="popSettingsData.badge.countTwo>0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
+            <template slot="label">账号信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="开启账号登录：" prop="is_enable">
@@ -253,6 +253,14 @@
               <el-col :span="12" />
             </el-row>
             <div>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="登录模式：" prop="login_type">
+                    <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="登录用户名：" prop="user.login_name">
@@ -735,6 +743,7 @@ export default {
         is_wed: '',
         user: {
           is_enable: false,
+          login_type: '',
           pwd: ''
         }
       }
@@ -1182,7 +1191,7 @@ export default {
         this.doValidateAllRules()
       })
     },
-    // -------------------不同的页签，标签进行的验证------------------
+    // -------------------不同的页签，标签进行的验证 s------------------
     getUserBeanById() {
       getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
         this.dataJson.tempJson.user = Object.assign({}, response.data)
@@ -1190,6 +1199,9 @@ export default {
     },
     handleSexDictChange(val) {
       this.dataJson.tempJson.sex = val
+    },
+    handleSysLoginTypeChange(val) {
+      this.dataJson.tempJson.user.login_type = val
     },
     handleWedDictChange(val) {
       this.dataJson.tempJson.is_wed = val
@@ -1204,6 +1216,8 @@ export default {
     handlePsdDialogCloseCancle() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     }
+    // -------------------不同的页签，标签进行的验证 e------------------
+
     // -------------------验证部分------------------
     // validateLogin_name(rule, value, callback) {
     //   if (!this.isAccountLoginType) {

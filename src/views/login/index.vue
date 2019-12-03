@@ -52,6 +52,22 @@
           </span>
         </el-form-item>
       </el-tooltip>
+      <el-form-item prop="captcha">
+        <span class="svg-container">
+          <svg-icon icon-class="验证码" />
+        </span>
+        <el-input
+          ref="captcha"
+          v-model="loginForm.captcha"
+          placeholder="验证码"
+          name="captcha"
+          type="text"
+          tabindex="3"
+        />
+        <span class="captcha">
+          <img :src="codeImg" class="floatRight" alt="验证码" title="点击换一张" @click="updateCode">
+        </span>
+      </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
@@ -83,6 +99,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { getCaptchaApi } from '@/api/00_common/captcha'
 // import SocialSign from './components/SocialSignin'
 
 export default {
@@ -106,7 +123,8 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        captcha: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -118,6 +136,7 @@ export default {
         // 错误状态
         errorStatus: false
       },
+      codeImg: '',
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
@@ -175,6 +194,8 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    // 获取验证码
+    this.getCaptcha()
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -187,6 +208,19 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    // 获取验证码
+    getCaptcha() {
+      debugger
+      getCaptchaApi().then(response => {
+        debugger
+      }, (_error) => {
+        debugger
+      })
+    },
+    updateCode() {
+      // 获取验证码
+      this.getCaptcha()
+    },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
@@ -309,6 +343,11 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
+
+.floatRight {
+  float: right;
+}
+
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
@@ -361,6 +400,16 @@ $light_gray:#eee;
   }
 
   .show-pwd {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 16px;
+    color: $dark_gray;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .captcha {
     position: absolute;
     right: 10px;
     top: 7px;

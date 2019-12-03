@@ -87,9 +87,9 @@ service.interceptors.response.use(
     // 1：定义message
     let showMsg = ''
 
-    if (error.response === undefined) {
-      // debugger
-    }
+    // if (error.response === undefined) {
+    //   console.log('error.response is undefined')
+    // }
 
     // :2：处理错误区域
     if (error.response === undefined) {
@@ -103,7 +103,8 @@ service.interceptors.response.use(
         case 401:
           // 返回 401 清除token信息并跳转到登录页面
           store.dispatch('user/resetToken').then(() => {
-            location.reload()
+            console.log('没有权限')
+            // location.reload()
           })
           break
         case 404:
@@ -157,6 +158,15 @@ service.interceptors.response.use(
             MessageBox.alert(showMsg, '错误信息', {
               confirmButtonText: '确定',
               showClose: false,
+              type: 'error'
+            }).then(() => {
+            })
+            break
+          case 401:
+            showMsg = '请联系管理员，您没有权限访问这些资源！'
+            MessageBox.confirm(showMsg, '错误信息', {
+              showCancelButton: false,
+              confirmButtonText: '确定',
               type: 'error'
             }).then(() => {
             })

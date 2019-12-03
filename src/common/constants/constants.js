@@ -49,6 +49,9 @@ const DICT_ORG_SETTING_TYPE_POSITION = '50'
 /** 组织机构类型：人员  */
 const DICT_ORG_SETTING_TYPE_STAFF = '60'
 
+/** 登录模式：（10：手机号码；20：邮箱） */
+const DICT_SYS_LOGIN_TYPE = 'sys_login_type'
+
 export default {
   /** 模块类型 */
   DICT_SYS_MODULE_TYPE,
@@ -89,5 +92,7 @@ export default {
   /** 组织机构类型：岗位  */
   DICT_ORG_SETTING_TYPE_POSITION,
   /** 组织机构类型：人员  */
-  DICT_ORG_SETTING_TYPE_STAFF
+  DICT_ORG_SETTING_TYPE_STAFF,
+  /** 登录模式：（10：手机号码；20：邮箱） */
+  DICT_SYS_LOGIN_TYPE
 }
