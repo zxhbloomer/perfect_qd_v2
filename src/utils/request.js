@@ -172,12 +172,14 @@ service.interceptors.response.use(
             })
             break
           default:
-            MessageBox.confirm(showMsg, '错误信息', {
-              showCancelButton: false,
-              confirmButtonText: '确定',
-              type: 'error'
-            }).then(() => {
-            })
+            if (showMsg !== '') {
+              MessageBox.confirm(showMsg, '错误信息', {
+                showCancelButton: false,
+                confirmButtonText: '确定',
+                type: 'error'
+              }).then(() => {
+              })
+            }
             break
         }
         break

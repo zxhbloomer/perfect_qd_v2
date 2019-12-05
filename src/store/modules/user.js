@@ -31,9 +31,9 @@ const mutations = {
 const actions = {
   // user login
   loginAction({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, imageCode } = userInfo
     return new Promise((resolve, reject) => {
-      loginApi({ username: username.trim(), password: password }).then(response => {
+      loginApi({ username: username.trim(), password: password, imageCode: imageCode.trim() }).then(response => {
         const { data } = response
         // 设置令牌
         commit('SET_TOKEN', data.token)
