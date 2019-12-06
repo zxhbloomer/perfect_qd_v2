@@ -71,8 +71,12 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-      <el-divider />
-      <el-link target="_blank" class="floatRight" @click="handleSignUp">免费注册</el-link>
+      <el-divider class="el-form-item" />
+
+      <p class="create-account-callout mt-3">
+        <el-link :href="password_reset_href" @click="handleForgotPassword">忘记密码</el-link>
+        <el-link :href="signup_href" class="floatRight" @click="handleSignUp">免费注册</el-link>
+      </p>
     </el-form>
   </div>
 </template>
@@ -122,7 +126,9 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      password_reset_href: process.env.VUE_APP_BASE_API + '/password_reset',
+      signup_href: process.env.VUE_APP_BASE_API + '/signup'
     }
   },
   watch: {
