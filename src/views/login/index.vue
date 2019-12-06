@@ -74,8 +74,8 @@
       <el-divider class="el-form-item" />
 
       <p class="create-account-callout mt-3">
-        <el-link :href="password_reset_href">忘记密码</el-link>
-        <el-link :href="signup_href" class="floatRight">免费注册</el-link>
+        <el-link><router-link :to="password_reset_href">忘记密码</router-link></el-link>
+        <el-link class="floatRight"><router-link :to="signup_href">免费注册</router-link></el-link>
       </p>
     </el-form>
   </div>

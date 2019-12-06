@@ -1,80 +1,72 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
-      <div class="title-container">
-        <h3 class="title">注&#8195;&#8195;册</h3>
+    <div class="header">
+      <div class="clearfix">
+        <a href="https://www.jd.com" class="logo " />
+        <div class="logo-title">企业注册</div>
+        <div class="have-account">已有账号？ <el-link><router-link to="login">请登录</router-link></el-link>
+        </div>
       </div>
-      <el-form-item v-show="checkJson.errorStatus">
-        <el-alert
-          :title="checkJson.errorMsg"
-          type="error"
-          show-icon
-          close-text="知道了"
-          @close="handleClose"
-        />
-      </el-form-item>
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="用户名"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
+      <el-divider />
+      <el-form ref="signupForm" :model="signupForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
+        <div class="progress-bar">
+          <el-steps :space="200" :active="1" align-center>
+            <el-step title="验证手机号" />
+            <el-step title="填写账号信息" />
+            <el-step title="填写公司信息" />
+          </el-steps>
+          <br>
+          <br>
+        </div>
+
+        <el-form-item v-show="checkJson.errorStatus">
+          <el-alert
+            :title="checkJson.errorMsg"
+            type="error"
+            show-icon
+            close-text="知道了"
+            @close="handleClose"
+          />
+        </el-form-item>
+        <el-form-item prop="login_name">
+          <span class="mobile-container">
+            中国 +86
           </span>
           <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="密码"
-            name="password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
+            ref="username"
+            v-model="signupForm.username"
+            placeholder="请填写常用的手机号码"
+            name="username"
+            type="text"
+            tabindex="1"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item prop="imageCode">
+          <span class="svg-container">
+            <svg-icon icon-class="验证码" />
+          </span>
+          <el-input
+            ref="imageCode"
+            v-model="signupForm.imageCode"
+            placeholder="验证码"
+            name="imageCode"
+            type="text"
+            tabindex="3"
             @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <span class="imageCode">
+            <img :src="codeImg" class="floatRight" alt="验证码" title="点击换一张" @click="updateCode">
           </span>
         </el-form-item>
-      </el-tooltip>
-      <el-form-item prop="imageCode">
-        <span class="svg-container">
-          <svg-icon icon-class="验证码" />
-        </span>
-        <el-input
-          ref="imageCode"
-          v-model="loginForm.imageCode"
-          placeholder="验证码"
-          name="imageCode"
-          type="text"
-          tabindex="3"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="imageCode">
-          <img :src="codeImg" class="floatRight" alt="验证码" title="点击换一张" @click="updateCode">
-        </span>
-      </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-      <el-divider class="el-form-item" />
-    </el-form>
-  </div>
-</template>
+        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">获取验证码</el-button>
+        <el-divider class="el-form-item" />
+      </el-form>
+    </div>
+  </div></template>
 
 <script>
 import { validUsername } from '@/utils/validate'
@@ -99,7 +91,7 @@ export default {
       }
     }
     return {
-      loginForm: {
+      signupForm: {
         username: '',
         password: '',
         imageCode: ''
@@ -138,7 +130,7 @@ export default {
       immediate: true
     },
     // 输入信息是否有变更监控，如果有变化则情况错误信息
-    'loginForm': {
+    'signupForm': {
       handler(newVal, oldVal) {
         this.checkJson.errorMsg = ''
       },
@@ -179,9 +171,9 @@ export default {
     this.getImageCode()
   },
   mounted() {
-    if (this.loginForm.username === '') {
+    if (this.signupForm.username === '') {
       this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
+    } else if (this.signupForm.password === '') {
       this.$refs.password.focus()
     }
   },
@@ -220,10 +212,10 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.signupForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/loginAction', this.loginForm)
+          this.$store.dispatch('user/loginAction', this.signupForm)
             .then((data) => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
@@ -231,7 +223,7 @@ export default {
             .catch((data) => {
               // 获取验证码
               this.getImageCode()
-              this.loginForm.imageCode = ''
+              this.signupForm.imageCode = ''
               this.loading = false
               this.$nextTick(() => {
                 this.checkJson.errorMsg = data.message
@@ -271,6 +263,75 @@ $cursor: #fff;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+
+.el-step__head.is-finish {
+  color: #67c23a;
+  border-color: #67c23a;
+}
+.el-step__description.is-finish {
+  color: #67c23a;
+  border-color: #67c23a;
+}
+.el-step__title.is-finish {
+  color: #67c23a;
+}
+
+.el-step__head.is-process {
+  color: #C0C4CC;
+  border-color: #C0C4CC;
+}
+
+.el-step__title.is-process {
+  font-weight: normal;
+  color: #C0C4CC;
+  border-color: #C0C4CC;
+}
+
+.progress-bar {
+  position: relative;
+  width: 400px;
+}
+
+.header {
+    height: 110px;
+}
+
+.header .logo {
+    width: 160px;
+    height: 50px;
+    float: left;
+    margin-top: 24px
+}
+
+.header .logo-title {
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    font-size: 24px;
+    color: #fff;
+    margin-top: 34px
+}
+
+.header .have-account {
+    font-size: 16px;
+    float: right;
+    margin-top: 44px;
+    color: #999
+}
+
+.header .have-account a {
+    color: #FFFFFF
+}
+
+.header .have-account a:hover {
+    color: #fff;
+    text-decoration: underline
+}
+
+.clearfix {
+  width: 990px;
+  margin: 0 auto;
 }
 
 /* reset element-ui css */
@@ -326,7 +387,7 @@ $light_gray:#eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 50px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }
@@ -341,6 +402,21 @@ $light_gray:#eee;
         margin-right: 16px;
       }
     }
+  }
+
+  .mobile-container {
+    padding: 0px 0px 0px 20px;
+    color: $dark_gray;
+    width: 87px;
+    display: inline-block;
+    border: solid 1px rgba(255,255,255,0.1);
+    border-top:none;
+    border-bottom:none;
+    border-left:none;
+  }
+
+  .input-width {
+    width: 330px
   }
 
   .svg-container {
