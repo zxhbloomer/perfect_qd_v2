@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">登&#8195;&#8195;录</h3>
+        <h3 class="title">注&#8195;&#8195;册</h3>
       </div>
       <el-form-item v-show="checkJson.errorStatus">
         <el-alert
@@ -72,11 +72,6 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       <el-divider class="el-form-item" />
-
-      <p class="create-account-callout mt-3">
-        <el-link :href="password_reset_href">忘记密码</el-link>
-        <el-link :href="signup_href" class="floatRight">免费注册</el-link>
-      </p>
     </el-form>
   </div>
 </template>
@@ -127,8 +122,8 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      password_reset_href: '/password_reset',
-      signup_href: '/signup'
+      password_reset_href: process.env.VUE_APP_BASE_API + '/password_reset',
+      signup_href: process.env.VUE_APP_BASE_API + '/signup'
     }
   },
   watch: {

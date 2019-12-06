@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/signup'] // no redirect whitelist
 
 // 获取菜单路由
 // const router = new Router({ routes: asyncRoutes })
@@ -66,15 +66,19 @@ router.beforeEach(async(to, from, next) => {
       // 如果在白名单中，可以进行跳转
       next()
     } else {
-      // 没有在白名单中，进行重定向到login页面
-      MessageBox.alert('您的登录已经超时，请点击重新登录', '登录已过期', {
-        confirmButtonText: '重新登录',
-        showClose: false,
-        type: 'error'
-      }).then(() => {
+      if (from.fullPath !== '/') {
+        // 没有在白名单中，进行重定向到login页面
+        MessageBox.alert('您的登录已经超时，请点击重新登录', '登录已过期', {
+          confirmButtonText: '重新登录',
+          showClose: false,
+          type: 'error'
+        }).then(() => {
+          next(`/login?redirect=${to.path}`)
+        })
+      } else {
         next(`/login?redirect=${to.path}`)
-        NProgress.done()
-      })
+      }
+      NProgress.done()
     }
   }
 })
