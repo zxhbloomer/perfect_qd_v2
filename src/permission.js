@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect', '/signup'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/signup', '/assets/'] // no redirect whitelist
 
 // 获取菜单路由
 // const router = new Router({ routes: asyncRoutes })
@@ -62,6 +62,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* 没有token*/
+    debugger
     if (whiteList.indexOf(to.path) !== -1) {
       // 如果在白名单中，可以进行跳转
       next()

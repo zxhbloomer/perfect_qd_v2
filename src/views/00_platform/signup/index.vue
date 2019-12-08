@@ -44,37 +44,36 @@
             class="input-width"
           />
         </el-form-item>
-        <el-form-item prop="imageCode">
-          <span class="svg-container">
-            <svg-icon icon-class="验证码" />
-          </span>
-          <el-input
-            ref="imageCode"
-            v-model="signupForm.imageCode"
-            placeholder="验证码"
-            name="imageCode"
-            type="text"
-            tabindex="3"
-            @keyup.enter.native="handleLogin"
+        <el-button v-popover:popover :loading="loading" type="primary" style="width:100%;margin-bottom:30px;">点击按钮开始验证</el-button>
+        <el-popover
+          ref="popover"
+          v-model="popover"
+          placement="top"
+          width="430"
+          title="完成拼图验证"
+        >
+          <Verify
+            :type="4"
+            :show-button="false"
+            img-url="/assets/images/"
+            :img-name="['1.jpg']"
+            @success="alert('success')"
+            @error="alert('error')"
           />
-          <span class="imageCode">
-            <img :src="codeImg" class="floatRight" alt="验证码" title="点击换一张" @click="updateCode">
-          </span>
-        </el-form-item>
-
-        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">获取验证码</el-button>
-        <el-divider class="el-form-item" />
+        </el-popover>
       </el-form>
     </div>
   </div></template>
 
 <script>
 import { validUsername } from '@/utils/validate'
+import Verify from 'vue2-verify'
+
 // import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
-  // components: { SocialSign },
+  components: { Verify },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -98,8 +97,7 @@ export default {
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        imageCode: [{ required: true, message: '请输入验证码', trigger: 'change' }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       checkJson: {
         // 错误信息
@@ -107,6 +105,7 @@ export default {
         // 错误状态
         errorStatus: false
       },
+      popover: false,
       codeImg: '',
       passwordType: 'password',
       capsTooltip: false,
@@ -167,8 +166,6 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
-    // 获取验证码
-    this.getImageCode()
   },
   mounted() {
     if (this.signupForm.username === '') {
@@ -181,14 +178,6 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
-    // 获取验证码
-    getImageCode() {
-      this.codeImg = `${process.env.VUE_APP_BASE_API}/api/v1/imagecode?=${Math.random()}`
-    },
-    updateCode() {
-      // 获取验证码
-      this.getImageCode()
-    },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
@@ -209,30 +198,6 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.password.focus()
-      })
-    },
-    handleLogin() {
-      this.$refs.signupForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/loginAction', this.signupForm)
-            .then((data) => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
-            })
-            .catch((data) => {
-              // 获取验证码
-              this.getImageCode()
-              this.signupForm.imageCode = ''
-              this.loading = false
-              this.$nextTick(() => {
-                this.checkJson.errorMsg = data.message
-              })
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
       })
     },
     getOtherQuery(query) {
