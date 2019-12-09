@@ -50,15 +50,14 @@
           v-model="popover"
           placement="top"
           width="430"
-          title="完成拼图验证"
+          title="请完成拼图验证"
         >
           <Verify
-            :type="4"
+            type="puzzle"
             :show-button="false"
-            img-url="/assets/images/"
             :img-name="['1.jpg']"
-            @success="alert('success')"
-            @error="alert('error')"
+            @success="handlePuzzleSuccess('success')"
+            @error="handlePuzzleError('Error')"
           />
         </el-popover>
       </el-form>
@@ -67,7 +66,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import Verify from 'vue2-verify'
+import Verify from '@/components/Verify/Verify'
 
 // import SocialSign from './components/SocialSignin'
 
@@ -213,6 +212,14 @@ export default {
     },
     handleSignUp() {
       alert(111)
+    },
+    handlePuzzleSuccess(val) {
+      this.doPuzzleSuccess()
+    },
+    handlePuzzleError(val) {
+    },
+    doPuzzleSuccess() {
+
     }
   }
 }

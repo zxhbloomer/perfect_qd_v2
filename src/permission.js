@@ -22,7 +22,6 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -62,7 +61,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* 没有token*/
-    debugger
     if (whiteList.indexOf(to.path) !== -1) {
       // 如果在白名单中，可以进行跳转
       next()
