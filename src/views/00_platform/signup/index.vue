@@ -3,13 +3,12 @@
 
     <div class="header">
       <div class="clearfix">
-        <a href="https://www.jd.com" class="logo " />
         <div class="logo-title">企业注册</div>
         <div class="have-account">已有账号？ <el-link><router-link to="login">请登录</router-link></el-link>
         </div>
       </div>
       <el-divider />
-      <el-form ref="signupForm" :model="signupForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+      <el-form ref="signupForm" :model="signupForm" :rules="registRules" class="login-form" auto-complete="on" label-position="left">
 
         <div class="progress-bar">
           <el-steps :space="200" :active="1" align-center>
@@ -20,53 +19,55 @@
           <br>
           <br>
         </div>
-
-        <el-form-item v-show="checkJson.errorStatus">
-          <el-alert
-            :title="checkJson.errorMsg"
-            type="error"
-            show-icon
-            close-text="知道了"
-            @close="handleClose"
-          />
-        </el-form-item>
-        <el-form-item prop="login_name">
-          <span class="mobile-container">
-            中国 +86
-          </span>
-          <el-input
-            ref="username"
-            v-model="signupForm.username"
-            placeholder="请填写常用的手机号码"
-            name="username"
-            type="text"
-            tabindex="1"
-            class="input-width"
-          />
-        </el-form-item>
-        <el-button v-popover:popover :loading="loading" type="primary" style="width:100%;margin-bottom:30px;">点击按钮开始验证</el-button>
-        <el-popover
-          ref="popover"
-          v-model="popover"
-          placement="top"
-          width="430"
-          title="请完成拼图验证"
-        >
-          <Verify
-            type="puzzle"
-            :show-button="false"
-            :img-name="['1.jpg']"
-            @success="handlePuzzleSuccess('success')"
-            @error="handlePuzzleError('Error')"
-          />
-        </el-popover>
+        <div v-show="stepsSetting.active === 0">
+          <el-form-item v-show="checkJson.errorStatus">
+            <el-alert
+              :title="checkJson.errorMsg"
+              type="error"
+              show-icon
+              close-text="知道了"
+              @close="handleClose"
+            />
+          </el-form-item>
+          <el-form-item prop="login_name">
+            <span class="mobile-container">
+              中国 +86
+            </span>
+            <el-input
+              ref="login_name"
+              v-model="signupForm.login_name"
+              placeholder="请填写常用的手机号码"
+              name="username"
+              type="text"
+              tabindex="1"
+              class="input-width"
+            />
+          </el-form-item>
+          <el-popover
+            ref="popover"
+            v-model="popoverShow"
+            placement="top"
+            width="430"
+            title="请完成拼图验证"
+          >
+            <Verify
+              type="puzzle"
+              :show-button="false"
+              :img-name="['1.jpg']"
+              @success="handlePuzzleSuccess('success')"
+              @error="handlePuzzleError('Error')"
+            />
+            <el-button slot="reference" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="form-item form-item-getcode" @click="handleShowPopover">点击按钮开始验证</el-button>
+          </el-popover>
+        </div>
+        <el-button :loading="loading" type="primary" class="btn-register">下一步</el-button>
       </el-form>
     </div>
   </div></template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 import Verify from '@/components/Verify/Verify'
+import { validMobile } from '@/utils/validate'
 
 // import SocialSign from './components/SocialSignin'
 
@@ -74,16 +75,9 @@ export default {
   name: 'Login',
   components: { Verify },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码长度不能小于6位'))
+    const validateMobile = (rule, value, callback) => {
+      if (!validMobile(value)) {
+        callback(new Error('请输入正确的手机号码'))
       } else {
         callback()
       }
@@ -91,12 +85,22 @@ export default {
     return {
       signupForm: {
         username: '',
-        password: '',
-        imageCode: ''
+        password: ''
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      registRules: { },
+      // 步骤设置部分
+      stepsSetting: {
+        active: 0, // 控制步骤
+        stepNumber: 2, // 总步数
+        // 步骤1的check内容
+        rulesFirst: {
+          login_name: [{ required: true, trigger: 'blur', validator: validateMobile }]
+        },
+        // 步骤2的check内容
+        rulesSecond: {
+          name: [{ required: true, message: '请输入资源名称', trigger: 'change' }],
+          context: [{ required: true, message: '请输入json配置信息', trigger: 'change' }]
+        }
       },
       checkJson: {
         // 错误信息
@@ -104,7 +108,7 @@ export default {
         // 错误状态
         errorStatus: false
       },
-      popover: false,
+      popoverShow: false,
       codeImg: '',
       passwordType: 'password',
       capsTooltip: false,
@@ -165,18 +169,21 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    this.initShow()
   },
   mounted() {
-    if (this.signupForm.username === '') {
-      this.$refs.username.focus()
-    } else if (this.signupForm.password === '') {
-      this.$refs.password.focus()
+    if (this.signupForm.login_name === '') {
+      this.$refs.login_name.focus()
     }
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    initShow() {
+      // 步骤初始化
+      this.registRules = this.stepsSetting.rulesFirst
+    },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
@@ -220,6 +227,27 @@ export default {
     },
     doPuzzleSuccess() {
 
+    },
+    handleShowPopover() {
+      // 显示
+      // this.popoverShow = false
+      // 隐藏
+      // this.popoverShow = true
+      this.$refs['signupForm'].clearValidate()
+      this.$refs['signupForm'].validate((valid) => {
+        if (valid) {
+          // 显示
+          this.popoverShow = false
+        } else {
+          // 隐藏
+          this.popoverShow = true
+        }
+      })
+    },
+    // 开始综合验证
+    doValidateByTabs() {
+      // 第一个tabs
+      this.popSettingsData.rules = this.popSettingsData.rulesOne
     }
   }
 }
@@ -235,6 +263,17 @@ $cursor: #fff;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+
+.btn-register {
+  margin-left:0px !important;
+  width: 100%;
+  height: 54px;
+  text-align: center;
+  color: #fff;
+  border: 0;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .el-step__head.is-finish {
@@ -341,13 +380,33 @@ $cursor: #fff;
 
 <style lang="scss" scoped>
 
+$bg:#2d3a4b;
+$dark_gray:#889aa4;
+$light_gray:#eee;
+
 .floatRight {
   float: right;
 }
 
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+.form-item {
+    position: relative;
+    z-index: 0;
+}
+
+.form-item-getcode {
+  background-color: $bg;
+  height: 47px;
+  text-align: center;
+  font-size: 14px;
+  color: #C0C4CC;
+  cursor: pointer;
+  z-index: 2;
+  border: solid 1px rgba(255,255,255,0.1);
+}
+
+.form-item-getcode:hover {
+    border-color: #fff
+}
 
 .login-container {
   min-height: 100%;

@@ -19,10 +19,20 @@ export function validUsername(str) {
   // return valid_map.indexOf(str.trim()) >= 0
   // username check
   let rtn = false
-  if (str.trim !== '') {
+  if (str.trim() !== '') {
     rtn = true
   }
   return rtn
+}
+
+/**
+ * 手机号码验证
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validMobile(str) {
+  const reg = /^1(3|4|5|6|7|8|9)\d{9}$/
+  return reg.test(str)
 }
 
 /**
