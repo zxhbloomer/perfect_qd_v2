@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect', '/signup', '/assets/'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/signup', '/assets/', '/api/v1/sms/code'] // no redirect whitelist
 
 // 获取菜单路由
 // const router = new Router({ routes: asyncRoutes })

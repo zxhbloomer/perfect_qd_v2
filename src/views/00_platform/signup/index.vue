@@ -51,6 +51,7 @@
             title="请完成拼图验证"
           >
             <Verify
+              :v-offset="10"
               type="puzzle"
               :show-button="false"
               :img-name="['1.jpg']"
@@ -68,6 +69,7 @@
 <script>
 import Verify from '@/components/Verify/Verify'
 import { validMobile } from '@/utils/validate'
+import { getSmsCodeApi } from '@/api/00_platform/sms/smscode'
 
 // import SocialSign from './components/SocialSignin'
 
@@ -226,7 +228,13 @@ export default {
     handlePuzzleError(val) {
     },
     doPuzzleSuccess() {
-
+      // 隐藏
+      this.popoverShow = false
+      // 调用短信验证码
+      getSmsCodeApi({ mobile: this.signupForm.login_name }).then(response => {
+        debugger
+      }, (_error) => {
+      })
     },
     handleShowPopover() {
       // 显示
