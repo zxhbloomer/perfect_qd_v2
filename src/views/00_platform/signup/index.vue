@@ -29,39 +29,65 @@
               @close="handleClose"
             />
           </el-form-item>
-          <el-form-item prop="login_name">
+          <el-form-item prop="mobile">
             <span class="mobile-container">
               中国 +86
             </span>
             <el-input
-              ref="login_name"
-              v-model="signupForm.login_name"
+              ref="mobile"
+              v-model="signupForm.mobile"
               placeholder="请填写常用的手机号码"
-              name="username"
+              name="mobile"
               type="text"
               tabindex="1"
               class="input-width"
+              @change="handleChange"
             />
           </el-form-item>
-          <el-popover
-            ref="popover"
-            v-model="popoverShow"
-            placement="top"
-            width="430"
-            title="请完成拼图验证"
-          >
-            <Verify
-              :v-offset="10"
-              type="puzzle"
-              :show-button="false"
-              :img-name="['1.jpg']"
-              @success="handlePuzzleSuccess('success')"
-              @error="handlePuzzleError('Error')"
+
+          <div v-if="!codeValidateFlg">
+            <el-popover
+              ref="popover"
+              v-model="popoverShow"
+              placement="top"
+              width="430"
+              title="请完成拼图验证"
+            >
+              <div v-if="popoverShow">
+                <Verify
+                  :v-offset="10"
+                  type="puzzle"
+                  :show-button="false"
+                  :img-name="['1.jpg']"
+                  @success="handlePuzzleSuccess('success')"
+                  @error="handlePuzzleError('Error')"
+                />
+              </div>
+              <el-button slot="reference" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="form-item form-item-getcode" @click="handleShowPopover">点击按钮开始验证</el-button>
+            </el-popover>
+          </div>
+
+          <el-form-item v-if="codeValidateFlg" prop="sms_code">
+            <span class="code-container">
+              手机验证码
+            </span>
+            <el-input
+              v-model="signupForm.sms_code"
+              placeholder="输入验证码"
+              class="code-width"
             />
-            <el-button slot="reference" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="form-item form-item-getcode" @click="handleShowPopover">点击按钮开始验证</el-button>
-          </el-popover>
+            <el-button class="code_button" @click="handleRecode">
+              <span v-if="msTime.show">
+                {{ msTime.count }}秒后重新获取
+              </span>
+              <span v-if="msTime.show === false">
+                重新获取
+              </span>
+            </el-button>
+          </el-form-item>
+
         </div>
-        <el-button :loading="loading" type="primary" class="btn-register">下一步</el-button>
+        <el-button :loading="loading" type="primary" class="btn-register" @click="handleNext">下一步</el-button>
       </el-form>
     </div>
   </div></template>
@@ -85,8 +111,13 @@ export default {
       }
     }
     return {
+      msTime: { // 倒计时数值
+        show: false,		// 倒计时状态
+        count: 120 // 倒计时
+      },
       signupForm: {
-        username: '',
+        mobile: '',
+        sms_code: '',
         password: ''
       },
       registRules: { },
@@ -96,7 +127,8 @@ export default {
         stepNumber: 2, // 总步数
         // 步骤1的check内容
         rulesFirst: {
-          login_name: [{ required: true, trigger: 'blur', validator: validateMobile }]
+          mobile: [{ required: true, trigger: 'blur', validator: validateMobile }],
+          sms_code: [{ required: true, message: '请输入验证码', trigger: 'change' }]
         },
         // 步骤2的check内容
         rulesSecond: {
@@ -110,7 +142,9 @@ export default {
         // 错误状态
         errorStatus: false
       },
+      codeCount: 0,
       popoverShow: false,
+      codeValidateFlg: false,
       codeImg: '',
       passwordType: 'password',
       capsTooltip: false,
@@ -174,8 +208,8 @@ export default {
     this.initShow()
   },
   mounted() {
-    if (this.signupForm.login_name === '') {
-      this.$refs.login_name.focus()
+    if (this.signupForm.mobile === '') {
+      this.$refs.mobile.focus()
     }
   },
   destroyed() {
@@ -231,9 +265,13 @@ export default {
       // 隐藏
       this.popoverShow = false
       // 调用短信验证码
-      getSmsCodeApi({ mobile: this.signupForm.login_name }).then(response => {
-        debugger
+      getSmsCodeApi({ mobile: this.signupForm.mobile }).then(response => {
+        this.codeCount = 0
+        // 开始倒计时
+        this.handleCountDown()
+        this.codeValidateFlg = true
       }, (_error) => {
+
       })
     },
     handleShowPopover() {
@@ -256,6 +294,61 @@ export default {
     doValidateByTabs() {
       // 第一个tabs
       this.popSettingsData.rules = this.popSettingsData.rulesOne
+    },
+    // 倒计时
+    doCountDown(count) {
+      this.msTime.count = this.msTime.count - 1
+      if (this.msTime.count === 0) {
+        this.msTime.show = false
+        return
+      } else {
+        this.msTime.show = true
+      }
+      setTimeout(() => {
+        this.doCountDown(this.msTime.count)
+      }, 1000)
+    },
+    handleCountDown() {
+      this.msTime.show = true
+      this.msTime.count = 120
+      this.doCountDown(this.msTime.count)
+    },
+    handleChange() {
+
+    },
+    handleRecode() {
+      if (this.msTime.show) {
+        return
+      }
+      if (this.codeCount > 1) {
+        this.codeValidateFlg = false
+        return
+      }
+      // 调用短信验证码
+      getSmsCodeApi({ mobile: this.signupForm.mobile }).then(response => {
+        this.codeCount = this.codeCount + 1
+        // 开始倒计时
+        this.handleCountDown()
+        this.codeValidateFlg = true
+      }, (_error) => {
+
+      })
+    },
+    handleNext() {
+      this.$refs['signupForm'].clearValidate()
+      this.$refs['signupForm'].validate((valid) => {
+        if (valid) {
+          if (this.signupForm.sms_code === '') {
+            this.$alert('请完成验证', '错误', {
+              confirmButtonText: '关闭',
+              type: 'error'
+            }).then(() => {
+            })
+          }
+        } else {
+          alert(2)
+        }
+      })
     }
   }
 }
@@ -443,10 +536,21 @@ $light_gray:#eee;
     }
   }
 
+  .code-container {
+    padding: 0px 0px 0px 20px;
+    color: $dark_gray;
+    width: 100px;
+    display: inline-block;
+    border: solid 1px rgba(255,255,255,0.1);
+    border-top:none;
+    border-bottom:none;
+    border-left:none;
+  }
+
   .mobile-container {
     padding: 0px 0px 0px 20px;
     color: $dark_gray;
-    width: 87px;
+    width: 100px;
     display: inline-block;
     border: solid 1px rgba(255,255,255,0.1);
     border-top:none;
@@ -457,6 +561,22 @@ $light_gray:#eee;
   .input-width {
     width: 330px
   }
+
+  .code-width {
+    width: 200px
+  }
+
+  .code_button{
+    width: 140px;
+    height:47px;
+    background-color: #2d3a4b;
+    font-size: 14px;
+    color: #C0C4CC;
+    border: solid 1px rgba(255,255,255,0.1);
+  }
+  .code_button:hover {
+    border-color: #fff
+}
 
   .svg-container {
     padding: 6px 5px 6px 15px;

@@ -125,6 +125,9 @@ service.interceptors.response.use(
             showMsg = error.response.data.message
           }
           break
+        case 503:
+          showMsg = error.response.data.message
+          break
       }
     }
 
