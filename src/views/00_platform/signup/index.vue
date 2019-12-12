@@ -18,6 +18,7 @@
           </el-steps>
           <br>
           <br>
+          <br>
         </div>
         <div v-show="stepsSetting.active === 0">
           <el-form-item v-show="checkJson.errorStatus">
@@ -53,16 +54,14 @@
               width="430"
               title="请完成拼图验证"
             >
-              <div v-if="popoverShow">
-                <Verify
-                  :v-offset="10"
-                  type="puzzle"
-                  :show-button="false"
-                  :img-name="['1.jpg']"
-                  @success="handlePuzzleSuccess('success')"
-                  @error="handlePuzzleError('Error')"
-                />
-              </div>
+              <Verify
+                :v-offset="10"
+                type="puzzle"
+                :show-button="false"
+                :img-name="['1.jpg']"
+                @success="handlePuzzleSuccess('success')"
+                @error="handlePuzzleError('Error')"
+              />
               <el-button slot="reference" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="form-item form-item-getcode" @click="handleShowPopover">点击按钮开始验证</el-button>
             </el-popover>
           </div>
@@ -87,6 +86,9 @@
           </el-form-item>
 
         </div>
+
+        <div v-show="stepsSetting.active === 1" />
+
         <el-button :loading="loading" type="primary" class="btn-register" @click="handleNext">下一步</el-button>
       </el-form>
     </div>
@@ -95,7 +97,7 @@
 <script>
 import Verify from '@/components/Verify/Verify'
 import { validMobile } from '@/utils/validate'
-import { getSmsCodeApi } from '@/api/00_platform/sms/smscode'
+import { getSmsCodeApi, checkSmsCodeApi } from '@/api/00_platform/sms/smscode'
 
 // import SocialSign from './components/SocialSignin'
 
@@ -153,7 +155,8 @@ export default {
       redirect: undefined,
       otherQuery: {},
       password_reset_href: process.env.VUE_APP_BASE_API + '/password_reset',
-      signup_href: process.env.VUE_APP_BASE_API + '/signup'
+      signup_href: process.env.VUE_APP_BASE_API + '/signup',
+      timeout: null
     }
   },
   watch: {
@@ -304,18 +307,23 @@ export default {
       } else {
         this.msTime.show = true
       }
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.doCountDown(this.msTime.count)
       }, 1000)
     },
+    // 倒计时
     handleCountDown() {
+      this.signupForm.sms_code = ''
       this.msTime.show = true
       this.msTime.count = 120
+      clearTimeout(this.timeout)
       this.doCountDown(this.msTime.count)
     },
+    // 手机号码变更
     handleChange() {
-
+      this.codeValidateFlg = false
     },
+    // 验证码重发
     handleRecode() {
       if (this.msTime.show) {
         return
@@ -336,7 +344,7 @@ export default {
     },
     handleNext() {
       this.$refs['signupForm'].clearValidate()
-      this.$refs['signupForm'].validate((valid) => {
+      this.$refs['signupForm'].validate((valid, xx) => {
         if (valid) {
           if (this.signupForm.sms_code === '') {
             this.$alert('请完成验证', '错误', {
@@ -344,9 +352,16 @@ export default {
               type: 'error'
             }).then(() => {
             })
+            return
           }
+          // 调用短信验证码
+          checkSmsCodeApi(this.signupForm).then(response => {
+            debugger
+          }, (_error) => {
+
+          })
         } else {
-          alert(2)
+          alert('有错误')
         }
       })
     }

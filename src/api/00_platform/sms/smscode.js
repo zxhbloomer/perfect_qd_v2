@@ -11,3 +11,15 @@ export function getSmsCodeApi(query) {
     data: query
   })
 }
+
+/**
+ * 获取验证码
+ * @param {*} data
+ */
+export function checkSmsCodeApi(query) {
+  return request({
+    url: '/api/v1/sms/code/check',
+    method: 'post',
+    data: query
+  })
+}
