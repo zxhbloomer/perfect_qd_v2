@@ -116,7 +116,11 @@ export const asyncRoutes = [
         name: 'P00000020',
         meta: { title: '资源管理', icon: '资源管理' }
       },
-
+      { path: 'syscode',
+        component: () => import('@/views/00_platform/syscode/syscode'),
+        name: 'P00000180',
+        meta: { title: '系统编码', icon: 'syscode' }
+      },
       {
         path: 'dic',
         // component: subMenu,
