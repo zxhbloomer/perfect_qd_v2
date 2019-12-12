@@ -50,8 +50,10 @@ const DICT_ORG_SETTING_TYPE_POSITION = '50'
 const DICT_ORG_SETTING_TYPE_STAFF = '60'
 /** 登录模式：（10：手机号码；20：邮箱） */
 const DICT_SYS_LOGIN_TYPE = 'sys_login_type'
-/** 系统编码 */
+/** 自动编码类型 */
 const DICT_SYS_CODE_RULE_TYPE = 'sys_coderule_type'
+/** 自动编码名称 */
+const DICT_SYS_CODE_TYPE = 'sys_code_type'
 
 export default {
   /** 模块类型 */
@@ -96,6 +98,8 @@ export default {
   DICT_ORG_SETTING_TYPE_STAFF,
   /** 登录模式：（10：手机号码；20：邮箱） */
   DICT_SYS_LOGIN_TYPE,
-  /** 系统编码 */
-  DICT_SYS_CODE_RULE_TYPE
+  /** 自动编码类型 */
+  DICT_SYS_CODE_RULE_TYPE,
+  /** 自动编码名称 */
+  DICT_SYS_CODE_TYPE
 }

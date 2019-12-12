@@ -36,8 +36,8 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="type" label="编码类型" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="dict_label" label="编码规则" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code_type_label" label="编码类型" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code_rule_label" label="编码规则" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="当前code" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="auto_create" disabled label="当前序号" />
       <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
@@ -67,7 +67,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="编码类型：" prop="type">
-              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.type" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.type" />
+              <!-- <el-input ref="refFocus" v-model.trim="dataJson.tempJson.type" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.type" /> -->
+              <select-dict v-model="dataJson.tempJson.type" :para="CONSTANTS.DICT_SYS_CODE_TYPE" init-placeholder="请选择编码类型" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
