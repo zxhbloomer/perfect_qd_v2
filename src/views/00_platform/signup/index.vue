@@ -84,10 +84,19 @@
               </span>
             </el-button>
           </el-form-item>
-
         </div>
 
-        <div v-show="stepsSetting.active === 1" />
+        <div v-show="stepsSetting.active === 1">
+          <el-form-item prop="mobile">
+            <span class="svg-container">
+              <svg-icon icon-class="el-icon-mobile-phone" />
+            </span>
+            <el-input
+              v-model="signupForm.mobile"
+              disabled
+            />
+          </el-form-item>
+        </div>
 
         <el-button :loading="loading" type="primary" class="btn-register" @click="handleNext">下一步</el-button>
       </el-form>
@@ -209,6 +218,8 @@ export default {
   created() {
     // window.addEventListener('storage', this.afterQRScan)
     this.initShow()
+    this.stepsSetting.active = 1
+    this.signupForm.mobile = 1234567
   },
   mounted() {
     if (this.signupForm.mobile === '') {
@@ -346,6 +357,7 @@ export default {
       this.$refs['signupForm'].clearValidate()
       this.$refs['signupForm'].validate((valid, xx) => {
         if (valid) {
+          // check没有错误
           if (this.signupForm.sms_code === '') {
             this.$alert('请完成验证', '错误', {
               confirmButtonText: '关闭',
@@ -356,12 +368,19 @@ export default {
           }
           // 调用短信验证码
           checkSmsCodeApi(this.signupForm).then(response => {
-            debugger
+            if (this.stepsSetting.active === this.stepsSetting.stepNumber) {
+              return
+            }
+            this.stepsSetting.active++
+            this.$nextTick(() => {
+              this.$refs['signupForm'].clearValidate()
+            })
           }, (_error) => {
 
           })
         } else {
-          alert('有错误')
+          // check有错误
+          return false
         }
       })
     }
