@@ -40,6 +40,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code_rule_label" label="编码规则" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="当前code" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="auto_create" disabled label="当前序号" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="prefex" disabled label="前缀" />
       <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -79,13 +80,20 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="前缀：" prop="prefex">
+              <el-input v-model.trim="dataJson.tempJson.prefex" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.prefex" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="当前编码：" prop="code">
-              <el-input v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" disabled />
+              <el-input v-model.trim="dataJson.tempJson.code" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="当前序号：" prop="auto_create">
-              <el-input v-model.trim="dataJson.tempJson.auto_create" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.auto_create" disabled />
+              <el-input v-model.trim="dataJson.tempJson.auto_create" disabled />
             </el-form-item>
           </el-col>
         </el-row>
@@ -180,9 +188,8 @@ export default {
         inputSettings: {
           maxLength: {
             name: 20,
-            code: 20,
-            descr: 200,
-            simple_name: 20
+            simple_name: 20,
+            prefex: 5
           }
         },
         // 当前表格中的索引，第几条
@@ -233,6 +240,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
+          prefex: [{ required: true, message: '请输入前缀', trigger: 'change' }],
           type: [{ required: true, message: '请输入编码类型', trigger: 'change' }],
           rule: [{ required: true, message: '请输入编码规则', trigger: 'change' }]
         },
@@ -455,7 +463,7 @@ export default {
       this.popSettingsData.dialogFormVisible = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        // this.$refs['refFocus'].focus()
       })
     },
     // 点击按钮 更新
@@ -477,7 +485,7 @@ export default {
       this.popSettingsData.btnShowStatus.showCopyInsert = false
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        // this.$refs['refFocus'].focus()
       })
     },
     // 点击按钮 复制新增
@@ -499,7 +507,7 @@ export default {
       this.popSettingsData.btnShowStatus.showCopyInsert = true
       // 复制新增时focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        // this.$refs['refFocus'].focus()
       })
     },
     handleCurrentChange(row) {
@@ -616,7 +624,7 @@ export default {
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
+            // this.$refs['refFocus'].focus()
           })
           break
         default:
@@ -624,7 +632,7 @@ export default {
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
+            // this.$refs['refFocus'].focus()
           })
           break
       }

@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import resizeMixin from './tentantResizeHandlerMixin'
+import resizeMixin from './tenantResizeHandlerMixin'
 
 export default {
   name: 'P00000080', // 页面id，和router中的name需要一致，作为缓存

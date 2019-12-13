@@ -174,10 +174,10 @@ export const asyncRoutes = [
         name: 'P00000060',
         meta: { title: '系统参数', icon: '系统参数' }
       },
-      { path: 'tentant',
-        component: () => import('@/views/10_system/tentant/tentant'),
+      { path: 'tenant',
+        component: () => import('@/views/10_system/tenant/tenant'),
         name: 'P00000080',
-        meta: { title: '租户管理', icon: 'tentant' }
+        meta: { title: '租户管理', icon: 'tenant' }
       },
       { path: 'sysmenu',
         component: () => import('@/views/10_system/sysmenu/sysmenu'),

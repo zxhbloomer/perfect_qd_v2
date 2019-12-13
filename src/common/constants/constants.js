@@ -37,7 +37,7 @@ const DICT_USR_LOGIN_TYPE = 'usr_login_type'
 /** 组织机构类型  */
 const DICT_ORG_SETTING_TYPE = 'org_setting_type'
 /** 组织机构类型：租户  */
-const DICT_ORG_SETTING_TYPE_TENTANT = '10'
+const DICT_ORG_SETTING_TYPE_TENANT = '10'
 /** 组织机构类型：集团  */
 const DICT_ORG_SETTING_TYPE_GROUP = '20'
 /** 组织机构类型：企业  */
@@ -85,7 +85,7 @@ export default {
   /** 组织机构类型  */
   DICT_ORG_SETTING_TYPE,
   /** 组织机构类型：租户  */
-  DICT_ORG_SETTING_TYPE_TENTANT,
+  DICT_ORG_SETTING_TYPE_TENANT,
   /** 组织机构类型：集团  */
   DICT_ORG_SETTING_TYPE_GROUP,
   /** 组织机构类型：企业  */

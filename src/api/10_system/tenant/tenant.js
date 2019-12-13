@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getCascaderListApi(query) {
   return request({
-    url: '/api/v1/tentant/cascader/list',
+    url: '/api/v1/tenant/cascader/list',
     method: 'post',
     data: query
   })
@@ -18,7 +18,7 @@ export function getCascaderListApi(query) {
  */
 export function getTreeListApi(query) {
   return request({
-    url: '/api/v1/tentant/tree/list',
+    url: '/api/v1/tenant/tree/list',
     method: 'post',
     data: query
   })
@@ -30,7 +30,7 @@ export function getTreeListApi(query) {
  */
 export function getListApi(query) {
   return request({
-    url: '/api/v1/tentant/list',
+    url: '/api/v1/tenant/list',
     method: 'post',
     data: query
   })
@@ -42,7 +42,7 @@ export function getListApi(query) {
  */
 export function updateApi(data) {
   return request({
-    url: '/api/v1/tentant/save',
+    url: '/api/v1/tenant/save',
     method: 'post',
     data
   })
@@ -54,7 +54,7 @@ export function updateApi(data) {
  */
 export function insertApi(data) {
   return request({
-    url: '/api/v1/tentant/insert',
+    url: '/api/v1/tenant/insert',
     method: 'post',
     data
   })
@@ -66,7 +66,7 @@ export function insertApi(data) {
  */
 export function exportAllApi(data) {
   return request({
-    url: '/api/v1/tentant/export_all',
+    url: '/api/v1/tenant/export_all',
     method: 'post',
     data,
     responseType: 'arraybuffer'
@@ -79,7 +79,7 @@ export function exportAllApi(data) {
  */
 export function exportSelectionApi(data) {
   return request({
-    url: '/api/v1/tentant/export_selection',
+    url: '/api/v1/tenant/export_selection',
     method: 'post',
     data,
     responseType: 'arraybuffer'
@@ -92,7 +92,7 @@ export function exportSelectionApi(data) {
  */
 export function enableApi(data) {
   return request({
-    url: '/api/v1/tentant/enable',
+    url: '/api/v1/tenant/enable',
     method: 'post',
     data
   })

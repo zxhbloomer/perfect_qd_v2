@@ -136,7 +136,7 @@
 </style>
 
 <script>
-import { getTreeListApi } from '@/api/10_system/tentant/tentant'
+import { getTreeListApi } from '@/api/10_system/tenant/tenant'
 import event from '@/utils/event'
 
 export default {

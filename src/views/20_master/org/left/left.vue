@@ -32,7 +32,7 @@
       >
         <span slot-scope="{ node, data }" class="custom-tree-node">
           <span>
-            <svg-icon v-if="data.type === '10'" icon-class="perfect-icon-tentant" class="el-icon--right" />
+            <svg-icon v-if="data.type === '10'" icon-class="perfect-icon-tenant" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '20'" icon-class="perfect-icon-group" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
@@ -395,29 +395,29 @@ export default {
           arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
           arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
           switch (this.dataJson.currentJson.type) {
-            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT:
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENTANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)

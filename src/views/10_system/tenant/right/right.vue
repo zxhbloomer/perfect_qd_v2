@@ -165,7 +165,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="租户编码：" prop="code">
-              <el-input v-model="dataJson.tempJson.code" placeholder="请输入" />
+              <el-input v-model="dataJson.tempJson.code" placeholder="请输入编码不输入则自动生成" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -288,7 +288,7 @@
   }
 </style>
 <script>
-import { getCascaderListApi, getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/tentant/tentant'
+import { getCascaderListApi, getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/tenant/tenant'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import event from '@/utils/event'
@@ -448,7 +448,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          code: [{ required: true, message: '请选择租户编码', trigger: 'change' }],
+          // code: [{ required: true, message: '请选择租户编码', trigger: 'change' }],
           name: [{ required: true, message: '请输入租户名称', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入租户简称', trigger: 'change' }],
           enable_time_range: [{ required: true, message: '请输入生效失效日期范围', trigger: 'change' }]
