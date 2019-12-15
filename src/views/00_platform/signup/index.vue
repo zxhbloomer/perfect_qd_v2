@@ -87,13 +87,40 @@
         </div>
 
         <div v-show="stepsSetting.active === 1">
-          <el-form-item prop="mobile">
+          <el-form-item prop="tenant">
             <span class="svg-container">
-              <svg-icon icon-class="el-icon-mobile-phone" />
+              <svg-icon icon-class="tenant" />
             </span>
             <el-input
-              v-model="signupForm.mobile"
-              disabled
+              v-model="signupForm.tenant"
+              placeholder="请输入租户名称"
+            />
+          </el-form-item>
+          <el-form-item prop="admin">
+            <span class="svg-container">
+              <svg-icon icon-class="admin" />
+            </span>
+            <el-input
+              v-model="signupForm.admin"
+              placeholder="请输入管理员名称"
+            />
+          </el-form-item>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              v-model="signupForm.password"
+              placeholder="请输入密码"
+            />
+          </el-form-item>
+          <el-form-item prop="password2">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              v-model="signupForm.password2"
+              placeholder="请重复输入密码"
             />
           </el-form-item>
         </div>
@@ -129,7 +156,10 @@ export default {
       signupForm: {
         mobile: '',
         sms_code: '',
-        password: ''
+        password: '',
+        password2: '',
+        tenant: '',
+        admin: ''
       },
       registRules: { },
       // 步骤设置部分
