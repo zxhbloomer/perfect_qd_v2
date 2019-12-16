@@ -49,7 +49,7 @@
     >
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip min-width="150" prop="name" label="菜单名称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="code" label="菜单名称" />
+      <el-table-column show-overflow-tooltip min-width="150" prop="code" label="菜单编号" />
       <el-table-column show-overflow-tooltip min-width="80" prop="sort" label="排序" />
       <el-table-column show-overflow-tooltip min-width="80" prop="type_name" label="菜单类型" />
       <el-table-column min-width="150" prop="u_time" label="更新时间" />
@@ -57,6 +57,7 @@
 
     <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
     <el-dialog
+      v-if="popSettingsData.dialogFormVisible"
       v-el-drag-dialog
       :title="popSettingsData.textMap[popSettingsData.dialogStatus]"
       :visible="popSettingsData.dialogFormVisible"
@@ -117,8 +118,8 @@
             <el-col :span="12">
               <el-form-item label="菜单名称：" prop="name">
                 <el-input v-model.trim="dataJson.tempJson.name" clearable show-word-limit>
-                  <el-button slot="append" ref="selectOne" :icon="popSettingsData.searchDialogDataTwo.selectOrResetIcon" @click="handleModuleDialogClick">
-                    {{ popSettingsData.searchDialogDataTwo.selectOrResetName }}
+                  <el-button slot="append" ref="selectOne" icon="el-icon-search" @click="handleModuleDialogClick">
+                    选择
                   </el-button>
                 </el-input>
               </el-form-item>
@@ -173,7 +174,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="菜单组编号：" prop="code">
-                  <el-input v-model.trim="dataJson.tempJson.code" clearable show-word-limit />
+                  <el-input v-model.trim="dataJson.tempJson.code" clearable show-word-limit :disabled="isUpdateModel" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -209,8 +210,8 @@
               <el-col :span="12">
                 <el-form-item label="菜单名称：" prop="name">
                   <el-input v-model.trim="dataJson.tempJson.name" clearable show-word-limit>
-                    <el-button slot="append" ref="selectTwo" :icon="popSettingsData.searchDialogDataTwo.selectOrResetIcon" @click="handleModuleDialogClick">
-                      {{ popSettingsData.searchDialogDataTwo.selectOrResetName }}
+                    <el-button slot="append" ref="selectTwo" icon="el-icon-search" @click="handleModuleDialogClick">
+                      选择
                     </el-button>
                   </el-input>
                 </el-form-item>
@@ -444,10 +445,6 @@ export default {
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
-          // 当前设置状态:false->选择（select）;true->重置(reset)----选择后置为true，修改时有数据置为true
-          selectOrReset: false,
-          selectOrResetName: '选择',
-          selectOrResetIcon: 'el-icon-search',
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
@@ -455,10 +452,6 @@ export default {
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,
-          // 当前设置状态:false->选择（select）;true->重置(reset)----选择后置为true，修改时有数据置为true
-          selectOrReset: false,
-          selectOrResetName: '选择',
-          selectOrResetIcon: 'el-icon-search',
           // 点击确定以后返回的值
           selectedDataJson: {}
         }
@@ -526,6 +519,14 @@ export default {
         return true
       } else {
         return false
+      }
+    },
+    // 是否为更新模式
+    isUpdateModel() {
+      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
+        return false
+      } else {
+        return true
       }
     }
   },
@@ -667,7 +668,7 @@ export default {
       // 清空选择
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
-      this.dataJson.currentJson.id = undefined
+      // this.dataJson.currentJson.id = undefined
     },
     handleRowUpdate(row, _rowIndex) {
       // 修改
@@ -787,6 +788,12 @@ export default {
       this.dataJson.tempJson.u_time = ''
       this.dataJson.tempJson.code = ''
       this.dataJson.tempJson.son_count = this.dataJson.tempJson.son_count + 1
+      this.dataJson.tempJson.path = ''
+      this.dataJson.tempJson.type = ''
+      this.dataJson.tempJson.meta_title = ''
+      this.dataJson.tempJson.meta_icon = ''
+      this.dataJson.tempJson.route_name = ''
+      this.dataJson.tempJson.component = ''
 
       // 儿子个数增加
       this.dataJson.tempJson.name = ''
@@ -901,7 +908,7 @@ export default {
           // 数据初始化
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 初始化数据
-          this.handleSelectOrReset()
+          // this.handleSelectOrReset()
           // 设置控件焦点focus
           this.$nextTick(() => {
             // this.$refs['selectOne'].focus()
@@ -1000,25 +1007,17 @@ export default {
     initModuleSelectButton() {
       this.$nextTick(() => {
         this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        this.$refs.selectTwo.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
       })
-      this.popSettingsData.searchDialogDataTwo.selectOrReset = false
-      this.popSettingsData.searchDialogDataTwo.selectOrResetName = '选择'
-      this.popSettingsData.searchDialogDataTwo.selectOrResetIcon = 'el-icon-search'
     },
     handleModuleDialogClick() {
-      if (this.popSettingsData.searchDialogDataTwo.selectOrReset === false) {
-        // 选择按钮
-        this.popSettingsData.searchDialogDataTwo.dialogVisible = true
-      } else {
-        // 重置按钮
-        this.popSettingsData.searchDialogDataTwo.selectedDataJson = {}
-      }
+      // 选择按钮
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = true
     },
     // 关闭对话框：确定
     handleModuleCloseOk(val) {
       this.popSettingsData.searchDialogDataTwo.selectedDataJson = val
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
-      this.initSelectOrResectButton()
     },
     // 关闭对话框：取消
     handleModuletCloseCancle() {
@@ -1094,6 +1093,7 @@ export default {
           duration: this.settings.duration
         })
         this.getDataList()
+        this.dataJson.multipleSelection = []
         // loading
         this.settings.listLoading = false
       }, (_error) => {

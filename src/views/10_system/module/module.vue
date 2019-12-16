@@ -73,6 +73,7 @@
       :default-sort="{prop: 'u_time', order: 'descending'}"
       style="width: 100%"
       @row-click="handleRowClick"
+      @row-dblclick="handleRowDbClick"
       @current-change="handleCurrentChange"
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
@@ -463,6 +464,11 @@ export default {
           // 点击确定以后返回的值
           selectedDataJson: {}
         }
+      },
+      meDialogSetting: {
+        program: this.$store.getters.program,
+        selectedDataJson: this.$store.getters.selectedDataJson,
+        dialogStatus: false
       }
     }
   },
@@ -559,6 +565,16 @@ export default {
       this.popSettingsData.searchDialogData.selectedDataJson = {}
       this.initSelectOrResectButton()
     },
+    // 弹出框设置初始化
+    initDialogStatus() {
+      if (this.$store.getters.program !== undefined &&
+          this.$store.getters.program !== null &&
+          this.$store.getters.program.status === 'open') {
+        this.meDialogSetting.dialogStatus = true
+      } else {
+        this.meDialogSetting.dialogStatus = false
+      }
+    },
     // 选择资源窗口判断是否已经选择
     isResourceSelected() {
       if (this.popSettingsData.searchDialogData.selectedDataJson.id === undefined) {
@@ -596,6 +612,14 @@ export default {
     handleRowClick(row) {
       this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
+    },
+    // 行双点击，仅在dialog中有效
+    handleRowDbClick(row) {
+      this.dataJson.tempJson = Object.assign({}, row) // copy obj
+      this.dataJson.rowIndex = this.getRowIndex(row)
+      if (this.meDialogSetting.dialogStatus) {
+        this.$emit('rowDbClick', this.dataJson.tempJson)
+      }
     },
     handleSearch() {
       // 查询

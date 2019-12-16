@@ -1,5 +1,5 @@
 /** 模块类型 */
-const DICT_SYS_MODULE_TYPE = 'module_type'
+const DICT_SYS_MODULE_TYPE = 'sys_module_type'
 const DICT_SYS_MODULE_TYPE_PAGE = 'p'
 const DICT_SYS_MODULE_TYPE_MENU = 'm'
 const DICT_SYS_MODULE_TYPE_CONTENTS = 'c'
