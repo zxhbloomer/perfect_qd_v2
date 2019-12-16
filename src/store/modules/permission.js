@@ -67,13 +67,7 @@ const actions = {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
 
-      let ar
-      if (store.getters.formatRouter === null) {
-      // 只执行一次，需要注意
-        ar = convertToOneRouter(accessedRoutes)
-      } else {
-        ar = accessedRoutes
-      }
+      const ar = convertToOneRouter(accessedRoutes)
       store.dispatch('formatRouter/setIsDo')
       // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)

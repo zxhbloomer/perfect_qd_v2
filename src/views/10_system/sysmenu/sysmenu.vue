@@ -431,7 +431,7 @@ export default {
         dialogStatus: '',
         dialogFormVisible: false,
         // pop的check内容
-        rules: [],
+        rules: {},
         rulesFirst: {
           code: [{ required: true, message: '请输入菜单组编号', trigger: 'change' }],
           name: [{ required: true, message: '请输入菜单组名称', trigger: 'change' }]
