@@ -218,6 +218,9 @@ export default {
           this.$refs.treeObject.filter(this.dataJson.filterText)
         })
       }
+    },
+    remove(val) {
+      alert(val)
     }
   }
 }

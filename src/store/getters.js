@@ -15,6 +15,6 @@ const getters = {
   /** add by zxh */
   program: state => state.popUpSearchDialog.program,
   selectedDataJson: state => state.popUpSearchDialog.selectedDataJson,
-  menuRouter: state => state.menuRouter.menuRouter
+  formatRouter: state => state.formatRouter.isdo
 }
 export default getters

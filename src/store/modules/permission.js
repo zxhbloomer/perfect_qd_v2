@@ -1,4 +1,5 @@
 import { asyncRoutes, convertToOneRouter, constantRoutes } from '@/router'
+import store from '@/store'
 // import { constantRoutes } from '@/router'
 
 /**
@@ -65,7 +66,15 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
-      const ar = convertToOneRouter(accessedRoutes)
+
+      let ar
+      if (store.getters.formatRouter === null) {
+      // 只执行一次，需要注意
+        ar = convertToOneRouter(accessedRoutes)
+      } else {
+        ar = accessedRoutes
+      }
+      store.dispatch('formatRouter/setIsDo')
       // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)
       // 返回的是一级路由，设置到router中
