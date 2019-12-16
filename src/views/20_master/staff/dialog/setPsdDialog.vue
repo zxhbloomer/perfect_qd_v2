@@ -17,7 +17,7 @@
         :model="dataJson.loginForm"
         :rules="dataJson.loginRules"
         class="login-form"
-        auto-complete="on"
+        autocomplete="on"
         label-position="left"
       >
         <el-tooltip v-model="dataJson.capsTooltip" content="Caps lock is On" placement="right" manual>
@@ -33,7 +33,7 @@
               placeholder="密码"
               name="password"
               tabindex="2"
-              auto-complete="on"
+              autocomplete="on"
               @keyup.native="checkCapslock"
               @blur="dataJson.capsTooltip = false"
             />

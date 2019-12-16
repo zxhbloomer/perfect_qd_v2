@@ -8,13 +8,20 @@
         </div>
       </div>
       <el-divider />
-      <el-form ref="signupForm" :model="signupForm" :rules="registRules" class="login-form" auto-complete="on" label-position="left">
+      <el-form
+        ref="signupForm"
+        :validate-on-rule-change="false"
+        :model="signupForm"
+        :rules="registRules"
+        class="login-form"
+        label-position="left"
+      >
 
         <div class="progress-bar">
-          <el-steps :space="200" :active="1" align-center>
+          <el-steps :space="200" :active="stepsSetting.active + 1" align-center>
             <el-step title="验证手机号" />
             <el-step title="填写账号信息" />
-            <el-step title="填写公司信息" />
+            <el-step title="注册成功" />
           </el-steps>
           <br>
           <br>
@@ -38,10 +45,10 @@
               ref="mobile"
               v-model="signupForm.mobile"
               placeholder="请填写常用的手机号码"
-              name="mobile"
               type="text"
               tabindex="1"
               class="input-width"
+              autocomplete="off"
               @change="handleChange"
             />
           </el-form-item>
@@ -74,6 +81,7 @@
               v-model="signupForm.sms_code"
               placeholder="输入验证码"
               class="code-width"
+              autocomplete="off"
             />
             <el-button class="code_button" @click="handleRecode">
               <span v-if="msTime.show">
@@ -94,6 +102,7 @@
             <el-input
               v-model="signupForm.tenant"
               placeholder="请输入租户名称"
+              autocomplete="off"
             />
           </el-form-item>
           <el-form-item prop="admin">
@@ -103,6 +112,7 @@
             <el-input
               v-model="signupForm.admin"
               placeholder="请输入管理员名称"
+              autocomplete="off"
             />
           </el-form-item>
           <el-form-item prop="password">
@@ -112,6 +122,8 @@
             <el-input
               v-model="signupForm.password"
               placeholder="请输入密码"
+              show-password
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item prop="password2">
@@ -120,12 +132,29 @@
             </span>
             <el-input
               v-model="signupForm.password2"
-              placeholder="请重复输入密码"
+              placeholder="请确认密码"
+              show-password
+              autocomplete="new-password"
             />
           </el-form-item>
         </div>
 
-        <el-button :loading="loading" type="primary" class="btn-register" @click="handleNext">下一步</el-button>
+        <div v-show="stepsSetting.active === 2">
+          <p class="success_title">
+            <svg-icon icon-class="ok" />
+            您已成功注册账号
+          </p>
+          <p class="success_line1">
+            手机号码：{{ signupForm.mobile }}（如果忘记密码或丢失账号，可以通过手机找回密码）
+          </p>
+          <p class="success_line2">
+            系统将在{{ signUpOk_CountDown }}秒后自动跳转到登录页面，如果没有请点击返回登录页面手动跳转
+          </p>
+          <br>
+        </div>
+
+        <el-button v-show="stepsSetting.active !== 2" :loading="loading" type="primary" class="btn-register" @click="handleNext">下一步</el-button>
+        <el-button v-show="stepsSetting.active === 2" :loading="loading" type="primary" class="btn-register" @click="handleReturnLoginBtn">返回登录页面</el-button>
       </el-form>
     </div>
   </div></template>
@@ -134,6 +163,8 @@
 import Verify from '@/components/Verify/Verify'
 import { validMobile } from '@/utils/validate'
 import { getSmsCodeApi, checkSmsCodeApi } from '@/api/00_platform/sms/smscode'
+import { signUpApi } from '@/api/00_platform/signup/signup'
+import { isNotEmpty } from '@/utils/index.js'
 
 // import SocialSign from './components/SocialSignin'
 
@@ -146,6 +177,17 @@ export default {
         callback(new Error('请输入正确的手机号码'))
       } else {
         callback()
+      }
+    }
+    const validatePassword2 = (rule, value, callback) => {
+      if (!isNotEmpty(value)) {
+        callback(new Error('请输入密码'))
+      } else {
+        if (value !== this.signupForm.password) {
+          callback(new Error('您输入的确认密码不一致，请确认后再次输入！'))
+        } else {
+          callback()
+        }
       }
     }
     return {
@@ -173,8 +215,10 @@ export default {
         },
         // 步骤2的check内容
         rulesSecond: {
-          name: [{ required: true, message: '请输入资源名称', trigger: 'change' }],
-          context: [{ required: true, message: '请输入json配置信息', trigger: 'change' }]
+          tenant: [{ required: true, message: '请输入租户名称', trigger: 'change' }],
+          admin: [{ required: true, message: '请输入管理员名称', trigger: 'change' }],
+          password: [{ required: true, message: '请输入密码', trigger: 'change' }],
+          password2: [{ required: true, trigger: 'change', validator: validatePassword2 }]
         }
       },
       checkJson: {
@@ -195,7 +239,9 @@ export default {
       otherQuery: {},
       password_reset_href: process.env.VUE_APP_BASE_API + '/password_reset',
       signup_href: process.env.VUE_APP_BASE_API + '/signup',
-      timeout: null
+      timeout: null,
+      signUpOk_CountDown: 5,
+      signUpOk_CountDown_timeout: null
     }
   },
   watch: {
@@ -243,13 +289,27 @@ export default {
             break
         }
       }
+    },
+    'stepsSetting.active': {
+      handler(newVal, oldVal) {
+        switch (newVal) {
+          case 0:
+            this.registRules = this.stepsSetting.rulesFirst
+            break
+          case 1:
+            this.registRules = this.stepsSetting.rulesSecond
+            break
+          case 2:
+            this.handleReturnLogin()
+            break
+        }
+      }
     }
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
     this.initShow()
-    this.stepsSetting.active = 1
-    this.signupForm.mobile = 1234567
+    this.stepsSetting.active = 0
   },
   mounted() {
     if (this.signupForm.mobile === '') {
@@ -262,7 +322,7 @@ export default {
   methods: {
     initShow() {
       // 步骤初始化
-      this.registRules = this.stepsSetting.rulesFirst
+      // this.registRules = this.stepsSetting.rulesFirst
     },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
@@ -297,13 +357,11 @@ export default {
     handleClose() {
       this.checkJson.errorStatus = ''
     },
-    handleSignUp() {
-      alert(111)
-    },
     handlePuzzleSuccess(val) {
       this.doPuzzleSuccess()
     },
     handlePuzzleError(val) {
+      console.log('验证码错误')
     },
     doPuzzleSuccess() {
       // 隐藏
@@ -334,12 +392,7 @@ export default {
         }
       })
     },
-    // 开始综合验证
-    doValidateByTabs() {
-      // 第一个tabs
-      this.popSettingsData.rules = this.popSettingsData.rulesOne
-    },
-    // 倒计时
+    // 短信倒计时
     doCountDown(count) {
       this.msTime.count = this.msTime.count - 1
       if (this.msTime.count === 0) {
@@ -385,34 +438,75 @@ export default {
     },
     handleNext() {
       this.$refs['signupForm'].clearValidate()
-      this.$refs['signupForm'].validate((valid, xx) => {
+      this.$refs['signupForm'].validate((valid, error) => {
         if (valid) {
-          // check没有错误
-          if (this.signupForm.sms_code === '') {
-            this.$alert('请完成验证', '错误', {
-              confirmButtonText: '关闭',
-              type: 'error'
-            }).then(() => {
-            })
-            return
+          switch (this.stepsSetting.active) {
+            case 0:
+              this.doFirstNext()
+              break
+            case 1:
+              this.doSecondNext()
+              break
           }
-          // 调用短信验证码
-          checkSmsCodeApi(this.signupForm).then(response => {
-            if (this.stepsSetting.active === this.stepsSetting.stepNumber) {
-              return
-            }
-            this.stepsSetting.active++
-            this.$nextTick(() => {
-              this.$refs['signupForm'].clearValidate()
-            })
-          }, (_error) => {
-
-          })
         } else {
           // check有错误
           return false
         }
       })
+    },
+    doFirstNext() {
+      // check没有错误
+      if (this.stepsSetting.active === 0 && this.signupForm.sms_code === '') {
+        this.$alert('请完成验证', '错误', {
+          confirmButtonText: '关闭',
+          type: 'error'
+        }).then(() => {
+        })
+        return
+      }
+      // 调用短信验证码
+      checkSmsCodeApi(this.signupForm).then(response => {
+        if (this.stepsSetting.active === this.stepsSetting.stepNumber) {
+          return
+        }
+        this.stepsSetting.active++
+        this.$nextTick(() => {
+          this.$refs['signupForm'].clearValidate()
+        })
+      }, (_error) => {
+
+      })
+    },
+    doSecondNext() {
+      signUpApi(this.signupForm).then(response => {
+        if (this.stepsSetting.active === this.stepsSetting.stepNumber) {
+          return
+        }
+        this.stepsSetting.active++
+        this.$nextTick(() => {
+          this.$refs['signupForm'].clearValidate()
+        })
+      }, (_error) => {
+
+      })
+    },
+    handleReturnLogin() {
+      this.signUpOk_CountDown = 5
+      clearTimeout(this.signUpOk_CountDown_timeout)
+      this.doReturnLoginCountDown(this.signUpOk_CountDown)
+    },
+    doReturnLoginCountDown(count) {
+      this.signUpOk_CountDown = this.signUpOk_CountDown - 1
+      if (this.signUpOk_CountDown === 0) {
+        this.handleReturnLoginBtn()
+        return
+      }
+      this.timeout = setTimeout(() => {
+        this.doReturnLoginCountDown(this.msTime.count)
+      }, 1000)
+    },
+    handleReturnLoginBtn() {
+      this.$router.push('/login')
     }
   }
 }
@@ -428,6 +522,21 @@ $cursor: #fff;
   .login-container .el-input input {
     color: $cursor;
   }
+}
+
+.success_title {
+  font-size: 25px;
+  color: white;
+}
+
+.success_line1 {
+  font-size: 16px;
+  color: white;
+}
+
+.success_line2 {
+  font-size: 13px;
+  color: #9a9a9a;
 }
 
 .btn-register {

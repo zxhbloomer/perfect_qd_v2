@@ -1,5 +1,5 @@
 import { validatorCode } from './regCheck.js'
-import { isNotEmpty } from '../utils/index.js'
+import { isNotEmpty } from '@/utils/index.js'
 export default function install(Vue) {
   /**
    * @desc () => {
