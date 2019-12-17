@@ -80,7 +80,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: 'dashboard',
     name: 'P00000070', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
     children: [
       {
@@ -239,7 +239,7 @@ export const asyncRoutes = [
   }
 ]
 
-export const asyncRoutesConvertToOneRouter = [
+let asyncRoutesConvertToOneRouter = [
   {
     path: '/async',
     component: Layout,
@@ -248,25 +248,29 @@ export const asyncRoutesConvertToOneRouter = [
   }
 ]
 
-// const createRouter = () => new Router({
-//   // mode: 'history', // require service support
-//   scrollBehavior: () => ({ y: 0 }),
-//   routes: constantRoutes
-// })
-
-const createRouter = function() {
-  // convertToOneRouter(asyncRoutes)
-  return new Router({
-    // mode: 'history', // require service support
-    scrollBehavior: () => ({ y: 0 }),
-    routes: constantRoutes
-  })
+function clearAsyncRoutesConvertToOneRouter() {
+  asyncRoutesConvertToOneRouter = [
+    {
+      path: '/async',
+      component: Layout,
+      redirect: 'noRedirect',
+      children: []
+    }
+  ]
 }
+
+const createRouter = () => new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
+})
 
 const router = createRouter()
 
 // 按一级路由的方式来设置，并返回
 export function convertToOneRouter(orignal, _path) {
+  // 初始化
+  clearAsyncRoutesConvertToOneRouter()
   let path = _path === undefined ? '' : _path + '/'
   for (const item of orignal) {
     path = path + item.path

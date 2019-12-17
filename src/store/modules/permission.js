@@ -1,5 +1,6 @@
 import { asyncRoutes, convertToOneRouter, constantRoutes } from '@/router'
-import store from '@/store'
+import deepcopy from 'deepcopy'
+
 // import { constantRoutes } from '@/router'
 
 /**
@@ -66,9 +67,9 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
+      var accessedRoutesCopy = deepcopy(asyncRoutes)
 
-      const ar = convertToOneRouter(accessedRoutes)
-      store.dispatch('formatRouter/setIsDo')
+      const ar = convertToOneRouter(accessedRoutesCopy)
       // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)
       // 返回的是一级路由，设置到router中

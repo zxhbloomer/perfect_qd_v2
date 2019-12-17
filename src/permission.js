@@ -10,9 +10,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect', '/signup', '/assets/', '/api/v1/sms/code'] // no redirect whitelist
 
-// 获取菜单路由
-// const router = new Router({ routes: asyncRoutes })
-
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -22,6 +19,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
+
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -40,13 +38,10 @@ router.beforeEach(async(to, from, next) => {
 
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+
           // 动态添加路由
-          // for (const value of constantRoutes) {
-          //   if (value.path === '/') {
-          //     value.children = [...value.children, ...accessRoutes]
-          //   }
-          // }
           router.addRoutes(accessRoutes)
+
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
