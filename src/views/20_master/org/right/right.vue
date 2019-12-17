@@ -281,6 +281,7 @@ export default {
   mounted() {
     // 描绘完成
     this.$on('global:getDataList', _data => {
+      this.getDataList(_data)
     })
   },
   created() {
@@ -305,6 +306,25 @@ export default {
       // 清空选择
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
+    },
+    getDataList(val) {
+      // // 通知兄弟组件
+      // this.$off('global:getDataList_loading')
+      // this.$emit('global:getDataList_loading')
+      // // 查询逻辑
+      // this.settings.listLoading = true
+      // this.dataJson.searchForm = Object.assign({}, val)
+      // getListApi(this.dataJson.searchForm).then(response => {
+      //   const recorders = response.data
+      //   const newRecorders = recorders.map(v => {
+      //     return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
+      //   })
+      //   this.dataJson.listData = newRecorders
+      //   this.settings.listLoading = false
+      //   // 通知兄弟组件
+      //   this.$off('global:getDataList_loading_ok')
+      //   this.$emit('global:getDataList_loading_ok')
+      // })
     },
     // 重置按钮
     doReset() {
