@@ -62,7 +62,7 @@ export default {
     // 监听页面上面是否有选择
     listenSelectedDataJson: {
       handler(newVal, oldVal) {
-        if (newVal === undefined || newVal === null) {
+        if (newVal === undefined || newVal === null || JSON.stringify(newVal) === '{}') {
           this.dataJson.settings.btnDisabledStatus.disabledOk = true
         } else {
           this.dataJson.settings.btnDisabledStatus.disabledOk = false

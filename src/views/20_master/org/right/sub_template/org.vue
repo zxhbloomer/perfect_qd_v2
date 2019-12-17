@@ -145,8 +145,6 @@ export default {
       },
       // 页面设置json
       settings: {
-        // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
         // 按钮状态
         btnShowStatus: {
           showUpdate: false,

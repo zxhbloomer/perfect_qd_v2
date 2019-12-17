@@ -5,7 +5,7 @@
       v-model="dataJson.filterText"
       class="filterInput"
       placeholder="输入关键字进行过滤"
-      style="width:calc(100% - 90px)"
+      style="width:calc(100% - 120px)"
     >
       <el-button slot="append" ref="buttonSearch" icon="el-icon-search" class="buttonSearch" @click="handleButtonSearch" />
     </el-input>
@@ -14,6 +14,7 @@
         <el-button type="primary" icon="el-icon-plus" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledInsert" @click="handleInsert" />
         <el-button type="primary" icon="el-icon-edit" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledUpdate" @click="handleUpdate" />
         <el-button type="danger" icon="el-icon-delete" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledDelete" @click="handleDelete" />
+        <el-button type="info" icon="el-icon-refresh-right" style="padding:7px 7px" @click="handleRefresh" />
       </el-button-group>
     </div>
     <div :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;" class="mytree">
@@ -565,6 +566,10 @@ export default {
         //   //
         // }
       })
+    },
+    handleRefresh() {
+      // 初始化查询
+      this.getDataList()
     },
     doDelete() {
       // 删除当前节点和子节点
