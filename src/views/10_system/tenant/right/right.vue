@@ -291,7 +291,6 @@
 import { getCascaderListApi, getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/tenant/tenant'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
-import event from '@/utils/event'
 // import { parseTime } from '@/utils'
 
 export default {
@@ -606,7 +605,6 @@ export default {
             type: 'success',
             duration: this.settings.duration
           })
-          this.handleEmit()
           this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         }, (_error) => {
@@ -797,7 +795,6 @@ export default {
               type: 'success',
               duration: this.settings.duration
             })
-            this.handleEmit()
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           }, (_error) => {
@@ -892,7 +889,6 @@ export default {
               type: 'success',
               duration: this.settings.duration
             })
-            this.handleEmit()
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           }, (_error) => {
@@ -922,7 +918,6 @@ export default {
               type: 'success',
               duration: this.settings.duration
             })
-            this.handleEmit()
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           }, (_error) => {
@@ -956,10 +951,6 @@ export default {
       this.popSettingsData.btnDisabledStatus.disabledInsert = true
       this.popSettingsData.btnDisabledStatus.disabledUpdate = true
       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-    },
-    // 冒泡通知
-    handleEmit() {
-      event.$emit('handleDataChange')
     },
     handleCascaderChange(value) {
       const parent_id = value[value.length - 1 ]

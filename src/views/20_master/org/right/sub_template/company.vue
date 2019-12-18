@@ -44,6 +44,7 @@
       </el-table-column>
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
+    <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
   </div>
 </template>
 
@@ -75,10 +76,11 @@
 import { getCompanyListApi } from '@/api/20_master/org/org'
 import { getDataByIdApi } from '@/api/20_master/address/address'
 import elDragDialog from '@/directive/el-drag-dialog'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'P00000175', // 页面id，和router中的name需要一致，作为缓存
-  components: { },
+  components: { Pagination },
   directives: { elDragDialog },
   mixins: [],
   props: {
@@ -92,16 +94,13 @@ export default {
       dataJson: {
         // 查询使用的json
         searchForm: {
+          condition: null,
           // 翻页条件
           pageCondition: {
             current: 1,
             size: 20,
             sort: '-u_time' // 排序
-          },
-          // 查询条件
-          name: '',
-          code: '',
-          is_del: '0' // 未删除
+          }
         },
         // 分页控件的json
         paging: {
@@ -293,7 +292,8 @@ export default {
   mounted() {
     // 描绘完成
     this.$on('global:getDataList', _data => {
-      this.getDataList(_data)
+      this.dataJson.searchForm.condition = _data
+      this.getDataList()
     })
   },
   methods: {
@@ -380,15 +380,15 @@ export default {
       // 通知兄弟组件
       this.$off('global:getDataList_loading')
       this.$emit('global:getDataList_loading')
+      this.dataJson.searchForm.pageCondition.current = this.dataJson.paging.current
+      this.dataJson.searchForm.pageCondition.size = this.dataJson.paging.size
       // 查询逻辑
       this.settings.listLoading = true
-      this.dataJson.searchForm = Object.assign({}, val)
-      getCompanyListApi(this.dataJson.searchForm).then(response => {
-        const recorders = response.data
-        const newRecorders = recorders.map(v => {
-          return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
-        })
-        this.dataJson.listData = newRecorders
+      const condition = { ...this.dataJson.searchForm.condition, ...{ pageCondition: this.dataJson.searchForm.pageCondition }}
+      getCompanyListApi(condition).then(response => {
+        this.dataJson.listData = response.data.records
+        this.dataJson.paging = response.data
+        this.dataJson.paging.records = {}
         this.settings.listLoading = false
         // 通知兄弟组件
         this.$off('global:getDataList_loading_ok')

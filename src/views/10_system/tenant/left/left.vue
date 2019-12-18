@@ -137,7 +137,6 @@
 
 <script>
 import { getTreeListApi } from '@/api/10_system/tenant/tenant'
-import event from '@/utils/event'
 
 export default {
   name: 'P00000081', // 页面id，和router中的name需要一致，作为缓存
@@ -179,8 +178,6 @@ export default {
   },
   mounted() {
     this.initSearchButton()
-    // 和right开始绑定事件
-    event.$on('handleDataChange', this.handleDataChange)
   },
   methods: {
     // 选择or重置按钮的初始化

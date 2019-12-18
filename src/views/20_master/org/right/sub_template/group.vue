@@ -43,6 +43,7 @@
       </el-table-column>
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
+    <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
     <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
     <el-dialog
@@ -133,11 +134,12 @@
 
 <script>
 import { getGroupsListApi } from '@/api/20_master/org/org'
+import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {
   name: 'P00000174', // 页面id，和router中的name需要一致，作为缓存
-  components: { },
+  components: { Pagination },
   directives: { elDragDialog },
   mixins: [],
   props: {
@@ -149,6 +151,22 @@ export default {
   data() {
     return {
       dataJson: {
+        // 查询使用的json
+        searchForm: {
+          condition: null,
+          // 翻页条件
+          pageCondition: {
+            current: 1,
+            size: 20,
+            sort: '-u_time' // 排序
+          }
+        },
+        // 分页控件的json
+        paging: {
+          current: 1,
+          size: 20,
+          total: 0
+        },
         // table使用的json
         listData: null,
         // 单条数据 json的，初始化原始数据
@@ -284,9 +302,6 @@ export default {
   },
   mounted() {
     // 描绘完成
-    this.$on('global:getDataList', _data => {
-      this.getDataList(_data)
-    })
   },
   methods: {
     initTempJsonOriginal() {
@@ -302,7 +317,10 @@ export default {
     },
     initShow() {
       // 初始化查询
-      this.getDataList()
+      this.$on('global:getDataList', _data => {
+        this.dataJson.searchForm.condition = _data
+        this.getDataList()
+      })
       // 数据初始化
       this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
@@ -368,19 +386,20 @@ export default {
       }
       this.getDataList()
     },
-    getDataList(val) {
+    getDataList() {
       // 通知兄弟组件
       this.$off('global:getDataList_loading')
       this.$emit('global:getDataList_loading')
+      this.dataJson.searchForm.pageCondition.current = this.dataJson.paging.current
+      this.dataJson.searchForm.pageCondition.size = this.dataJson.paging.size
       // 查询逻辑
       this.settings.listLoading = true
-      this.dataJson.searchForm = Object.assign({}, val)
-      getGroupsListApi(this.dataJson.searchForm).then(response => {
-        const recorders = response.data
-        const newRecorders = recorders.map(v => {
-          return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
-        })
-        this.dataJson.listData = newRecorders
+      // this.dataJson.searchForm.condition = Object.assign({}, val)
+      const condition = { ...this.dataJson.searchForm.condition, ...{ pageCondition: this.dataJson.searchForm.pageCondition }}
+      getGroupsListApi(condition).then(response => {
+        this.dataJson.listData = response.data.records
+        this.dataJson.paging = response.data
+        this.dataJson.paging.records = {}
         this.settings.listLoading = false
         // 通知兄弟组件
         this.$off('global:getDataList_loading_ok')

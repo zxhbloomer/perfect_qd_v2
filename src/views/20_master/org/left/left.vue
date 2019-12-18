@@ -264,7 +264,6 @@
 
 <script>
 import { getCorrectTypeByInsertStatusApi, getTreeListApi, insertApi, updateApi, deleteApi } from '@/api/20_master/org/org'
-import event from '@/utils/event'
 import elDragDialog from '@/directive/el-drag-dialog'
 import groupDialog from '@/views/20_master/group/dialog/dialog'
 import companyDialog from '@/views/20_master/company/dialog/dialog'
@@ -452,7 +451,6 @@ export default {
   mounted() {
     this.initSearchButton()
     // 和right开始绑定事件
-    event.$on('handleDataChange', this.handleDataChange)
     // 描绘完成
     this.$on('global:getDataList_loading', _data => { this.settings.listLoading = true })
     this.$on('global:getDataList_loading_ok', _data => { this.settings.listLoading = false })

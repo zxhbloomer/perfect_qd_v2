@@ -7,19 +7,19 @@
       </el-tab-pane>
       <el-tab-pane name="group" :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;">
         <template slot="label">集团信息<el-badge v-show="dataJson.listData.group_count>0" :value="dataJson.listData.group_count" type="danger" /></template>
-        <group-template :height="height" />
+        <group-template :height="height - 42" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">企业信息<el-badge v-show="dataJson.listData.company_count>0" :value="dataJson.listData.company_count" type="danger" /></template>
-        <company-template :height="height" />
+        <company-template :height="height - 42" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">部门信息<el-badge v-show="dataJson.listData.dept_count>0" :value="dataJson.listData.dept_count" type="danger" /></template>
-        <dept-template :height="height" />
+        <dept-template :height="height - 42" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">岗位信息<el-badge v-show="dataJson.listData.position_count>0" :value="dataJson.listData.position_count" type="danger" /></template>
-        <position-template :height="height" />
+        <position-template :height="height - 42" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">员工信息<el-badge v-show="dataJson.listData.staff_count>0" :value="dataJson.listData.staff_count" type="danger" /></template>
@@ -66,7 +66,6 @@
 <script>
 import { getAllOrgDataCountApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
-import event from '@/utils/event'
 import orgTemplate from '@/views/20_master/org/right/sub_template/org'
 import groupTemplate from '@/views/20_master/org/right/sub_template/group'
 import companyTemplate from '@/views/20_master/org/right/sub_template/company'
@@ -406,10 +405,6 @@ export default {
       this.popSettingsData.btnDisabledStatus.disabledInsert = true
       this.popSettingsData.btnDisabledStatus.disabledUpdate = true
       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-    },
-    // 冒泡通知
-    handleEmit() {
-      event.$emit('handleDataChange')
     },
     handleCascaderChange(value) {
       const parent_id = value[value.length - 1 ]
