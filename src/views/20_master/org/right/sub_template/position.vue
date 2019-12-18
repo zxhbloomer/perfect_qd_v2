@@ -19,7 +19,7 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="45" prop="id" />
+      <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位全称" />

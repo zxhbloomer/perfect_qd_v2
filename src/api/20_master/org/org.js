@@ -25,6 +25,18 @@ export function getListApi(query) {
 }
 
 /**
+ * 查询逻辑：获取所有的组织以及子组织数量，仅仅是数量
+ * @param {*} data
+ */
+export function getAllOrgDataCountApi(query) {
+  return request({
+    url: '/api/v1/org/count',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
  * 查询逻辑：集团
  * @param {*} data
  */

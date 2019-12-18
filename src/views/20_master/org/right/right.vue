@@ -2,27 +2,27 @@
   <div>
     <el-tabs v-model="settings.tabs.activeName" @tab-click="handleTabsClick">
       <el-tab-pane name="org" :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;">
-        <template slot="label">组织机构<el-badge v-show="settings.badge.countOne>0" :value="settings.badge.countOne" type="danger" /></template>
+        <template slot="label">组织机构<el-badge v-show="dataJson.listData.orgs_count>0" :value="dataJson.listData.orgs_count" type="danger" /></template>
         <org-template :height="height" />
       </el-tab-pane>
       <el-tab-pane name="group" :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;">
-        <template slot="label">集团信息<el-badge v-show="settings.badge.countTwo>0" :value="settings.badge.countTwo" type="danger" /></template>
+        <template slot="label">集团信息<el-badge v-show="dataJson.listData.group_count>0" :value="dataJson.listData.group_count" type="danger" /></template>
         <group-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">企业信息<el-badge v-show="settings.badge.countThree>0" :value="settings.badge.countThree" type="danger" /></template>
+        <template slot="label">企业信息<el-badge v-show="dataJson.listData.company_count>0" :value="dataJson.listData.company_count" type="danger" /></template>
         <company-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">部门信息<el-badge v-show="settings.badge.countFour>0" :value="settings.badge.countFour" type="danger" /></template>
+        <template slot="label">部门信息<el-badge v-show="dataJson.listData.dept_count>0" :value="dataJson.listData.dept_count" type="danger" /></template>
         <dept-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">岗位信息<el-badge v-show="settings.badge.countFive>0" :value="settings.badge.countFive" type="danger" /></template>
+        <template slot="label">岗位信息<el-badge v-show="dataJson.listData.position_count>0" :value="dataJson.listData.position_count" type="danger" /></template>
         <position-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">员工信息<el-badge v-show="settings.badge.countSix>0" :value="settings.badge.countSix" type="danger" /></template>
+        <template slot="label">员工信息<el-badge v-show="dataJson.listData.staff_count>0" :value="dataJson.listData.staff_count" type="danger" /></template>
       </el-tab-pane>
     </el-tabs>
 
@@ -64,6 +64,7 @@
   }
 </style>
 <script>
+import { getAllOrgDataCountApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
 import event from '@/utils/event'
 import orgTemplate from '@/views/20_master/org/right/sub_template/org'
@@ -99,7 +100,14 @@ export default {
           value: ''
         },
         // table使用的json，数据源
-        listData: null,
+        listData: {
+          orgs_count: 0,
+          group_count: 0,
+          company_count: 0,
+          dept_count: 0,
+          position_count: 0,
+          staff_count: 0
+        },
         // 单条数据 json的，初始化原始数据
         tempJsonOriginal: {
           id: undefined,
@@ -316,23 +324,20 @@ export default {
       this.$refs.multipleTable.clearSelection()
     },
     getDataList(val) {
-      // // 通知兄弟组件
-      // this.$off('global:getDataList_loading')
-      // this.$emit('global:getDataList_loading')
-      // // 查询逻辑
-      // this.settings.listLoading = true
-      // this.dataJson.searchForm = Object.assign({}, val)
-      // getListApi(this.dataJson.searchForm).then(response => {
-      //   const recorders = response.data
-      //   const newRecorders = recorders.map(v => {
-      //     return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
-      //   })
-      //   this.dataJson.listData = newRecorders
-      //   this.settings.listLoading = false
-      //   // 通知兄弟组件
-      //   this.$off('global:getDataList_loading_ok')
-      //   this.$emit('global:getDataList_loading_ok')
-      // })
+      // 通知兄弟组件
+      this.$off('global:getDataList_loading')
+      this.$emit('global:getDataList_loading')
+      // 查询逻辑
+      this.settings.listLoading = true
+      this.dataJson.searchForm = Object.assign({}, val)
+      getAllOrgDataCountApi(this.dataJson.searchForm).then(response => {
+        const recorders = response.data
+        this.dataJson.listData = recorders
+        this.settings.listLoading = false
+        // 通知兄弟组件
+        this.$off('global:getDataList_loading_ok')
+        this.$emit('global:getDataList_loading_ok')
+      })
     },
     // 重置按钮
     doReset() {
