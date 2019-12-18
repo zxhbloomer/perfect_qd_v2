@@ -22,10 +22,10 @@
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="60" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
+      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
           <el-tooltip :content="'删除状态: ' + scope.row.is_del" placement="top">
             <el-switch
