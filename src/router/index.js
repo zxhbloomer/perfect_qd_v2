@@ -306,6 +306,7 @@ function findChilds(children, _path, _parent, _childrens) {
       // _childItem.meta.fulltitle.push(_childItem.meta.title)
       findChilds(_childItem.children, path, _childItem, _childrens)
     } else {
+      path = _path === undefined ? '' : _path + '/'
       _childItem.path = path.endsWith('/') ? (path + _childItem.path) : (path + '/' + _childItem.path)
       if (_childItem.meta.fulltitle === undefined) {
         _childItem.meta.fulltitle = []

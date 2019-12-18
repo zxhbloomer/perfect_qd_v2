@@ -68,7 +68,6 @@ const actions = {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
       var accessedRoutesCopy = deepcopy(asyncRoutes)
-
       const ar = convertToOneRouter(accessedRoutesCopy)
       // 设置到vuex中是菜单树
       commit('SET_ROUTES', accessedRoutes)
