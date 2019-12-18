@@ -107,12 +107,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="部门编号：" prop="code">
-              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" />
+              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门全称：" prop="name">
-              <el-input v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
+              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -339,7 +339,7 @@ export default {
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入部门全称', trigger: 'change' }],
-          code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
+          // code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入部门简称', trigger: 'change' }]
         },
         // 弹出的搜索框参数设置
@@ -642,7 +642,7 @@ export default {
       this.initStaffSelectButtonThree()
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        this.$refs['refUpdateFocus'].focus()
       })
     },
     // 导出按钮
@@ -700,6 +700,7 @@ export default {
     // 点击按钮 复制新增
     handleCopyInsert() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      this.dataJson.tempJson.code = ''
       this.dataJson.tempJson.id = undefined
       this.dataJson.tempJson.template_id = undefined
       this.dataJson.tempJson.u_id = ''

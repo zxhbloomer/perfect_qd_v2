@@ -394,7 +394,7 @@ export default {
         if (newVal === true) {
           const arr = []
           arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
-          arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+          // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
           switch (this.dataJson.currentJson.type) {
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)

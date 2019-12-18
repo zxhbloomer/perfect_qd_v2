@@ -266,7 +266,7 @@ export default {
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入集团全称', trigger: 'change' }],
-          code: [{ required: true, message: '请输入集团编号', trigger: 'change' }],
+          // code: [{ required: true, message: '请输入集团编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
         }
       },
@@ -554,6 +554,7 @@ export default {
     // 点击按钮 复制新增
     handleCopyInsert() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      this.dataJson.tempJson.code = ''
       this.dataJson.tempJson.id = undefined
       this.dataJson.tempJson.template_id = undefined
       this.dataJson.tempJson.u_id = ''

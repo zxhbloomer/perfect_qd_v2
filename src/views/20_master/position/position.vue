@@ -104,12 +104,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="岗位编号：" prop="code">
-              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" />
+              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="岗位全称：" prop="name">
-              <el-input v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
+              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -270,7 +270,7 @@ export default {
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入岗位全称', trigger: 'change' }],
-          code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
+          // code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入岗位简称', trigger: 'change' }]
         }
       },
@@ -500,7 +500,7 @@ export default {
       this.popSettingsData.btnShowStatus.showCopyInsert = false
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        this.$refs['refUpdateFocus'].focus()
       })
     },
     // 导出按钮
@@ -559,6 +559,7 @@ export default {
     handleCopyInsert() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
       this.dataJson.tempJson.id = undefined
+      this.dataJson.tempJson.code = ''
       this.dataJson.tempJson.template_id = undefined
       this.dataJson.tempJson.u_id = ''
       this.dataJson.tempJson.u_time = ''
