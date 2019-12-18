@@ -60,7 +60,7 @@
             <el-switch
               v-model="scope.row.is_del"
               active-color="#ff4949"
-              inactive-color="#dcdfe6"
+              inactive-color="#13ce66"
               :active-value="true"
               :inactive-value="false"
               :width="30"

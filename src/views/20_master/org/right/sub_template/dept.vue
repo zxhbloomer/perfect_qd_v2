@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table
-      ref="dataSubmitForm"
+      ref="multipleTable"
       v-loading="settings.listLoading"
       :data="dataJson.listData"
       :element-loading-text="'正在拼命加载中...'"
@@ -11,33 +11,42 @@
       border
       fit
       highlight-current-row
+      :default-sort="{prop: 'u_time', order: 'descending'}"
       style="width: 100%"
-      default-expand-all
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      row-key="id"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDbClick"
       @current-change="handleCurrentChange"
+      @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
+      <el-table-column type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip min-width="250" prop="code" label="组织机构编码" />
-      <el-table-column show-overflow-tooltip min-width="250" prop="name" label="组织机构名称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="simple_name" label="组织机构简称" />
-      <el-table-column show-overflow-tooltip min-width="60" prop="type_text" label="分类" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="son_count" label="子组织机构数量">
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="部门编号" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="部门全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="部门简称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="handler_id_name" label="部门主管" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="sub_handler_id_name" label="部门副主管" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="leader_id_name" label="上级主管领导" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="leader_id_name" label="上级分管领导" />
+      <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
+      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
-          <span>数量（</span>
-          <el-link type="primary" :href="'#/sys/module/button?module_code=' + scope.row.code">{{ scope.row.son_count }}
-            <svg-icon v-show="scope.row.columnTypeShowIcon" icon-class="perfect-icon-eye-open1" class="el-icon--right" />
-          </el-link>
-          <span>）</span>
+          <el-tooltip :content="'删除状态: ' + scope.row.is_del" placement="top">
+            <el-switch
+              v-model="scope.row.is_del"
+              active-color="#ff4949"
+              inactive-color="#13ce66"
+              :active-value="true"
+              :inactive-value="false"
+              :width="30"
+              disabled
+              @change="handleDel(scope.row)"
+            />
+          </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column min-width="170" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
-
-    <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
   </div>
 </template>
 
@@ -51,34 +60,14 @@
   .el-form-item .el-select {
     width: 100%;
   }
-  .grid-content {
-    border-radius: 2px;
-    min-height: 36px;
-    margin-bottom: 10px;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-</style>
-<style >
-  .el-input-group__append_select{
-    color: #FFFFFF;
-    background-color: #1890ff;
-    border-color: #1890ff;
-  }
-  .el-input-group__append_reset{
-    color: #FFFFFF;
-    background-color: #F56C6C;
-    border-color: #F56C6C;
-  }
 </style>
 
 <script>
+import { getDeptListApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
-import { getListApi } from '@/api/20_master/org/org'
 
 export default {
-  name: 'P00000173', // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000176', // 页面id，和router中的name需要一致，作为缓存
   components: { },
   directives: { elDragDialog },
   mixins: [],
@@ -91,22 +80,17 @@ export default {
   data() {
     return {
       dataJson: {
-        // 级联选择器数据
-        cascader: {
-          data: null,
-          value: ''
-        },
         // 查询使用的json
         searchForm: {
           // 翻页条件
           pageCondition: {
             current: 1,
-            size: 20
+            size: 20,
+            sort: '-u_time' // 排序
           },
           // 查询条件
           name: '',
           code: '',
-          visible: 'null',
           is_del: '0' // 未删除
         },
         // 分页控件的json
@@ -143,6 +127,8 @@ export default {
       },
       // 页面设置json
       settings: {
+        // 表格排序规则
+        sortOrders: ['ascending', 'descending'],
         // 按钮状态
         btnShowStatus: {
           showUpdate: false,
@@ -158,7 +144,7 @@ export default {
         textMap: {
           update: '修改',
           insert: '新增',
-          copyInsert: '添加子菜单'
+          copyInsert: '复制新增'
         },
         // 按钮状态
         btnShowStatus: {
@@ -180,23 +166,15 @@ export default {
         dialogStatus: '',
         dialogFormVisible: false,
         // pop的check内容
-        rules: [],
-        rulesFirst: {
-          code: [{ required: true, message: '请输入菜单组编号', trigger: 'change' }],
-          name: [{ required: true, message: '请输入菜单组名称', trigger: 'change' }]
-        },
-        rulesSecond: {
-          parent_id: [{ required: true, message: '请输入上级菜单', trigger: 'change' }],
-          name: [{ required: true, message: '请选择菜单名称', trigger: 'change' }]
+        rules: {
+          name: [{ required: true, message: '请输入部门全称', trigger: 'change' }],
+          code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
+          simple_name: [{ required: true, message: '请输入部门简称', trigger: 'change' }]
         },
         // 弹出的搜索框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
-          // 当前设置状态:false->选择（select）;true->重置(reset)----选择后置为true，修改时有数据置为true
-          selectOrReset: false,
-          selectOrResetName: '选择',
-          selectOrResetIcon: 'el-icon-search',
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
@@ -204,13 +182,24 @@ export default {
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,
-          // 当前设置状态:false->选择（select）;true->重置(reset)----选择后置为true，修改时有数据置为true
-          selectOrReset: false,
-          selectOrResetName: '选择',
-          selectOrResetIcon: 'el-icon-search',
+          // 点击确定以后返回的值
+          selectedDataJson: {}
+        },
+        // 弹出的搜索框参数设置
+        searchDialogDataThree: {
+          // 弹出框显示参数
+          dialogVisible: false,
+          // 点击确定以后返回的值
+          selectedDataJson: {}
+        },
+        // 弹出的搜索框参数设置
+        searchDialogDataFour: {
+          // 弹出框显示参数
+          dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         }
+
       },
       // 导入窗口的状态
       popSettingsImport: {
@@ -229,52 +218,12 @@ export default {
     }
   },
   computed: {
-    // 是否为新增菜单组
-    isNewMenuGroup() {
-      if (this.popSettingsData.dialogStatus === 'insert') {
-        return true
-      } else {
+    // 是否为更新模式
+    isUpdateModel() {
+      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
         return false
-      }
-    },
-    // 是否为新增子菜单
-    isNewMenu() {
-      if (this.popSettingsData.dialogStatus === 'copyInsert') {
-        return true
       } else {
-        return false
-      }
-    },
-    // 是否为修改
-    isChangeModel() {
-      if (this.popSettingsData.dialogStatus === 'update') {
         return true
-      } else {
-        return false
-      }
-    },
-    // 是否为根节点
-    isRootNode() {
-      if (this.dataJson.tempJson.type === null || this.dataJson.tempJson.type === '') {
-        return true
-      } else {
-        return false
-      }
-    },
-    // 是否为目录节点
-    isCONTENTSNode() {
-      if (this.dataJson.tempJson.type === this.CONSTANTS.DICT_SYS_MODULE_TYPE_CONTENTS) {
-        return true
-      } else {
-        return false
-      }
-    },
-    // 是否为菜单节点
-    isMENUNode() {
-      if (this.dataJson.tempJson.type === this.CONSTANTS.DICT_SYS_MODULE_TYPE_MENU) {
-        return true
-      } else {
-        return false
       }
     }
   },
@@ -321,45 +270,39 @@ export default {
         }
       }
     },
-    // 当前行的选中
-    'dataJson.currentJson': {
+    'popSettingsData.searchDialogDataOne.selectedDataJson': {
       handler(newVal, oldVal) {
-        if (this.dataJson.currentJson.id !== undefined) {
-          // this.settings.btnShowStatus.doInsert = true
-          this.settings.btnShowStatus.showUpdate = true
-          this.settings.btnShowStatus.showCopyInsert = true
-          this.settings.btnShowStatus.showExport = true
+        if (newVal !== {}) {
+          this.dataJson.tempJson.handler_id = this.popSettingsData.searchDialogDataOne.selectedDataJson.id
         } else {
-          // this.settings.btnShowStatus.doInsert = false
-          this.settings.btnShowStatus.showUpdate = false
-          this.settings.btnShowStatus.showCopyInsert = false
-          this.settings.btnShowStatus.showExport = false
+          this.popSettingsData.searchDialogDataOne.selectedDataJson.id = undefined
         }
-      },
-      deep: true
+      }
     },
     'popSettingsData.searchDialogDataTwo.selectedDataJson': {
       handler(newVal, oldVal) {
-        if (newVal === {}) {
-          this.dataJson.tempJson.type = null
-          this.dataJson.tempJson.name = null
-          this.dataJson.tempJson.module_id = null
-          this.dataJson.tempJson.path = null
-          this.dataJson.tempJson.route_name = null
-          this.dataJson.tempJson.meta_title = null
-          this.dataJson.tempJson.meta_icon = null
-          this.dataJson.tempJson.component = null
-          this.dataJson.tempJson.affix = null
+        if (newVal !== {}) {
+          this.dataJson.tempJson.sub_handler_id = this.popSettingsData.searchDialogDataTwo.selectedDataJson.id
         } else {
-          this.dataJson.tempJson.type = this.popSettingsData.searchDialogDataTwo.selectedDataJson.type
-          this.dataJson.tempJson.name = this.popSettingsData.searchDialogDataTwo.selectedDataJson.name
-          this.dataJson.tempJson.module_id = this.popSettingsData.searchDialogDataTwo.selectedDataJson.id
-          this.dataJson.tempJson.path = this.popSettingsData.searchDialogDataTwo.selectedDataJson.path
-          this.dataJson.tempJson.route_name = this.popSettingsData.searchDialogDataTwo.selectedDataJson.route_name
-          this.dataJson.tempJson.meta_title = this.popSettingsData.searchDialogDataTwo.selectedDataJson.meta_title
-          this.dataJson.tempJson.meta_icon = this.popSettingsData.searchDialogDataTwo.selectedDataJson.meta_icon
-          this.dataJson.tempJson.component = this.popSettingsData.searchDialogDataTwo.selectedDataJson.component
-          this.dataJson.tempJson.affix = this.popSettingsData.searchDialogDataTwo.selectedDataJson.affix
+          this.popSettingsData.searchDialogDataTwo.selectedDataJson.id = undefined
+        }
+      }
+    },
+    'popSettingsData.searchDialogDataThree.selectedDataJson': {
+      handler(newVal, oldVal) {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.leader_id = this.popSettingsData.searchDialogDataThree.selectedDataJson.id
+        } else {
+          this.popSettingsData.searchDialogDataThree.selectedDataJson.id = undefined
+        }
+      }
+    },
+    'popSettingsData.searchDialogDataFour.selectedDataJson': {
+      handler(newVal, oldVal) {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.leader_id = this.popSettingsData.searchDialogDataFour.selectedDataJson.id
+        } else {
+          this.popSettingsData.searchDialogDataFour.selectedDataJson.id = undefined
         }
       }
     }
@@ -391,6 +334,16 @@ export default {
       // 数据初始化
       this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
+    // 弹出框设置初始化
+    initDialogStatus() {
+      if (this.$store.getters.program !== undefined &&
+          this.$store.getters.program !== null &&
+          this.$store.getters.program.status === 'open') {
+        this.meDialogSetting.dialogStatus = true
+      } else {
+        this.meDialogSetting.dialogStatus = false
+      }
+    },
     // 下拉选项控件事件
     handleSelectChange(val) {
     },
@@ -419,7 +372,6 @@ export default {
       // 清空选择
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
-      this.dataJson.currentJson.id = undefined
     },
     handleRowUpdate(row, _rowIndex) {
       // 修改
@@ -431,13 +383,53 @@ export default {
         this.$refs['dataSubmitForm'].clearValidate()
       })
     },
+    // 点击按钮 复制新增
+    handleCopyInsert() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      this.dataJson.tempJson.id = undefined
+      this.dataJson.tempJson.template_id = undefined
+      this.dataJson.tempJson.u_id = ''
+      this.dataJson.tempJson.u_time = ''
+      // 修改
+      this.popSettingsData.dialogStatus = 'copyInsert'
+      this.popSettingsData.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataSubmitForm'].clearValidate()
+      })
+      // 设置按钮
+      this.popSettingsData.btnShowStatus.showInsert = false
+      this.popSettingsData.btnShowStatus.showUpdate = false
+      this.popSettingsData.btnShowStatus.showCopyInsert = true
+      // 复制新增时focus
+      this.$nextTick(() => {
+        this.$refs['refFocus'].focus()
+      })
+    },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
       this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
 
+      if (this.dataJson.currentJson.id !== undefined) {
+        // this.settings.btnShowStatus.doInsert = true
+        this.settings.btnShowStatus.showUpdate = true
+        this.settings.btnShowStatus.showCopyInsert = true
+      } else {
+        // this.settings.btnShowStatus.doInsert = false
+        this.settings.btnShowStatus.showUpdate = false
+        this.settings.btnShowStatus.showCopyInsert = false
+      }
       // 设置dialog的返回
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', Object.assign({}, row))
+    },
+    handleSortChange(column) {
+      // 服务器端排序
+      if (column.order === 'ascending') {
+        this.dataJson.searchForm.pageCondition.sort = column.prop
+      } else if (column.order === 'descending') {
+        this.dataJson.searchForm.pageCondition.sort = '-' + column.prop
+      }
+      this.getDataList()
     },
     getDataList(val) {
       // 通知兄弟组件
@@ -446,7 +438,7 @@ export default {
       // 查询逻辑
       this.settings.listLoading = true
       this.dataJson.searchForm = Object.assign({}, val)
-      getListApi(this.dataJson.searchForm).then(response => {
+      getDeptListApi(this.dataJson.searchForm).then(response => {
         const recorders = response.data
         const newRecorders = recorders.map(v => {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
@@ -456,50 +448,6 @@ export default {
         // 通知兄弟组件
         this.$off('global:getDataList_loading_ok')
         this.$emit('global:getDataList_loading_ok')
-      })
-    },
-    // 重置查询区域
-    doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20
-        },
-        // 查询条件
-        code: '',
-        name: '',
-        simple_name: '',
-        is_del: 'null'
-      }
-    },
-    // 重置按钮
-    doReset() {
-      this.popSettingsData.btnResetStatus = true
-      switch (this.popSettingsData.dialogStatus) {
-        case 'update':
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 初始化数据
-          this.handleSelectOrReset()
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            // this.$refs['selectOne'].focus()
-          })
-          break
-        default:
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            // this.$refs['selectOne'].focus()
-          })
-          break
-      }
-
-      // 去除validate信息
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
       })
     },
     // 关闭弹出窗口
@@ -512,11 +460,8 @@ export default {
       return row.id
     },
     // table选择框
-    handleSelectionChange(arr) {
-      arr.forEach(function(val, index, arr) {
-        console.log(val, index, arr)
-      })
-      this.dataJson.multipleSelection = arr
+    handleSelectionChange(val) {
+      this.dataJson.multipleSelection = val
     },
     renderHeaderIsDel: function(h, { column }) {
       return (
@@ -527,9 +472,9 @@ export default {
             placement='bottom'
           >
             <div slot='content'>
-            可见状态提示：<br/>
-            绿色：可见  <br/>
-            红色：不可见
+            删除状态提示：<br/>
+            绿色：未删除  <br/>
+            红色：已删除
             </div>
             <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
           </el-tooltip>
@@ -537,63 +482,91 @@ export default {
       )
     },
     // --------------弹出查询框：--------------
-
-    // --------------弹出查询框：模块页面--------------
+    // 1
     // 选择or重置按钮的初始化
-    initModuleSelectButton() {
+    initStaffSelectButtonOne() {
       this.$nextTick(() => {
         this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
       })
-      this.popSettingsData.searchDialogDataTwo.selectOrReset = false
-      this.popSettingsData.searchDialogDataTwo.selectOrResetName = '选择'
-      this.popSettingsData.searchDialogDataTwo.selectOrResetIcon = 'el-icon-search'
     },
-    handleModuleDialogClick() {
-      if (this.popSettingsData.searchDialogDataTwo.selectOrReset === false) {
-        // 选择按钮
-        this.popSettingsData.searchDialogDataTwo.dialogVisible = true
-      } else {
-        // 重置按钮
-        this.popSettingsData.searchDialogDataTwo.selectedDataJson = {}
-      }
+    handleStaffDialogClickOne() {
+      // 选择按钮
+      this.popSettingsData.searchDialogDataOne.dialogVisible = true
     },
     // 关闭对话框：确定
-    handleModuleCloseOk(val) {
-      this.popSettingsData.searchDialogDataTwo.selectedDataJson = val
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
-      this.initSelectOrResectButton()
+    handleStaffCloseOkOne(val) {
+      this.popSettingsData.searchDialogDataOne.selectedDataJson = val
+      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+      this.initStaffSelectButtonOne()
     },
     // 关闭对话框：取消
-    handleModuletCloseCancle() {
+    handleStaffCloseCancleOne() {
+      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+    },
+    // 2
+    // 选择or重置按钮的初始化
+    initStaffSelectButtonTwo() {
+      this.$nextTick(() => {
+        this.$refs.selectTwo.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+      })
+    },
+    handleStaffDialogClickTwo() {
+      // 选择按钮
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+    },
+    // 关闭对话框：确定
+    handleStaffCloseOkTwo(val) {
+      this.popSettingsData.searchDialogDataTwo.selectedDataJson = val
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+      this.initStaffSelectButtonTwo()
+    },
+    // 关闭对话框：取消
+    handleStaffCloseCancleTwo() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
-    // 级联事件
-    handleCascaderChange(val) {
-      // 数组中最后一个才是parent_id
-      this.dataJson.tempJson.parent_id = val[val.length - 1]
-    },
-    // 删除按钮
-    handleRealyDelete() {
-      // 没有选择任何数据的情况
-      if (this.dataJson.tempJson.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      // 选择全部的时候
-      this.$confirm('请注意：将会删除当前节点以及子节点数据！！', '确认信息', {
-        distinguishCancelAndClose: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-        this.settings.listLoading = true
-        this.handleRealDeleteData()
-      }).catch(action => {
-        // 右上角X
-        if (action !== 'close') {
-          // 当前页所选择的数据导出
-        }
+    // 3
+    // 选择or重置按钮的初始化
+    initStaffSelectButtonThree() {
+      this.$nextTick(() => {
+        this.$refs.selectThree.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
       })
+    },
+    handleStaffDialogClickThree() {
+      // 选择按钮
+      this.popSettingsData.searchDialogDataThree.dialogVisible = true
+    },
+    // 关闭对话框：确定
+    handleStaffCloseOkThree(val) {
+      this.popSettingsData.searchDialogDataThree.selectedDataJson = val
+      this.popSettingsData.searchDialogDataThree.dialogVisible = false
+      this.initStaffSelectButtonThree()
+    },
+    // 关闭对话框：取消
+    handleStaffCloseCancleThree() {
+      this.popSettingsData.searchDialogDataThree.dialogVisible = false
+    },
+    // 4
+    // 选择or重置按钮的初始化
+    initStaffSelectButtonFour() {
+      this.$nextTick(() => {
+        this.$refs.selectFour.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+      })
+    },
+    handleStaffDialogClickFour() {
+      // 选择按钮
+      this.popSettingsData.searchDialogDataFour.dialogVisible = true
+    },
+    // 关闭对话框：确定
+    handleStaffCloseOkFour(val) {
+      this.popSettingsData.searchDialogDataFour.selectedDataJson = val
+      this.popSettingsData.searchDialogDataFour.dialogVisible = false
+      this.initStaffSelectButtonFour()
+    },
+    // 关闭对话框：取消
+    handleStaffCloseCancleFour() {
+      this.popSettingsData.searchDialogDataFour.dialogVisible = false
     }
+    // -------------------不同的页签，标签进行的验证------------------
   }
 }
 </script>

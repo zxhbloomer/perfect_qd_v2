@@ -7,15 +7,19 @@
       </el-tab-pane>
       <el-tab-pane name="group" :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;">
         <template slot="label">集团信息<el-badge v-show="settings.badge.countTwo>0" :value="settings.badge.countTwo" type="danger" /></template>
+        <group-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">企业信息<el-badge v-show="settings.badge.countThree>0" :value="settings.badge.countThree" type="danger" /></template>
+        <company-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">部门信息<el-badge v-show="settings.badge.countFour>0" :value="settings.badge.countFour" type="danger" /></template>
+        <dept-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">岗位信息<el-badge v-show="settings.badge.countFive>0" :value="settings.badge.countFive" type="danger" /></template>
+        <position-template :height="height" />
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">员工信息<el-badge v-show="settings.badge.countSix>0" :value="settings.badge.countSix" type="danger" /></template>
@@ -63,11 +67,15 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import event from '@/utils/event'
 import orgTemplate from '@/views/20_master/org/right/sub_template/org'
+import groupTemplate from '@/views/20_master/org/right/sub_template/group'
+import companyTemplate from '@/views/20_master/org/right/sub_template/company'
+import deptTemplate from '@/views/20_master/org/right/sub_template/dept'
+import positionTemplate from '@/views/20_master/org/right/sub_template/position'
 // import { parseTime } from '@/utils'
 
 export default {
   name: 'P00000172', // 页面id，和router中的name需要一致，作为缓存
-  components: { orgTemplate },
+  components: { orgTemplate, groupTemplate, companyTemplate, deptTemplate, positionTemplate },
   directives: { elDragDialog },
   props: {
     height: {
