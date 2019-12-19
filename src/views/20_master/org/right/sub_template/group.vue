@@ -21,7 +21,16 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级组织名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级组织类型" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
+        <template slot-scope="scope">
+          {{ scope.row.code }}
+          <el-link type="primary" @click="handleEdit(scope.row.code)">
+            编辑
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
@@ -117,6 +126,15 @@
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <group-dialog
+      v-if="popSettingsData.searchDialogData.dialogVisible"
+      :code="popSettingsData.searchDialogData.code"
+      :visible="popSettingsData.searchDialogData.dialogVisible"
+      @closeMeOk="handleGroupCloseOk"
+      @closeMeCancle="handleGroupCloseCancle"
+    />
+
   </div>
 </template>
 
@@ -136,10 +154,11 @@
 import { getGroupsListApi } from '@/api/20_master/org/org'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
+import groupDialog from '@/views/20_master/group/dialog/dialog'
 
 export default {
   name: 'P00000174', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination },
+  components: { Pagination, groupDialog },
   directives: { elDragDialog },
   mixins: [],
   props: {
@@ -226,6 +245,15 @@ export default {
           disabledInsert: false,
           disabledUpdate: false,
           disabledCopyInsert: false
+        },
+        // 弹出的搜索框参数设置
+        searchDialogData: {
+          // 弹出框显示参数
+          dialogVisible: false,
+          // 点击确定以后返回的值
+          selectedDataJson: {},
+          // 传参
+          code: ''
         },
         // 重置按钮点击后
         btnResetStatus: false,
@@ -436,6 +464,21 @@ export default {
           </el-tooltip>
         </span>
       )
+    },
+    // --------------弹出查询框：开始--------------
+    // 集团：关闭对话框：确定
+    handleGroupCloseOk(val) {
+      this.popSettingsData.searchDialogData.selectedDataJson = val
+      this.popSettingsData.searchDialogData.dialogVisible = false
+    },
+    // 集团：关闭对话框：取消
+    handleGroupCloseCancle() {
+      this.popSettingsData.searchDialogData.dialogVisible = false
+    },
+    // 编辑按钮
+    handleEdit(val) {
+      this.popSettingsData.searchDialogData.dialogVisible = true
+      this.popSettingsData.searchDialogData.code = val
     }
   }
 }

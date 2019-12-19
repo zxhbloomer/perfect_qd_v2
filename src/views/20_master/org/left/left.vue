@@ -796,12 +796,70 @@ export default {
     handleDeptCloseCancle() {
       this.popSettingsData.searchDialogDataThree.dialogVisible = false
     },
-    // 部门：关闭对话框：确定
+    // 岗位：关闭对话框：确定
     handlePositionCloseOk(val) {
       this.popSettingsData.searchDialogDataFour.selectedDataJson = val
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
+      this.settings.listLoading = true
+      if (this.popSettingsData.dialogStatus === 'insert') {
+        insertApi({
+          serial_id: this.popSettingsData.searchDialogDataFour.selectedDataJson.id,
+          type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION,
+          parent_id: this.dataJson.currentJson.id
+        }).then((_data) => {
+          this.$notify({
+            title: '插入成功',
+            message: _data.message,
+            type: 'success',
+            duration: this.settings.duration
+          })
+          // 查询
+          this.getDataList()
+          this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        }, (_error) => {
+          this.$notify({
+            title: '插入错误',
+            message: _error.message,
+            type: 'error',
+            duration: this.settings.duration
+          })
+          // this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        })
+      } else {
+        updateApi({
+          id: this.dataJson.currentJson.id,
+          serial_id: this.popSettingsData.searchDialogDataFour.selectedDataJson.id,
+          code: this.dataJson.currentJson.code,
+          type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION,
+          parent_id: this.dataJson.currentJson.parent_id,
+          dbversion: this.dataJson.currentJson.dbversion,
+          son_count: this.dataJson.currentJson.son_count
+        }).then((_data) => {
+          this.$notify({
+            title: '更新成功',
+            message: _data.message,
+            type: 'success',
+            duration: this.settings.duration
+          })
+          // 查询
+          this.getDataList()
+          this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        }, (_error) => {
+          this.$notify({
+            title: '更新错误',
+            message: _error.message,
+            type: 'error',
+            duration: this.settings.duration
+          })
+          // this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        })
+      }
     },
-    // 部门：关闭对话框：取消
+    // 岗位：关闭对话框：取消
     handlePositionCloseCancle() {
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
     },
