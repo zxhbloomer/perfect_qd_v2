@@ -470,6 +470,9 @@ export default {
     handleGroupCloseOk(val) {
       this.popSettingsData.searchDialogData.selectedDataJson = val
       this.popSettingsData.searchDialogData.dialogVisible = false
+      // 通知兄弟组件
+      this.$off('global:getDataListLeft')
+      this.$emit('global:getDataListLeft')
       // 查询数据并返回
     },
     // 集团：关闭对话框：取消

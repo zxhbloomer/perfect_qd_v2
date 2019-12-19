@@ -117,9 +117,11 @@ export default {
       this.$emit('closeMeCancel')
     },
     handleEditMeDialogOkClick() {
+      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeOk')
     },
     handleEditMeDialogCancelClick() {
+      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeCancel')
     }
   }

@@ -603,8 +603,10 @@ export default {
     },
     // 自动弹出编辑窗口
     handleEditMeDialog(_data) {
-      this.handleCurrentChange(_data)
-      this.handleUpdate()
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.handleCurrentChange(_data)
+        this.handleUpdate()
+      }
     },
     // 关闭自动编辑窗口
     handleEditMeDialogOk() {

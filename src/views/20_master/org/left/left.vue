@@ -447,6 +447,9 @@ export default {
   created() {
     // 初始化查询
     this.getDataList()
+    this.$on('global:getDataListLeft', _data => {
+      this.handleRefresh()
+    })
   },
   mounted() {
     this.initSearchButton()
