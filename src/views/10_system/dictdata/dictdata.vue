@@ -89,7 +89,7 @@
     <dicttype-dialog
       :visible="popSettingsData.searchDialogData.dialogVisible"
       @closeMeOk="handleResourceCloseOk"
-      @closeMeCancle="handleResourceCloseCancle"
+      @closeMeCancel="handleResourceCloseCancel"
     />
     <!-- pop窗口 数据批量导入：模版导出、excel导入-->
     <el-dialog
@@ -967,7 +967,7 @@ export default {
       this.dataJson.tempJson.dictTypeDescr = this.popSettingsData.searchDialogData.selectedDataJson.descr
     },
     // 关闭对话框：取消
-    handleResourceCloseCancle() {
+    handleResourceCloseCancel() {
       this.popSettingsData.searchDialogData.dialogVisible = false
     },
     initSelectData() {

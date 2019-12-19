@@ -389,7 +389,7 @@
     <psd-dialog
       :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
       @closeMeOk="handlePsdDialogCloseOk"
-      @closeMeCancle="handlePsdDialogCloseCancle"
+      @closeMeCancel="handlePsdDialogCloseCancel"
     />
 
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
@@ -1213,7 +1213,7 @@ export default {
       this.dataJson.tempJson.user.pwd = val
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
-    handlePsdDialogCloseCancle() {
+    handlePsdDialogCloseCancel() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     }
     // -------------------不同的页签，标签进行的验证 e------------------

@@ -502,7 +502,7 @@ export default {
       this.initStaffSelectButtonOne()
     },
     // 关闭对话框：取消
-    handleStaffCloseCancleOne() {
+    handleStaffCloseCancelOne() {
       this.popSettingsData.searchDialogDataOne.dialogVisible = false
     },
     // 2
@@ -523,7 +523,7 @@ export default {
       this.initStaffSelectButtonTwo()
     },
     // 关闭对话框：取消
-    handleStaffCloseCancleTwo() {
+    handleStaffCloseCancelTwo() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
     // 3
@@ -544,7 +544,7 @@ export default {
       this.initStaffSelectButtonThree()
     },
     // 关闭对话框：取消
-    handleStaffCloseCancleThree() {
+    handleStaffCloseCancelThree() {
       this.popSettingsData.searchDialogDataThree.dialogVisible = false
     },
     // 4
@@ -565,7 +565,7 @@ export default {
       this.initStaffSelectButtonFour()
     },
     // 关闭对话框：取消
-    handleStaffCloseCancleFour() {
+    handleStaffCloseCancelFour() {
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
     }
     // -------------------不同的页签，标签进行的验证------------------

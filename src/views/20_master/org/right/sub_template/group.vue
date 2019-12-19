@@ -26,7 +26,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
         <template slot-scope="scope">
           {{ scope.row.code }}
-          <el-link type="primary" @click="handleEdit(scope.row.code)">
+          <el-link type="primary" @click="handleEdit(scope.row.id)">
             编辑
           </el-link>
         </template>
@@ -129,10 +129,10 @@
 
     <group-dialog
       v-if="popSettingsData.searchDialogData.dialogVisible"
-      :code="popSettingsData.searchDialogData.code"
+      :id="popSettingsData.searchDialogData.id"
       :visible="popSettingsData.searchDialogData.dialogVisible"
       @closeMeOk="handleGroupCloseOk"
-      @closeMeCancle="handleGroupCloseCancle"
+      @closeMeCancel="handleGroupCloseCancel"
     />
 
   </div>
@@ -253,7 +253,7 @@ export default {
           // 点击确定以后返回的值
           selectedDataJson: {},
           // 传参
-          code: ''
+          id: ''
         },
         // 重置按钮点击后
         btnResetStatus: false,
@@ -470,15 +470,16 @@ export default {
     handleGroupCloseOk(val) {
       this.popSettingsData.searchDialogData.selectedDataJson = val
       this.popSettingsData.searchDialogData.dialogVisible = false
+      // 查询数据并返回
     },
     // 集团：关闭对话框：取消
-    handleGroupCloseCancle() {
+    handleGroupCloseCancel() {
       this.popSettingsData.searchDialogData.dialogVisible = false
     },
     // 编辑按钮
     handleEdit(val) {
       this.popSettingsData.searchDialogData.dialogVisible = true
-      this.popSettingsData.searchDialogData.code = val
+      this.popSettingsData.searchDialogData.id = val
     }
   }
 }

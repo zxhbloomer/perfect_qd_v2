@@ -140,7 +140,7 @@
         <div class="floatLeft">
           <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
-        <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取 消</el-button>
+        <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取 消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确 定</el-button>
@@ -168,12 +168,19 @@ import resizeMixin from './groupResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
+import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   name: 'P00000100', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal },
   directives: { elDragDialog },
   mixins: [resizeMixin],
+  props: {
+    id: {
+      type: Number,
+      default: null
+    }
+  },
   data() {
     return {
       dataJson: {
@@ -359,6 +366,9 @@ export default {
       }
     },
     initShow() {
+      if (this.meDialogSetting.dialogStatus) {
+        this.dataJson.searchForm.id = this.id
+      }
       // 初始化查询
       this.getDataList()
       // 数据初始化
@@ -591,6 +601,22 @@ export default {
       // 设置dialog的返回
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', Object.assign({}, row))
     },
+    // 自动弹出编辑窗口
+    handleEditMeDialog(_data) {
+      this.handleCurrentChange(_data)
+      this.handleUpdate()
+    },
+    // 关闭自动编辑窗口
+    handleEditMeDialogOk() {
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.$emit('editMeDialogOkClick', this.dataJson.tempJson)
+      }
+    },
+    handleEditMeDialogCancel() {
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.$emit('editMeDialogCancelClick')
+      }
+    },
     handleSortChange(column) {
       // 服务器端排序
       if (column.order === 'ascending') {
@@ -607,13 +633,11 @@ export default {
       this.settings.listLoading = true
       getListApi(this.dataJson.searchForm).then(response => {
         // 增加对象属性，columnTypeShowIcon，columnNameShowIcon
-        const recorders = response.data.records
-        const newRecorders = recorders.map(v => {
-          return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
-        })
-        this.dataJson.listData = newRecorders
+        this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+        // 自动打开编辑页面
+        this.handleEditMeDialog(this.dataJson.listData[0])
         this.settings.listLoading = false
       })
     },
@@ -637,6 +661,8 @@ export default {
             })
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
+            // 关闭自动弹出编辑窗口
+            this.handleEditMeDialogOk()
           }, (_error) => {
             this.$notify({
               title: '更新错误',
@@ -646,6 +672,8 @@ export default {
             })
             // this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
+            // 关闭自动弹出编辑窗口
+            this.handleEditMeDialogOk()
           })
         }
       })
@@ -750,6 +778,11 @@ export default {
           })
         }
       })
+    },
+    handleCancel() {
+      this.popSettingsData.dialogFormVisible = false
+      // 关闭自动弹出编辑窗口
+      this.handleEditMeDialogCancel()
     },
     // 关闭弹出窗口
     handlCloseDialog() {

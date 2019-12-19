@@ -286,7 +286,7 @@
     <module-dialog
       :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
       @closeMeOk="handleModuleCloseOk"
-      @closeMeCancle="handleModuletCloseCancle"
+      @closeMeCancel="handleModuletCloseCancel"
     />
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
   </div>
@@ -1020,7 +1020,7 @@ export default {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
     // 关闭对话框：取消
-    handleModuletCloseCancle() {
+    handleModuletCloseCancel() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
     // 复制新增逻辑

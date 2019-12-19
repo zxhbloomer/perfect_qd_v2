@@ -263,7 +263,7 @@ export default {
     handleDoCancel() {
       this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
-      this.$emit('closeMeCancle')
+      this.$emit('closeMeCancel')
     },
     validatePassword(rule, value, callback) {
       if (value.length < 6) {

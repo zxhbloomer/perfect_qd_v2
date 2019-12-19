@@ -89,35 +89,35 @@
       v-if="popSettingsData.searchDialogDataOne.dialogVisible"
       :visible="popSettingsData.searchDialogDataOne.dialogVisible"
       @closeMeOk="handleGroupCloseOk"
-      @closeMeCancle="handleGroupCloseCancle"
+      @closeMeCancel="handleGroupCloseCancel"
     />
 
     <company-dialog
       v-if="popSettingsData.searchDialogDataTwo.dialogVisible"
       :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
       @closeMeOk="handleCompanyCloseOk"
-      @closeMeCancle="handleCompanyCloseCancle"
+      @closeMeCancel="handleCompanyCloseCancel"
     />
 
     <dept-dialog
       v-if="popSettingsData.searchDialogDataThree.dialogVisible"
       :visible="popSettingsData.searchDialogDataThree.dialogVisible"
       @closeMeOk="handleDeptCloseOk"
-      @closeMeCancle="handleDeptCloseCancle"
+      @closeMeCancel="handleDeptCloseCancel"
     />
 
     <position-dialog
       v-if="popSettingsData.searchDialogDataFour.dialogVisible"
       :visible="popSettingsData.searchDialogDataFour.dialogVisible"
       @closeMeOk="handlePositionCloseOk"
-      @closeMeCancle="handlePositionCloseCancle"
+      @closeMeCancel="handlePositionCloseCancel"
     />
 
     <staff-dialog
       v-if="popSettingsData.searchDialogDataFive.dialogVisible"
       :visible="popSettingsData.searchDialogDataFive.dialogVisible"
       @closeMeOk="handleStaffCloseOk"
-      @closeMeCancle="handleStaffCloseCancle"
+      @closeMeCancel="handleStaffCloseCancel"
     />
 
   </div>
@@ -659,7 +659,7 @@ export default {
       }
     },
     // 集团：关闭对话框：取消
-    handleGroupCloseCancle() {
+    handleGroupCloseCancel() {
       this.popSettingsData.searchDialogDataOne.dialogVisible = false
     },
     // 企业：关闭对话框：确定
@@ -726,7 +726,7 @@ export default {
       }
     },
     // 企业：关闭对话框：取消
-    handleCompanyCloseCancle() {
+    handleCompanyCloseCancel() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
     // 部门：关闭对话框：确定
@@ -793,7 +793,7 @@ export default {
       }
     },
     // 部门：关闭对话框：取消
-    handleDeptCloseCancle() {
+    handleDeptCloseCancel() {
       this.popSettingsData.searchDialogDataThree.dialogVisible = false
     },
     // 岗位：关闭对话框：确定
@@ -860,7 +860,7 @@ export default {
       }
     },
     // 岗位：关闭对话框：取消
-    handlePositionCloseCancle() {
+    handlePositionCloseCancel() {
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
     },
     // 员工：关闭对话框：确定
@@ -869,7 +869,7 @@ export default {
       this.popSettingsData.searchDialogDataFive.dialogVisible = false
     },
     // 员工：关闭对话框：取消
-    handleStaffCloseCancle() {
+    handleStaffCloseCancel() {
       this.popSettingsData.searchDialogDataFive.dialogVisible = false
     },
     // --------------弹出查询框：结束--------------

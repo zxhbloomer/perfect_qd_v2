@@ -118,7 +118,7 @@
     <resource-dialog
       :visible="popSettingsData.searchDialogData.dialogVisible"
       @closeMeOk="handleResourceCloseOk"
-      @closeMeCancle="handleResourceCloseCancle"
+      @closeMeCancel="handleResourceCloseCancel"
     />
     <!-- pop窗口 数据编辑:新增、修改、-->
     <el-dialog
@@ -1019,7 +1019,7 @@ export default {
       this.dataJson.tempJson.templateContext = this.popSettingsData.searchDialogData.selectedDataJson.context
     },
     // 关闭对话框：取消
-    handleResourceCloseCancle() {
+    handleResourceCloseCancel() {
       this.popSettingsData.searchDialogData.dialogVisible = false
     },
     renderHeaderIsDel: function(h, { column }) {

@@ -564,7 +564,7 @@ export default {
       this.initSelectOrResectButton()
     },
     // 关闭对话框：取消
-    handleModuletCloseCancle() {
+    handleModuletCloseCancel() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
     },
     // 级联事件

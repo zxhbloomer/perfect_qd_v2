@@ -272,7 +272,7 @@
     <address-dialog
       :visible="popSettingsData.searchDialogDataOne.dialogVisible"
       @closeMeOk="handleAddressCloseOk"
-      @closeMeCancle="handleAddressCloseCancle"
+      @closeMeCancel="handleAddressCloseCancel"
     />
 
   </div>
@@ -982,7 +982,7 @@ export default {
       this.initAddressSelectButton()
     },
     // 关闭对话框：取消
-    handleAddressCloseCancle() {
+    handleAddressCloseCancel() {
       this.popSettingsData.searchDialogDataOne.dialogVisible = false
     },
     // -------------------不同的页签，标签进行的验证------------------

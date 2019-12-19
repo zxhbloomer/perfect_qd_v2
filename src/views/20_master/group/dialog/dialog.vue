@@ -14,7 +14,7 @@
     destroy-on-close
     top="5vh"
   >
-    <current-dialog ref="dialogRef" @rowDbClick="handleRowDbClick" />
+    <current-dialog :id="id" ref="dialogRef" @rowDbClick="handleRowDbClick" @editMeDialogOkClick="handleEditMeDialogOkClick" @editMeDialogCancelClick="handleEditMeDialogCancelClick" />
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <el-button plain @click="handleDoCancel()">取 消</el-button>
@@ -36,6 +36,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -110,7 +114,13 @@ export default {
       // this.$emit('update:visible', false)
       this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
-      this.$emit('closeMeCancle')
+      this.$emit('closeMeCancel')
+    },
+    handleEditMeDialogOkClick() {
+      this.$emit('closeMeOk')
+    },
+    handleEditMeDialogCancelClick() {
+      this.$emit('closeMeCancel')
     }
   }
 }

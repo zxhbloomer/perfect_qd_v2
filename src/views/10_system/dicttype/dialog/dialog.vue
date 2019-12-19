@@ -109,7 +109,7 @@ export default {
       // this.$emit('update:visible', false)
       this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
-      this.$emit('closeMeCancle')
+      this.$emit('closeMeCancel')
     }
   }
 }
