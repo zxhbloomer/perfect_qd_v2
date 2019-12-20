@@ -12,7 +12,14 @@
     destroy-on-close
     top="5vh"
   >
-    <current-dialog ref="dialogRef" @rowDbClick="handleRowDbClick" />
+    <current-dialog
+      :id="id"
+      ref="dialogRef"
+      :data-model="dataModel"
+      @rowDbClick="handleRowDbClick"
+      @editMeDialogOkClick="handleEditMeDialogOkClick"
+      @editMeDialogCancelClick="handleEditMeDialogCancelClick"
+    />
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <el-button plain @click="handleDoCancel()">取 消</el-button>
@@ -34,6 +41,14 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: Number,
+      default: null
+    },
+    dataModel: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -80,7 +95,7 @@ export default {
           this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
           this.$nextTick(() => {
             this.$refs.dialogRef.initDialogStatus()
-            this.$refs.dialogRef.initShow()
+            // this.$refs.dialogRef.initShow()
           })
         }
       },
@@ -108,6 +123,14 @@ export default {
       // this.$emit('update:visible', false)
       this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
+      this.$emit('closeMeCancel')
+    },
+    handleEditMeDialogOkClick() {
+      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
+      this.$emit('closeMeOk')
+    },
+    handleEditMeDialogCancelClick() {
+      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeCancel')
     }
   }

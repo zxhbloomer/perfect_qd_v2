@@ -23,7 +23,14 @@
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级组织名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级组织类型" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="岗位编号">
+        <template slot-scope="scope">
+          {{ scope.row.code }}
+          <el-link type="primary" @click="handleEdit(scope.row.id)">
+            编辑
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位全称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="descr" label="岗位描述" />
@@ -47,6 +54,15 @@
       <el-table-column sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
+
+    <position-dialog
+      v-if="popSettingsData.searchDialogData.dialogVisible"
+      :id="popSettingsData.searchDialogData.id"
+      :visible="popSettingsData.searchDialogData.dialogVisible"
+      @closeMeOk="handleGroupCloseOk"
+      @closeMeCancel="handleGroupCloseCancel"
+    />
+
   </div>
 </template>
 
@@ -66,10 +82,11 @@
 import { getPositionListApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
+import positionDialog from '@/views/20_master/position/dialog/dialog'
 
 export default {
   name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination },
+  components: { Pagination, positionDialog },
   directives: { elDragDialog },
   mixins: [],
   props: {
@@ -163,6 +180,15 @@ export default {
         selection: [],
         dialogStatus: '',
         dialogFormVisible: false,
+        // 弹出的搜索框参数设置
+        searchDialogData: {
+          // 弹出框显示参数
+          dialogVisible: false,
+          // 点击确定以后返回的值
+          selectedDataJson: {},
+          // 传参
+          id: ''
+        },
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入岗位全称', trigger: 'change' }],
@@ -396,10 +422,27 @@ export default {
           </el-tooltip>
         </span>
       )
-    }
+    },
     // --------------弹出查询框：--------------
-
     // -------------------不同的页签，标签进行的验证------------------
+    // 集团：关闭对话框：确定
+    handleGroupCloseOk(val) {
+      this.popSettingsData.searchDialogData.selectedDataJson = val
+      this.popSettingsData.searchDialogData.dialogVisible = false
+      // 通知兄弟组件
+      this.$off('global:getDataListLeft')
+      this.$emit('global:getDataListLeft')
+      // 查询数据并返回
+    },
+    // 集团：关闭对话框：取消
+    handleGroupCloseCancel() {
+      this.popSettingsData.searchDialogData.dialogVisible = false
+    },
+    // 编辑按钮
+    handleEdit(val) {
+      this.popSettingsData.searchDialogData.dialogVisible = true
+      this.popSettingsData.searchDialogData.id = val
+    }
   }
 }
 </script>
