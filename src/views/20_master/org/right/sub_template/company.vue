@@ -23,7 +23,14 @@
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级组织名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级组织类型" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码">
+        <template slot-scope="scope">
+          {{ scope.row.code }}
+          <el-link type="primary" @click="handleEdit(scope.row.id)">
+            编辑
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业全称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
@@ -47,6 +54,14 @@
       <el-table-column sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
+
+    <company-dialog
+      v-if="popSettingsData.searchDialogData.dialogVisible"
+      :id="popSettingsData.searchDialogData.id"
+      :visible="popSettingsData.searchDialogData.dialogVisible"
+      @closeMeOk="handleGroupCloseOk"
+      @closeMeCancel="handleGroupCloseCancel"
+    />
   </div>
 </template>
 
@@ -79,10 +94,11 @@ import { getCompanyListApi } from '@/api/20_master/org/org'
 import { getDataByIdApi } from '@/api/20_master/address/address'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
+import companyDialog from '@/views/20_master/company/dialog/dialog'
 
 export default {
   name: 'P00000175', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination },
+  components: { Pagination, companyDialog },
   directives: { elDragDialog },
   mixins: [],
   props: {
@@ -207,11 +223,13 @@ export default {
           countFour: 0
         },
         // 弹出的搜索框参数设置
-        searchDialogDataOne: {
+        searchDialogData: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
-          selectedDataJson: {}
+          selectedDataJson: {},
+          // 传参
+          id: ''
         }
       },
       // 导入窗口的状态
@@ -278,12 +296,12 @@ export default {
         }
       }
     },
-    'popSettingsData.searchDialogDataOne.selectedDataJson': {
+    'popSettingsData.searchDialogData.selectedDataJson': {
       handler(newVal, oldVal) {
         if (newVal !== {}) {
-          this.dataJson.tempJson.address_id = this.popSettingsData.searchDialogDataOne.selectedDataJson.id
+          this.dataJson.tempJson.address_id = this.popSettingsData.searchDialogData.selectedDataJson.id
         } else {
-          this.popSettingsData.searchDialogDataOne.selectedDataJson.id = undefined
+          this.popSettingsData.searchDialogData.selectedDataJson.id = undefined
         }
       }
     }
@@ -437,17 +455,17 @@ export default {
     },
     handleModuleDialogClick() {
       // 选择按钮
-      this.popSettingsData.searchDialogDataOne.dialogVisible = true
+      this.popSettingsData.searchDialogData.dialogVisible = true
     },
     // 关闭对话框：确定
     handleAddressCloseOk(val) {
-      this.popSettingsData.searchDialogDataOne.selectedDataJson = val
-      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+      this.popSettingsData.searchDialogData.selectedDataJson = val
+      this.popSettingsData.searchDialogData.dialogVisible = false
       this.initAddressSelectButton()
     },
     // 关闭对话框：取消
     handleAddressCloseCancel() {
-      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+      this.popSettingsData.searchDialogData.dialogVisible = false
     },
     // -------------------不同的页签，标签进行的验证------------------
     // 所有的数据开始validate
@@ -522,8 +540,27 @@ export default {
     },
     getAddressDataByid() {
       getDataByIdApi({ id: this.dataJson.tempJson.address_id }).then(response => {
-        this.popSettingsData.searchDialogDataOne.selectedDataJson = Object.assign({}, response.data)
+        this.popSettingsData.searchDialogData.selectedDataJson = Object.assign({}, response.data)
       })
+    },
+    // --------------弹出查询框：开始--------------
+    // 集团：关闭对话框：确定
+    handleGroupCloseOk(val) {
+      this.popSettingsData.searchDialogData.selectedDataJson = val
+      this.popSettingsData.searchDialogData.dialogVisible = false
+      // 通知兄弟组件
+      this.$off('global:getDataListLeft')
+      this.$emit('global:getDataListLeft')
+      // 查询数据并返回
+    },
+    // 集团：关闭对话框：取消
+    handleGroupCloseCancel() {
+      this.popSettingsData.searchDialogData.dialogVisible = false
+    },
+    // 编辑按钮
+    handleEdit(val) {
+      this.popSettingsData.searchDialogData.dialogVisible = true
+      this.popSettingsData.searchDialogData.id = val
     }
   }
 }

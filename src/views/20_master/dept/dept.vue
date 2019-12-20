@@ -13,16 +13,38 @@
       <el-form-item label="">
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="部门全称" />
       </el-form-item>
-      <el-form-item label="">
-        <delete-type-normal v-model="dataJson.searchForm.is_del" />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜 索</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重 置</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-s-promotion">高级搜索</el-button>
       </el-form-item>
     </el-form>
+
+    <el-popover
+      ref="popover"
+      placement="top"
+      width="420"
+      title="高级查询"
+    >
+      <el-form
+        :inline="true"
+        :model="dataJson.searchForm"
+        label-position="getLabelPosition()"
+      >
+        <el-form-item label="">
+          <delete-type-normal v-model="dataJson.searchForm.is_del" />
+        </el-form-item>
+        <el-form-item v-show="meDialogSetting.dialogStatus" label="">
+          <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
+        </el-form-item>
+        <div style="text-align: right; margin: 0">
+          <el-button type="text" @click="doResetSearch()">重置</el-button>
+          <el-button type="primary" @click="handleSearch">提交</el-button>
+        </div>
+      </el-form>
+    </el-popover>
+
     <el-button-group>
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新 增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修 改</el-button>
@@ -187,7 +209,7 @@
         <div class="floatLeft">
           <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
-        <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取 消</el-button>
+        <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取 消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确 定</el-button>
@@ -241,12 +263,24 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import staffDialog from '@/views/20_master/staff/dialog/dialog'
+import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
+import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   name: 'P00000150', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, staffDialog },
+  components: { Pagination, DeleteTypeNormal, staffDialog, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],
+  props: {
+    id: {
+      type: Number,
+      default: null
+    },
+    dataModel: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       dataJson: {
@@ -261,7 +295,9 @@ export default {
           // 查询条件
           name: '',
           code: '',
-          is_del: '0' // 未删除
+          is_del: '0', // 未删除
+          id: this.id,
+          dataModel: this.dataModel // 弹出框模式
         },
         // 分页控件的json
         paging: {
@@ -384,7 +420,8 @@ export default {
       meDialogSetting: {
         program: this.$store.getters.program,
         selectedDataJson: this.$store.getters.selectedDataJson,
-        dialogStatus: false
+        dialogStatus: false,
+        model: this.model
       }
     }
   },
@@ -753,13 +790,11 @@ export default {
       this.settings.listLoading = true
       getListApi(this.dataJson.searchForm).then(response => {
         // 增加对象属性，columnTypeShowIcon，columnNameShowIcon
-        const recorders = response.data.records
-        const newRecorders = recorders.map(v => {
-          return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
-        })
-        this.dataJson.listData = newRecorders
+        this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+        // 自动打开编辑页面
+        this.handleEditMeDialog(this.dataJson.listData[0])
         this.settings.listLoading = false
       })
     },
@@ -783,6 +818,8 @@ export default {
             })
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
+            // 关闭自动弹出编辑窗口
+            this.handleEditMeDialogOk()
           }, (_error) => {
             this.$notify({
               title: '更新错误',
@@ -792,6 +829,8 @@ export default {
             })
             // this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
+            // 关闭自动弹出编辑窗口
+            this.handleEditMeDialogOk()
           })
         }
       })
@@ -1012,8 +1051,31 @@ export default {
     // 关闭对话框：取消
     handleStaffCloseCancelFour() {
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
-    }
+    },
     // -------------------不同的页签，标签进行的验证------------------
+    // 自动弹出编辑窗口
+    handleEditMeDialog(_data) {
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.handleCurrentChange(_data)
+        this.handleUpdate()
+      }
+    },
+    // 关闭自动编辑窗口
+    handleEditMeDialogOk() {
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.$emit('editMeDialogOkClick', this.dataJson.tempJson)
+      }
+    },
+    handleEditMeDialogCancel() {
+      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
+        this.$emit('editMeDialogCancelClick')
+      }
+    },
+    handleCancel() {
+      this.popSettingsData.dialogFormVisible = false
+      // 关闭自动弹出编辑窗口
+      this.handleEditMeDialogCancel()
+    }
   }
 }
 </script>
