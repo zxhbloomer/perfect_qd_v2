@@ -88,6 +88,7 @@
     <group-dialog
       v-if="popSettingsData.searchDialogDataOne.dialogVisible"
       :visible="popSettingsData.searchDialogDataOne.dialogVisible"
+      :data-model="'10'"
       @closeMeOk="handleGroupCloseOk"
       @closeMeCancel="handleGroupCloseCancel"
     />

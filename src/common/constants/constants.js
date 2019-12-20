@@ -54,6 +54,12 @@ const DICT_SYS_LOGIN_TYPE = 'sys_login_type'
 const DICT_SYS_CODE_RULE_TYPE = 'sys_coderule_type'
 /** 自动编码名称 */
 const DICT_SYS_CODE_TYPE = 'sys_code_type'
+/** 组织架构中已被使用 */
+const DICT_ORG_USED_TYPE = 'org_used_type'
+/** 显示组织机构中未被使用  */
+const DICT_ORG_USED_TYPE_SHOW_UNUSED = '10'
+/** 显示所有  */
+const DICT_ORG_USED_TYPE_SHOW_ALL = null
 
 export default {
   /** 模块类型 */
@@ -101,5 +107,11 @@ export default {
   /** 自动编码类型 */
   DICT_SYS_CODE_RULE_TYPE,
   /** 自动编码名称 */
-  DICT_SYS_CODE_TYPE
+  DICT_SYS_CODE_TYPE,
+  /** 组织架构中已被使用 */
+  DICT_ORG_USED_TYPE,
+  /** 显示组织机构中未被使用  */
+  DICT_ORG_USED_TYPE_SHOW_UNUSED,
+  /** 显示所有  */
+  DICT_ORG_USED_TYPE_SHOW_ALL
 }

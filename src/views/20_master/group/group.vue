@@ -13,16 +13,38 @@
       <el-form-item label="">
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="集团全称" />
       </el-form-item>
-      <el-form-item label="">
-        <delete-type-normal v-model="dataJson.searchForm.is_del" />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜 索</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重 置</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-s-promotion">高级搜索</el-button>
       </el-form-item>
     </el-form>
+
+    <el-popover
+      ref="popover"
+      placement="top"
+      width="420"
+      title="高级查询"
+    >
+      <el-form
+        :inline="true"
+        :model="dataJson.searchForm"
+        label-position="getLabelPosition()"
+      >
+        <el-form-item label="">
+          <delete-type-normal v-model="dataJson.searchForm.is_del" />
+        </el-form-item>
+        <el-form-item v-show="meDialogSetting.dialogStatus" label="">
+          <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
+        </el-form-item>
+        <div style="text-align: right; margin: 0">
+          <el-button type="text" @click="doResetSearch()">重置</el-button>
+          <el-button type="primary" @click="handleSearch">提交</el-button>
+        </div>
+      </el-form>
+    </el-popover>
+
     <el-button-group>
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新 增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修 改</el-button>
@@ -168,17 +190,22 @@ import resizeMixin from './groupResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
+import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   name: 'P00000100', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal },
+  components: { Pagination, DeleteTypeNormal, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   props: {
     id: {
       type: Number,
       default: null
+    },
+    dataModel: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -195,7 +222,9 @@ export default {
           // 查询条件
           name: '',
           code: '',
-          is_del: '0' // 未删除
+          is_del: '0', // 未删除
+          id: this.id,
+          dataModel: this.dataModel // 弹出框模式
         },
         // 分页控件的json
         paging: {
@@ -289,7 +318,8 @@ export default {
       meDialogSetting: {
         program: this.$store.getters.program,
         selectedDataJson: this.$store.getters.selectedDataJson,
-        dialogStatus: false
+        dialogStatus: false,
+        model: this.model
       }
     }
   },
@@ -722,7 +752,9 @@ export default {
         code: '',
         name: '',
         simple_name: '',
-        is_del: 'null'
+        is_del: '0',
+        id: this.id,
+        dataModel: this.dataModel
       }
     },
     // 重置按钮

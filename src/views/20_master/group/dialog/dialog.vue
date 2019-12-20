@@ -14,7 +14,14 @@
     destroy-on-close
     top="5vh"
   >
-    <current-dialog :id="id" ref="dialogRef" @rowDbClick="handleRowDbClick" @editMeDialogOkClick="handleEditMeDialogOkClick" @editMeDialogCancelClick="handleEditMeDialogCancelClick" />
+    <current-dialog
+      :id="id"
+      ref="dialogRef"
+      :data-model="dataModel"
+      @rowDbClick="handleRowDbClick"
+      @editMeDialogOkClick="handleEditMeDialogOkClick"
+      @editMeDialogCancelClick="handleEditMeDialogCancelClick"
+    />
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <el-button plain @click="handleDoCancel()">取 消</el-button>
@@ -40,6 +47,10 @@ export default {
     id: {
       type: Number,
       default: null
+    },
+    dataModel: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -86,7 +97,7 @@ export default {
           this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
           this.$nextTick(() => {
             this.$refs.dialogRef.initDialogStatus()
-            this.$refs.dialogRef.initShow()
+            // this.$refs.dialogRef.initShow()
           })
         }
       },
@@ -96,7 +107,6 @@ export default {
   },
   created() {
     // 设置当前打开的页面
-
   },
   methods: {
     handleRowDbClick(val) {
