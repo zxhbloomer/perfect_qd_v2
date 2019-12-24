@@ -29,6 +29,15 @@
         node-key="id"
         default-expand-all
         class="tree"
+        draggable
+        :allow-drop="allowDrop"
+        :allow-drag="allowDrag"
+        @node-drag-start="handleDragStart"
+        @node-drag-enter="handleDragEnter"
+        @node-drag-leave="handleDragLeave"
+        @node-drag-over="handleDragOver"
+        @node-drag-end="handleDragEnd"
+        @node-drop="handleDrop"
         @current-change="handleCurrentChange"
       >
         <span slot-scope="{ node, data }" class="custom-tree-node">
@@ -38,7 +47,7 @@
             <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '50'" icon-class="perfect-icon-position" class="el-icon--right" />
-            {{ node.label }}
+            {{ node.label }} id: {{ data.id }} parent_id: {{ data.parent_id }}
           </span>
           <span>[{{ data.type_text }}]</span>
         </span>
@@ -264,13 +273,14 @@
 </style>
 
 <script>
-import { getCorrectTypeByInsertStatusApi, getTreeListApi, insertApi, updateApi, deleteApi } from '@/api/20_master/org/org'
+import { getCorrectTypeByInsertStatusApi, getTreeListApi, insertApi, updateApi, deleteApi, dragsaveApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
 import groupDialog from '@/views/20_master/group/dialog/dialog'
 import companyDialog from '@/views/20_master/company/dialog/dialog'
 import deptDialog from '@/views/20_master/dept/dialog/dialog'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
 import staffDialog from '@/views/20_master/staff/dialog/dialog'
+import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   name: 'P00000171', // 页面id，和router中的name需要一致，作为缓存
@@ -883,6 +893,82 @@ export default {
         this.settings.listLoading = false
       }, (_error) => {
       })
+    },
+    handleDragStart(node, ev) {
+      console.log('drag start', node)
+    },
+    handleDragEnter(draggingNode, dropNode, ev) {
+      console.log('tree drag enter: ', dropNode.label)
+    },
+    handleDragLeave(draggingNode, dropNode, ev) {
+      console.log('tree drag leave: ', dropNode.label)
+    },
+    handleDragOver(draggingNode, dropNode, ev) {
+      console.log('tree drag over: ', dropNode.label)
+    },
+    handleDragEnd(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drag end: ', dropNode && dropNode.label, dropType)
+    },
+    /**
+     * 拖拽结束后事件
+     * draggingNode:被拖拽节点对应的 Node
+     * dropNode:结束拖拽时最后进入的节点
+     * dropType:被拖拽节点的放置位置（before、after、inner）
+     * ev:event
+     */
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drop: ', dropNode.label, dropType)
+      // 进入结点，作为子节点
+      if (dropType === 'inner') {
+        // 获取老子的id
+        const parent_id = dropNode.data.id
+        // 获取儿子
+        draggingNode.data.parent_id = parent_id
+      }
+      debugger
+      this.doDragSave()
+    },
+    doDragSave() {
+      dragsaveApi(this.dataJson.treeData).then((_data) => {
+        this.$notify({
+          title: '更新成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        // 查询
+        this.getDataList()
+        this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
+      }, (_error) => {
+        this.$notify({
+          title: '更新错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+        // this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
+      })
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      // 不得放到根目录之前
+      if (type === 'prev' && !isNotEmpty(dropNode.data.parent_id)) {
+        return false
+      }
+      // 不得放到根目录之后，平级
+      if (type === 'next' && !isNotEmpty(dropNode.data.parent_id)) {
+        return false
+      }
+      return true
+    },
+    // 允许拖拽的情况
+    allowDrag(draggingNode) {
+      if (isNotEmpty(draggingNode.data.parent_id)) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
