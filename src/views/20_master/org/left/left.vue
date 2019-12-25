@@ -97,7 +97,7 @@
     <group-dialog
       v-if="popSettingsData.searchDialogDataOne.dialogVisible"
       :visible="popSettingsData.searchDialogDataOne.dialogVisible"
-      :data-model="'10'"
+      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleGroupCloseOk"
       @closeMeCancel="handleGroupCloseCancel"
     />
@@ -105,6 +105,7 @@
     <company-dialog
       v-if="popSettingsData.searchDialogDataTwo.dialogVisible"
       :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
+      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleCompanyCloseOk"
       @closeMeCancel="handleCompanyCloseCancel"
     />
@@ -112,6 +113,7 @@
     <dept-dialog
       v-if="popSettingsData.searchDialogDataThree.dialogVisible"
       :visible="popSettingsData.searchDialogDataThree.dialogVisible"
+      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleDeptCloseOk"
       @closeMeCancel="handleDeptCloseCancel"
     />
@@ -119,6 +121,7 @@
     <position-dialog
       v-if="popSettingsData.searchDialogDataFour.dialogVisible"
       :visible="popSettingsData.searchDialogDataFour.dialogVisible"
+      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handlePositionCloseOk"
       @closeMeCancel="handlePositionCloseCancel"
     />
@@ -126,6 +129,7 @@
     <staff-dialog
       v-if="popSettingsData.searchDialogDataFive.dialogVisible"
       :visible="popSettingsData.searchDialogDataFive.dialogVisible"
+      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleStaffCloseOk"
       @closeMeCancel="handleStaffCloseCancel"
     />

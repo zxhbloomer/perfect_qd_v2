@@ -195,10 +195,11 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import { isNotEmpty } from '@/utils/index.js'
+import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 
 export default {
   name: 'P00000160', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal },
+  components: { Pagination, DeleteTypeNormal, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   props: {
