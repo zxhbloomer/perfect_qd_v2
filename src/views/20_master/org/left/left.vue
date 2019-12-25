@@ -929,10 +929,23 @@ export default {
         // 获取儿子
         draggingNode.data.parent_id = parent_id
       }
-      debugger
+      if (dropType === 'before') {
+        // 获取老子的id
+        const parent_id = dropNode.data.parent_id
+        // 获取儿子
+        draggingNode.data.parent_id = parent_id
+      }
+      if (dropType === 'after') {
+        // 获取老子的id
+        const parent_id = dropNode.data.parent_id
+        // 获取儿子
+        draggingNode.data.parent_id = parent_id
+      }
       this.doDragSave()
     },
     doDragSave() {
+      this.$off('global:getDataList_loading')
+      this.$emit('global:getDataList_loading')
       dragsaveApi(this.dataJson.treeData).then((_data) => {
         this.$notify({
           title: '更新成功',
@@ -944,6 +957,9 @@ export default {
         this.getDataList()
         this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
+        this.getDataList()
+        this.$off('global:getDataList_loading_ok')
+        this.$emit('global:getDataList_loading_ok')
       }, (_error) => {
         this.$notify({
           title: '更新错误',
@@ -953,6 +969,8 @@ export default {
         })
         // this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
+        this.$off('global:getDataList_loading_ok')
+        this.$emit('global:getDataList_loading_ok')
       })
     },
     allowDrop(draggingNode, dropNode, type) {
