@@ -42,7 +42,7 @@
           <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="法定代表人" />
         </el-form-item>
         <el-form-item label="">
-          <delete-type-normal v-model="dataJson.searchForm.is_del" />
+          <el-input v-model.trim="dataJson.searchForm.code" clearable placeholder="社会信用代码" />
         </el-form-item>
         <div style="text-align: right; margin: 0">
           <el-button type="text" @click="doResetSearch()">重置</el-button>
@@ -84,7 +84,7 @@
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="50" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
-          <el-tooltip :content="'删除状态: ' + scope.row.is_del" placement="top">
+          <el-tooltip :content="'删除状态: ' + scope.row.is_del " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
               active-color="#ff4949"
@@ -651,6 +651,7 @@ export default {
           })
           this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
+          row.is_del = !row.is_del
         })
       }).catch(action => {
         row.is_del = !row.is_del
