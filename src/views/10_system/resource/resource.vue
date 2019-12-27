@@ -69,16 +69,18 @@
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="45" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.is_del"
-            active-color="#ff4949"
-            inactive-color="#13ce66"
-            :active-value="true"
-            :inactive-value="false"
-            :width="30"
-            :disabled="resourceDialogSetting.dialogStatus"
-            @change="handleDel(scope.row)"
-          />
+          <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
+            <el-switch
+              v-model="scope.row.is_del"
+              active-color="#ff4949"
+              inactive-color="#13ce66"
+              :active-value="true"
+              :inactive-value="false"
+              :width="30"
+              :disabled="resourceDialogSetting.dialogStatus"
+              @change="handleDel(scope.row)"
+            />
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />

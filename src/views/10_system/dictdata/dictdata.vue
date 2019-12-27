@@ -70,7 +70,7 @@
       <el-table-column show-overflow-tooltip min-width="180" prop="descr" label="字典描述" />
       <el-table-column min-width="70" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
-          <el-tooltip :content="'删除状态: ' + scope.row.is_del" placement="top">
+          <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
               active-color="#ff4949"
