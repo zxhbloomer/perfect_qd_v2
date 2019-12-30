@@ -418,25 +418,25 @@ export default {
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
           }
           this.dataJson.tempJson.org_type = ''
