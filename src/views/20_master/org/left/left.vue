@@ -17,7 +17,7 @@
         <el-button type="info" icon="el-icon-refresh-right" style="padding:7px 7px" @click="handleRefresh" />
       </el-button-group>
     </div>
-    <div :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:hidden;" class="mytree">
+    <div :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:auto;" class="mytree">
       <el-tree
         ref="treeObject"
         :data="dataJson.treeData"
@@ -47,7 +47,7 @@
             <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '50'" icon-class="perfect-icon-position" class="el-icon--right" />
-            {{ node.label }} id: {{ data.id }} parent_id: {{ data.parent_id }}
+            {{ node.label }}
           </span>
           <span>[{{ data.type_text }}]</span>
         </span>
@@ -199,7 +199,6 @@
     font-size: 14px;
     padding-right: 8px
 }
-
 .el-tree-node:focus > .el-tree-node__content {
   background-color: transparent !important;
 }
@@ -263,6 +262,11 @@
     height: 20px;
     top: 12px;
     width: 8px;
+  }
+
+  .el-tree>.el-tree-node{
+    min-width:100%;
+    display: inline-block ;
   }
 }
 

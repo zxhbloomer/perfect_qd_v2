@@ -1,5 +1,14 @@
 <template>
   <div>
+    <el-form>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新 增</el-button>
+          <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修 改</el-button>
+          <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
+        </el-button-group>
+      </el-form-item>
+    </el-form>
     <el-table
       ref="multipleTable"
       v-loading="settings.listLoading"
