@@ -58,6 +58,10 @@
       <el-table-column show-overflow-tooltip min-width="130" prop="dictTypeName" label="字典类型名称" />
       <el-table-column show-overflow-tooltip min-width="120" prop="label" label="字典标签" />
       <el-table-column show-overflow-tooltip min-width="120" prop="dict_value" label="字典键值" />
+      <el-table-column show-overflow-tooltip min-width="120" prop="extra1" label="额外配置1" />
+      <el-table-column show-overflow-tooltip min-width="120" prop="extra2" label="额外配置2" />
+      <el-table-column show-overflow-tooltip min-width="120" prop="extra3" label="额外配置3" />
+      <el-table-column show-overflow-tooltip min-width="120" prop="extra4" label="额外配置4" />
       <el-table-column show-overflow-tooltip min-width="120" prop="sort" label="字典排序">
         <template slot-scope="scope">
           <span>{{ scope.row.sort }}</span>
@@ -83,7 +87,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column min-width="160" prop="u_time" label="更新时间" />
+      <el-table-column min-width="170" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
     <dicttype-dialog
@@ -196,6 +200,30 @@
           <el-col :span="12">
             <el-form-item label="字典标签：" prop="label">
               <el-input v-model.trim="dataJson.tempJson.label" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.label" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="额外配置1：" prop="extra1">
+              <el-input v-model.trim="dataJson.tempJson.extra1" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.extra1" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="额外配置2：" prop="extra2">
+              <el-input v-model.trim="dataJson.tempJson.extra2" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.extra2" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="额外配置3：" prop="extra3">
+              <el-input v-model.trim="dataJson.tempJson.extra3" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.extra3" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="额外配置4：" prop="extra4">
+              <el-input v-model.trim="dataJson.tempJson.extra4" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.extra4" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -320,7 +348,11 @@ export default {
             dict_value: 10,
             lable: 20,
             descr: 200,
-            dbversion: 0
+            dbversion: 0,
+            extra1: 40,
+            extra2: 40,
+            extra3: 40,
+            extra4: 40
           }
         },
         // 当前表格中的索引，第几条
