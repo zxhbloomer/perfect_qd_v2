@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getDeleteTypeNormalApi() {
   return request({
-    url: '/api/v1/common/component/select/deleteTypeNormal/list',
+    url: '/api/v1/common/component/select/deletetypenormal/list',
     method: 'post'
   })
 }
