@@ -14,14 +14,7 @@
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="字典名称" />
       </el-form-item>
       <el-form-item label="">
-        <el-select v-model="dataJson.searchForm.is_del" placeholder="请选择删除状态" clearable>
-          <el-option
-            v-for="item in settings.delOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <delete-type-normal v-model="dataJson.searchForm.is_del" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜 索</el-button>
@@ -227,10 +220,11 @@ import resizeMixin from './dicttypeResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import SimpleUpload from '@/layout/components/00_common/SimpleUpload'
+import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 
 export default {
   name: 'P00000030', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, SimpleUpload },
+  components: { Pagination, SimpleUpload, DeleteTypeNormal },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   data() {
