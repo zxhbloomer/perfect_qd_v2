@@ -11,7 +11,10 @@
         <el-input v-model.trim="dataJson.searchForm.dictTypeCode" clearable placeholder="字典类型编码" />
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.dictTypeName" clearable placeholder="字典名称" />
+        <el-input v-model.trim="dataJson.searchForm.dictTypeName" clearable placeholder="字典类型名称" />
+      </el-form-item>
+      <el-form-item label="">
+        <el-input v-model.trim="dataJson.searchForm.label" clearable placeholder="字典标签" />
       </el-form-item>
       <el-form-item label="">
         <delete-type-normal v-model="dataJson.searchForm.is_del" />
