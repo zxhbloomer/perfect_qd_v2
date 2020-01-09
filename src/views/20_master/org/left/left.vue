@@ -209,16 +209,27 @@
     .el-tree > .el-tree-node:after {
     border-top: none;
   }
+
+  // .el-tree-node__content {
+  //   margin-left: -20px;
+  // }
+
   .el-tree-node {
     position: relative;
-    padding-left: 12px;
+    padding-left: 2px;
   }
   //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
   .el-tree-node__expand-icon.is-leaf{
-    display: none;
+    // display: none;
+    color: transparent;
+    border-top: 1px solid #4386c6;
+    height: 3px;
+    top: 12px;
+    width: 8px;
+    margin-right: 8px;
   }
   .el-tree-node__children {
-    padding-left: 12px;
+    padding-left: 20px;
   }
 
   .el-tree-node :last-child:before {
@@ -256,17 +267,24 @@
     top: -26px;
     width: 1px;
   }
-
-  .el-tree-node:after {
-    border-top: 1px solid #4386c6;
-    height: 20px;
-    top: 12px;
-    width: 8px;
+  .el-icon--right {
+    margin-left: 0px;
   }
+
+  // .el-tree-node:after {
+  //   border-top: 1px solid #4386c6;
+  //   height: 20px;
+  //   top: 12px;
+  //   width: 8px;
+  // }
 
   .el-tree>.el-tree-node{
     min-width:100%;
     display: inline-block ;
+  }
+
+  .el-tree-node__content>.el-tree-node__expand-icon {
+    padding: 2px
   }
 }
 
