@@ -31,9 +31,24 @@
           </el-link>
         </template>
       </el-table-column>
+
+      <el-table-column show-overflow-tooltip min-width="130" prop="" label="人员">
+        <template slot-scope="scope">
+          <el-link type="primary" @click="handleEditStaffMember(scope.row.id)">
+            设置
+          </el-link>
+          <span>
+            （
+            <el-link type="primary" @click="handleEdit(scope.row.id)">
+              99
+            </el-link>
+            ）
+          </span>
+        </template>
+      </el-table-column>
+
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位全称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="descr" label="岗位描述" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
@@ -55,12 +70,76 @@
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
+    <el-dialog
+      v-el-drag-dialog
+      title="维护岗位成员"
+      :visible="popSettingsData.dialogFormVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
+      width="700px"
+    >
+      <el-form
+        ref="dataSubmitForm"
+        :rules="popSettingsData.rules"
+        :model="dataJson.tempJson"
+        label-position="rigth"
+        label-width="120px"
+        status-icon
+      >
+        <el-alert
+          title="人员选择"
+          type="info"
+          :closable="false"
+        />
+        <br>
+        <el-row>
+          <el-col :span="24" class="transferCenter">
+            <el-transfer
+              v-model="value"
+              filterable
+              :filter-method="filterMethod"
+              filter-placeholder="请输入城市拼音"
+              :data="data"
+              :titles="['未选择人员', '已选择人员']"
+              :button-texts="['选择', '反选']"
+            />
+          </el-col>
+        </el-row>
+
+        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+          <el-col :span="12">
+            <el-form-item label="更新者：" prop="u_id">
+              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="更新时间：" prop="u_time">
+              <el-input v-model.trim="dataJson.tempJson.u_time" disabled />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-divider />
+        <div class="floatLeft">
+          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        </div>
+        <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取 消</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确 定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确 定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <position-dialog
       v-if="popSettingsData.searchDialogData.dialogVisible"
       :id="popSettingsData.searchDialogData.id"
       :visible="popSettingsData.searchDialogData.dialogVisible"
-      @closeMeOk="handleGroupCloseOk"
-      @closeMeCancel="handleGroupCloseCancel"
+      @closeMeOk="handlePositionCloseOk"
+      @closeMeCancel="handlePositionCloseCancel"
     />
 
   </div>
@@ -76,6 +155,18 @@
   .el-form-item .el-select {
     width: 100%;
   }
+  .transferCenter {
+    display:flex;
+    justify-content:center;
+  }
+  /* .el-transfer {
+    .el-transfer-panel {
+        .el-transfer-panel__body {
+        height: 300px !important;
+      }
+    }
+  } */
+
 </style>
 
 <script>
@@ -96,7 +187,20 @@ export default {
     }
   },
   data() {
+    const generateData = _ => {
+      const data = []
+      for (let i = 1; i <= 15; i++) {
+        data.push({
+          key: i,
+          label: `备选项 ${i}`,
+          disabled: i % 4 === 0
+        })
+      }
+      return data
+    }
     return {
+      data: generateData(),
+      value: [1, 4],
       dataJson: {
         // 查询使用的json
         searchForm: {
@@ -155,12 +259,6 @@ export default {
         duration: 4000
       },
       popSettingsData: {
-        // 弹出窗口状态名称
-        textMap: {
-          update: '修改',
-          insert: '新增',
-          copyInsert: '复制新增'
-        },
         // 按钮状态
         btnShowStatus: {
           showInsert: false,
@@ -425,8 +523,8 @@ export default {
     },
     // --------------弹出查询框：--------------
     // -------------------不同的页签，标签进行的验证------------------
-    // 集团：关闭对话框：确定
-    handleGroupCloseOk(val) {
+    // 岗位：关闭对话框：确定
+    handlePositionCloseOk(val) {
       this.popSettingsData.searchDialogData.selectedDataJson = val
       this.popSettingsData.searchDialogData.dialogVisible = false
       // 通知兄弟组件
@@ -434,14 +532,18 @@ export default {
       this.$emit('global:getDataListLeft')
       // 查询数据并返回
     },
-    // 集团：关闭对话框：取消
-    handleGroupCloseCancel() {
+    // 岗位：关闭对话框：取消
+    handlePositionCloseCancel() {
       this.popSettingsData.searchDialogData.dialogVisible = false
     },
     // 编辑按钮
     handleEdit(val) {
       this.popSettingsData.searchDialogData.dialogVisible = true
       this.popSettingsData.searchDialogData.id = val
+    },
+    // 编辑岗位成员
+    handleEditStaffMember(val) {
+      this.popSettingsData.dialogFormVisible = true
     }
   }
 }

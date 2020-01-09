@@ -68,8 +68,8 @@
       v-if="popSettingsData.searchDialogData.dialogVisible"
       :id="popSettingsData.searchDialogData.id"
       :visible="popSettingsData.searchDialogData.dialogVisible"
-      @closeMeOk="handleGroupCloseOk"
-      @closeMeCancel="handleGroupCloseCancel"
+      @closeMeOk="handleCompanyCloseOk"
+      @closeMeCancel="handleCompanyCloseCancel"
     />
   </div>
 </template>
@@ -553,8 +553,8 @@ export default {
       })
     },
     // --------------弹出查询框：开始--------------
-    // 集团：关闭对话框：确定
-    handleGroupCloseOk(val) {
+    // 企业：关闭对话框：确定
+    handleCompanyCloseOk(val) {
       this.popSettingsData.searchDialogData.selectedDataJson = val
       this.popSettingsData.searchDialogData.dialogVisible = false
       // 通知兄弟组件
@@ -562,8 +562,8 @@ export default {
       this.$emit('global:getDataListLeft')
       // 查询数据并返回
     },
-    // 集团：关闭对话框：取消
-    handleGroupCloseCancel() {
+    // 企业：关闭对话框：取消
+    handleCompanyCloseCancel() {
       this.popSettingsData.searchDialogData.dialogVisible = false
     },
     // 编辑按钮
