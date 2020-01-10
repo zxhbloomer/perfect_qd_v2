@@ -1,11 +1,12 @@
 $headerHeight:40px;
 $footerHeight:0;
+$transferPanelHeight: 560px;
 
 .el-transfer {
-    width: 100%;
+    width: 90%;
     height: calc(100% - 100px);
     .el-transfer-panel {
-      height: 100%;
+      height: $transferPanelHeight;
       width: 40%;
       .el-transfer-panel__header{
         height: $headerHeight;
@@ -15,10 +16,16 @@ $footerHeight:0;
         .el-transfer-panel__list.is-filterable{
           height: calc(100% - 32px);
         }
+        .el-transfer-panel__filter {
+          margin: 5px;
+        }
       }
       .el-transfer-panel__footer{
         height: $footerHeight;
       }
+    }
+    .el-transfer__buttons{
+      padding: 0px 10px;
     }
     .el-transfer__buttons{
       width: 20%;

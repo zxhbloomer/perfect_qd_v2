@@ -79,32 +79,25 @@
       :show-close="false"
       :append-to-body="true"
       :modal-append-to-body="false"
-      width="700px"
+      width="740px"
     >
       <el-form
         ref="dataSubmitForm"
-        :rules="popSettingsData.rules"
         :model="dataJson.tempJson"
         label-position="rigth"
         label-width="120px"
         status-icon
       >
-        <el-alert
-          title="人员选择"
-          type="info"
-          :closable="false"
-        />
-        <br>
         <el-row>
           <el-col :span="24" class="transferCenter">
             <el-transfer
-              v-model="value"
+              v-model="popSettingsData.transfer.staff_position"
               filterable
-              :filter-method="filterMethod"
+              :filter-method="transferFilterMethod"
               filter-placeholder="请输入城市拼音"
-              :data="data"
+              :data="popSettingsData.transfer.staff_all"
               :titles="['未选择人员', '已选择人员']"
-              :button-texts="['选择', '反选']"
+              :button-texts="['人员反选', '选择人员']"
             />
           </el-col>
         </el-row>
@@ -170,7 +163,7 @@
 </style>
 
 <script>
-import { getPositionListApi } from '@/api/20_master/org/org'
+import { getPositionListApi, getStaffTransferListApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
@@ -187,20 +180,7 @@ export default {
     }
   },
   data() {
-    const generateData = _ => {
-      const data = []
-      for (let i = 1; i <= 15; i++) {
-        data.push({
-          key: i,
-          label: `备选项 ${i}`,
-          disabled: i % 4 === 0
-        })
-      }
-      return data
-    }
     return {
-      data: generateData(),
-      value: [1, 4],
       dataJson: {
         // 查询使用的json
         searchForm: {
@@ -287,21 +267,10 @@ export default {
           // 传参
           id: ''
         },
-        // pop的check内容
-        rules: {
-          name: [{ required: true, message: '请输入岗位全称', trigger: 'change' }],
-          code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
-          simple_name: [{ required: true, message: '请输入岗位简称', trigger: 'change' }]
+        transfer: {
+          staff_all: [],
+          staff_position: []
         }
-      },
-      // 导入窗口的状态
-      popSettingsImport: {
-        // 弹出窗口会否显示
-        dialogFormVisible: false,
-        // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
-        // 错误数据文件
-        errorFileUrl: ''
       }
     }
   },
@@ -544,6 +513,46 @@ export default {
     // 编辑岗位成员
     handleEditStaffMember(val) {
       this.popSettingsData.dialogFormVisible = true
+      debugger
+      getStaffTransferListApi({ position_id: val }).then(response => {
+        this.popSettingsData.transfer.staff_all = response.data.staff_all
+        this.popSettingsData.transfer.staff_position = response.data.staff_position
+        this.settings.listLoading = false
+      })
+    },
+    // 穿梭框的过滤方法
+    transferFilterMethod(query, item) {
+      return item.label.indexOf(query) > -1
+    },
+    handleCancel() {
+      this.popSettingsData.dialogFormVisible = false
+    },
+    // 重置按钮
+    doReset() {
+      this.popSettingsData.btnResetStatus = true
+      switch (this.popSettingsData.dialogStatus) {
+        case 'update':
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refFocus'].focus()
+          })
+          break
+        default:
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refFocus'].focus()
+          })
+          break
+      }
+
+      // 去除validate信息
+      this.$nextTick(() => {
+        this.$refs['dataSubmitForm'].clearValidate()
+      })
     }
   }
 }
