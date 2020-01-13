@@ -97,6 +97,18 @@ export function getStaffTransferListApi(query) {
 }
 
 /**
+ * 查询逻辑：获取所有员工的数据，为穿梭框服务
+ * @param {*} data
+ */
+export function setStaffTransferApi(query) {
+  return request({
+    url: '/api/v1/org/staff/transfer/save',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
  * 查询逻辑：员工
  * @param {*} data
  */

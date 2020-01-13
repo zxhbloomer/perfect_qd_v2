@@ -102,7 +102,7 @@
           </el-col>
         </el-row>
 
-        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+        <!-- <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
             <el-form-item label="更新者：" prop="u_id">
               <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
@@ -113,7 +113,7 @@
               <el-input v-model.trim="dataJson.tempJson.u_time" disabled />
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-divider />
@@ -163,10 +163,11 @@
 </style>
 
 <script>
-import { getPositionListApi, getStaffTransferListApi } from '@/api/20_master/org/org'
+import { getPositionListApi, getStaffTransferListApi, setStaffTransferApi } from '@/api/20_master/org/org'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
+import deepcopy from 'deepcopy'
 
 export default {
   name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
@@ -268,8 +269,12 @@ export default {
           id: ''
         },
         transfer: {
+          condition: {
+            position_id: null
+          },
           staff_all: [],
-          staff_position: []
+          staff_position: [],
+          old_staff_position: []
         }
       }
     }
@@ -287,25 +292,25 @@ export default {
   // 监听器
   watch: {
     // 监听页面上面是否有修改，有修改按钮高亮
-    'dataJson.tempJson': {
-      handler(newVal, oldVal) {
-        if (this.popSettingsData.btnResetStatus === true) {
-          // 点击了重置按钮
-          this.popSettingsData.btnDisabledStatus.disabledReset = true
-          this.popSettingsData.btnDisabledStatus.disabledInsert = true
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-          this.popSettingsData.btnResetStatus = false
-        } else if (this.popSettingsData.dialogFormVisible) {
-          // 有修改按钮高亮
-          this.popSettingsData.btnDisabledStatus.disabledReset = false
-          this.popSettingsData.btnDisabledStatus.disabledInsert = false
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = false
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = false
-        }
-      },
-      deep: true
-    },
+    // 'dataJson.tempJson': {
+    //   handler(newVal, oldVal) {
+    //     if (this.popSettingsData.btnResetStatus === true) {
+    //       // 点击了重置按钮
+    //       this.popSettingsData.btnDisabledStatus.disabledReset = true
+    //       this.popSettingsData.btnDisabledStatus.disabledInsert = true
+    //       this.popSettingsData.btnDisabledStatus.disabledUpdate = true
+    //       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
+    //       this.popSettingsData.btnResetStatus = false
+    //     } else if (this.popSettingsData.dialogFormVisible) {
+    //       // 有修改按钮高亮
+    //       this.popSettingsData.btnDisabledStatus.disabledReset = false
+    //       this.popSettingsData.btnDisabledStatus.disabledInsert = false
+    //       this.popSettingsData.btnDisabledStatus.disabledUpdate = false
+    //       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = false
+    //     }
+    //   },
+    //   deep: true
+    // },
     // 弹出窗口初始化，按钮不可用
     'popSettingsData.dialogFormVisible': {
       handler(newVal, oldVal) {
@@ -326,6 +331,24 @@ export default {
           this.settings.btnShowStatus.showExport = false
         }
       }
+    },
+    // 穿梭框的数据变动，设置重置和确定
+    'popSettingsData.transfer.staff_position': {
+      handler(newVal, oldVal) {
+        const listA = newVal
+        const listB = this.popSettingsData.transfer.old_staff_position
+        const result = listA.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b))
+        if (result) {
+          // 未改变值
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          this.popSettingsData.btnDisabledStatus.disabledInsert = true
+        } else {
+          // 有改变值
+          this.popSettingsData.btnDisabledStatus.disabledReset = false
+          this.popSettingsData.btnDisabledStatus.disabledInsert = false
+        }
+      },
+      deep: true
     }
   },
   created() {
@@ -513,12 +536,15 @@ export default {
     // 编辑岗位成员
     handleEditStaffMember(val) {
       this.popSettingsData.dialogFormVisible = true
-      debugger
-      getStaffTransferListApi({ position_id: val }).then(response => {
+      this.popSettingsData.btnShowStatus.showInsert = true
+      this.popSettingsData.transfer.condition.position_id = val
+      getStaffTransferListApi(this.popSettingsData.transfer.condition).then(response => {
         this.popSettingsData.transfer.staff_all = response.data.staff_all
         this.popSettingsData.transfer.staff_position = response.data.staff_position
+        this.popSettingsData.transfer.old_staff_position = deepcopy(response.data.staff_position)
         this.settings.listLoading = false
       })
+      this.popSettingsData.btnDisabledStatus.disabledReset = true
     },
     // 穿梭框的过滤方法
     transferFilterMethod(query, item) {
@@ -530,28 +556,31 @@ export default {
     // 重置按钮
     doReset() {
       this.popSettingsData.btnResetStatus = true
-      switch (this.popSettingsData.dialogStatus) {
-        case 'update':
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
-          })
-          break
-        default:
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
-          })
-          break
-      }
-
-      // 去除validate信息
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
+      this.handleEditStaffMember(this.popSettingsData.transfer.condition.position_id)
+    },
+    // 插入逻辑：岗位成员维护，点击确定按钮
+    doInsert() {
+      debugger
+      setStaffTransferApi(this.popSettingsData.transfer.staff_position).then((_data) => {
+        this.settings.listLoading = true
+        this.dataJson.listData.push(_data.data)
+        this.$notify({
+          title: '更新成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
+      }, (_error) => {
+        this.$notify({
+          title: '更新错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+        // this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
       })
     }
   }
