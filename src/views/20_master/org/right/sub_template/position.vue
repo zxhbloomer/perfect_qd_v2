@@ -91,7 +91,7 @@
         <el-row>
           <el-col :span="24" class="transferCenter">
             <el-transfer
-              v-model="popSettingsData.transfer.staff_position"
+              v-model="popSettingsData.transfer.staff_positions"
               filterable
               :filter-method="transferFilterMethod"
               filter-placeholder="请输入城市拼音"
@@ -269,12 +269,10 @@ export default {
           id: ''
         },
         transfer: {
-          condition: {
-            position_id: null
-          },
+          position_id: null,
           staff_all: [],
-          staff_position: [],
-          old_staff_position: []
+          staff_positions: [],
+          old_staff_positions: []
         }
       }
     }
@@ -333,10 +331,10 @@ export default {
       }
     },
     // 穿梭框的数据变动，设置重置和确定
-    'popSettingsData.transfer.staff_position': {
+    'popSettingsData.transfer.staff_positions': {
       handler(newVal, oldVal) {
         const listA = newVal
-        const listB = this.popSettingsData.transfer.old_staff_position
+        const listB = this.popSettingsData.transfer.old_staff_positions
         const result = listA.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b))
         if (result) {
           // 未改变值
@@ -537,11 +535,11 @@ export default {
     handleEditStaffMember(val) {
       this.popSettingsData.dialogFormVisible = true
       this.popSettingsData.btnShowStatus.showInsert = true
-      this.popSettingsData.transfer.condition.position_id = val
+      this.popSettingsData.transfer.position_id = val
       getStaffTransferListApi(this.popSettingsData.transfer.condition).then(response => {
         this.popSettingsData.transfer.staff_all = response.data.staff_all
-        this.popSettingsData.transfer.staff_position = response.data.staff_position
-        this.popSettingsData.transfer.old_staff_position = deepcopy(response.data.staff_position)
+        this.popSettingsData.transfer.staff_positions = response.data.staff_positions
+        this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
         this.settings.listLoading = false
       })
       this.popSettingsData.btnDisabledStatus.disabledReset = true
@@ -556,12 +554,11 @@ export default {
     // 重置按钮
     doReset() {
       this.popSettingsData.btnResetStatus = true
-      this.handleEditStaffMember(this.popSettingsData.transfer.condition.position_id)
+      this.handleEditStaffMember(this.popSettingsData.transfer.position_id)
     },
     // 插入逻辑：岗位成员维护，点击确定按钮
     doInsert() {
-      debugger
-      setStaffTransferApi(this.popSettingsData.transfer.staff_position).then((_data) => {
+      setStaffTransferApi(this.popSettingsData.transfer).then((_data) => {
         this.settings.listLoading = true
         this.dataJson.listData.push(_data.data)
         this.$notify({
