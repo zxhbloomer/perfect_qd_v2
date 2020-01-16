@@ -536,7 +536,7 @@ export default {
       this.popSettingsData.dialogFormVisible = true
       this.popSettingsData.btnShowStatus.showInsert = true
       this.popSettingsData.transfer.position_id = val
-      getStaffTransferListApi(this.popSettingsData.transfer.condition).then(response => {
+      getStaffTransferListApi(this.popSettingsData.transfer).then(response => {
         this.popSettingsData.transfer.staff_all = response.data.staff_all
         this.popSettingsData.transfer.staff_positions = response.data.staff_positions
         this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
