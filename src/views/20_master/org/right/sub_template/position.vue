@@ -1,5 +1,6 @@
 <template>
   <div>
+    aa{{ dataJson.listData }}bb
     <el-table
       ref="multipleTable"
       v-loading="settings.listLoading"
@@ -560,7 +561,6 @@ export default {
     doInsert() {
       setStaffTransferApi(this.popSettingsData.transfer).then((_data) => {
         this.settings.listLoading = true
-        this.dataJson.listData.push(_data.data)
         this.$notify({
           title: '更新成功',
           message: _data.message,
