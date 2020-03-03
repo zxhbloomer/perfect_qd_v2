@@ -1,6 +1,5 @@
 <template>
   <div>
-    aa{{ dataJson.listData }}bb
     <el-table
       ref="multipleTable"
       v-loading="settings.listLoading"
