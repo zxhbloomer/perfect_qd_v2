@@ -34,13 +34,13 @@
 
       <el-table-column show-overflow-tooltip min-width="130" prop="" label="人员">
         <template slot-scope="scope">
-          <el-link type="primary" @click="handleEditStaffMember(scope.row.id)">
+          <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
             设置
           </el-link>
           <span>
             （
             <el-link type="primary" @click="handleEdit(scope.row.id)">
-              99
+              {{ scope.row.staff_count }}
             </el-link>
             ）
           </span>
@@ -268,11 +268,14 @@ export default {
           // 传参
           id: ''
         },
+        // 穿梭框
         transfer: {
           position_id: null,
+          // 所有staff
           staff_all: [],
           staff_positions: [],
-          old_staff_positions: []
+          old_staff_positions: [],
+          current_row: null
         }
       }
     }
@@ -313,6 +316,7 @@ export default {
     'popSettingsData.dialogFormVisible': {
       handler(newVal, oldVal) {
         if (this.popSettingsData.dialogFormVisible) {
+          // 显示穿梭框
           this.popSettingsData.btnDisabledStatus.disabledReset = true
           this.popSettingsData.btnDisabledStatus.disabledInsert = true
           this.popSettingsData.btnDisabledStatus.disabledUpdate = true
@@ -335,6 +339,11 @@ export default {
       handler(newVal, oldVal) {
         const listA = newVal
         const listB = this.popSettingsData.transfer.old_staff_positions
+        // 如果新值，旧值为undefined 则return
+        if (listA === undefined || listB === undefined) {
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          return
+        }
         const result = listA.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b))
         if (result) {
           // 未改变值
@@ -350,7 +359,8 @@ export default {
     }
   },
   created() {
-    this.initShow()
+    // 因为全局事件已经进行了查询，所以此处页面查询就不需要了
+    // this.initShow()
   },
   mounted() {
     // 描绘完成
@@ -532,7 +542,16 @@ export default {
       this.popSettingsData.searchDialogData.id = val
     },
     // 编辑岗位成员
-    handleEditStaffMember(val) {
+    handleEditStaffMember(val, row) {
+      // 初始化数据
+      this.popSettingsData.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: row
+      }
       this.popSettingsData.dialogFormVisible = true
       this.popSettingsData.btnShowStatus.showInsert = true
       this.popSettingsData.transfer.position_id = val
@@ -560,6 +579,7 @@ export default {
     doInsert() {
       setStaffTransferApi(this.popSettingsData.transfer).then((_data) => {
         this.settings.listLoading = true
+        this.popSettingsData.transfer.current_row.staff_count = _data.data.staff_positions_count
         this.$notify({
           title: '更新成功',
           message: _data.message,
