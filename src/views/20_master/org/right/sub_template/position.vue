@@ -21,8 +21,8 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级组织名称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级组织类型" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="岗位编号">
         <template slot-scope="scope">
           {{ scope.row.code }}
@@ -152,14 +152,14 @@
     display:flex;
     justify-content:center;
   }
-  /* .el-transfer {
-    .el-transfer-panel {
-        .el-transfer-panel__body {
-        height: 300px !important;
-      }
-    }
-  } */
+</style>
 
+<style>
+/*
+  .el-transfer .el-transfer-panel {
+    height: 500px;
+  }
+  */
 </style>
 
 <script>
