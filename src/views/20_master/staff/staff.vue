@@ -94,7 +94,7 @@
         status-icon
         :validate-on-rule-change="false"
       >
-        <el-tabs style="height: 450px;">
+        <el-tabs style="height: 500px;">
           <br>
           <el-tab-pane>
             <template slot="label">基本信息<el-badge v-show="popSettingsData.badge.countOne>0" :value="popSettingsData.badge.countOne" type="danger" /></template>
@@ -239,7 +239,7 @@
           </el-tab-pane>
 
           <el-tab-pane>
-            <template slot="label">账号信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
+            <template slot="label">登录账号信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="开启账号登录：" prop="is_enable">
@@ -252,119 +252,130 @@
               </el-col>
               <el-col :span="12" />
             </el-row>
-            <div>
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="登录模式：" prop="login_type">
-                    <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="登录模式：" prop="login_type">
+                  <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="登录用户名：" prop="user.login_name">
-                    <el-input v-model.trim="dataJson.tempJson.user.login_name" clearable show-word-limit :maxlength="dataJson.inputSettings.user.maxLength.login_name" placeholder="请输入" :disabled="!isAccountLoginType" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="设置密码：" prop="">
-                    <el-button type="primary" icon="el-icon-unlock" :disabled="!isAccountLoginType" @click="handelSetPassword">设置密码</el-button>
-                    <el-tag v-show="!(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="success" effect="dark">已设置密码</el-tag>
-                    <el-tag v-show="(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="danger" effect="dark">未设置密码</el-tag>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="登录用户名：" prop="user.login_name">
+                  <el-input v-model.trim="dataJson.tempJson.user.login_name" clearable show-word-limit :maxlength="dataJson.inputSettings.user.maxLength.login_name" placeholder="请输入" :disabled="!isAccountLoginType" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="设置密码：" prop="">
+                  <el-button type="primary" icon="el-icon-unlock" :disabled="!isAccountLoginType" @click="handelSetPassword">设置密码</el-button>
+                  <el-tag v-show="!(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="success" effect="dark">已设置密码</el-tag>
+                  <el-tag v-show="(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="danger" effect="dark">未设置密码</el-tag>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-              <el-row>
-                <el-form-item label="生效日期区间：" prop="">
-                  <el-date-picker
-                    v-model="dataJson.tempJson.user.datetimerange"
-                    type="datetimerange"
-                    :picker-options="settings.pickerOptions"
-                    range-separator="至"
-                    start-placeholder="生效开始日期"
-                    end-placeholder="生效结束日期"
-                    align="right"
-                    style="width: 100%"
+            <el-row>
+              <el-form-item label="生效日期区间：" prop="">
+                <el-date-picker
+                  v-model="dataJson.tempJson.user.datetimerange"
+                  type="datetimerange"
+                  :picker-options="settings.pickerOptions"
+                  range-separator="至"
+                  start-placeholder="生效开始日期"
+                  end-placeholder="生效结束日期"
+                  align="right"
+                  style="width: 100%"
+                  :disabled="!isAccountLoginType"
+                />
+              </el-form-item>
+            </el-row>
+
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="登录用户类型：" prop="type">
+                  <select-dict v-model="dataJson.tempJson.user.type" :para="CONSTANTS.DICT_USR_LOGIN_TYPE" init-placeholder="请选择登录用户类型" :disabled="!isAccountLoginType" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="是否删除：" prop="is_del">
+                  <el-switch
+                    v-model="dataJson.tempJson.user.is_del"
+                    active-color="#ff4949"
+                    inactive-color="#dcdfe6"
+                    active-text="已删除"
+                    inactive-text="未删除"
                     :disabled="!isAccountLoginType"
                   />
                 </el-form-item>
-              </el-row>
+              </el-col>
+            </el-row>
 
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="登录用户类型：" prop="type">
-                    <select-dict v-model="dataJson.tempJson.user.type" :para="CONSTANTS.DICT_USR_LOGIN_TYPE" init-placeholder="请选择登录用户类型" :disabled="!isAccountLoginType" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="是否删除：" prop="is_del">
-                    <el-switch
-                      v-model="dataJson.tempJson.user.is_del"
-                      active-color="#ff4949"
-                      inactive-color="#dcdfe6"
-                      active-text="已删除"
-                      inactive-text="未删除"
-                      :disabled="!isAccountLoginType"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="用户锁定时间：" prop="locked_time">
+                  <el-date-picker v-model="dataJson.tempJson.user.locked_time" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" :disabled="!isAccountLoginType" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="是否锁定：" prop="is_lock">
+                  <el-switch
+                    v-model="dataJson.tempJson.user.is_lock"
+                    active-color="#ff4949"
+                    inactive-color="#dcdfe6"
+                    active-text="已锁定"
+                    inactive-text="未锁定"
+                    :disabled="!isAccountLoginType"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="用户锁定时间：" prop="locked_time">
-                    <el-date-picker v-model="dataJson.tempJson.user.locked_time" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" :disabled="!isAccountLoginType" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="是否锁定：" prop="is_lock">
-                    <el-switch
-                      v-model="dataJson.tempJson.user.is_lock"
-                      active-color="#ff4949"
-                      inactive-color="#dcdfe6"
-                      active-text="已锁定"
-                      inactive-text="未锁定"
-                      :disabled="!isAccountLoginType"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="登录错误次数：" prop="err_count">
+                  <el-input v-model.trim="dataJson.tempJson.user.err_count" disabled placeholder="[无]" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="是否修改过密码：" prop="is_changed_pwd">
+                  <el-switch
+                    v-model="dataJson.tempJson.user.is_changed_pwd"
+                    active-color="#ff4949"
+                    inactive-color="#dcdfe6"
+                    active-text="已修改"
+                    inactive-text="未修改"
+                    :disabled="!isAccountLoginType"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="登录错误次数：" prop="err_count">
-                    <el-input v-model.trim="dataJson.tempJson.user.err_count" disabled placeholder="[无]" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="是否修改过密码：" prop="is_changed_pwd">
-                    <el-switch
-                      v-model="dataJson.tempJson.user.is_changed_pwd"
-                      active-color="#ff4949"
-                      inactive-color="#dcdfe6"
-                      active-text="已修改"
-                      inactive-text="未修改"
-                      :disabled="!isAccountLoginType"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="最后登录时间：" prop="last_login_date">
-                    <el-input v-model.trim="dataJson.tempJson.user.last_login_date" disabled placeholder="[无]" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12" />
-              </el-row>
-            </div>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="最后登录时间：" prop="last_login_date">
+                  <el-input v-model.trim="dataJson.tempJson.user.last_login_date" disabled placeholder="[无]" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" />
+            </el-row>
 
             <el-form-item label="描述：" prop="descr">
               <el-input v-model.trim="dataJson.tempJson.user.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" placeholder="请输入" />
             </el-form-item>
+
+          </el-tab-pane>
+
+          <el-tab-pane>
+            <template slot="label">所属信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="xx">
+                  <select-grid-company />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" />
+            </el-row>
           </el-tab-pane>
 
           <el-tab-pane label="权限信息">
@@ -430,10 +441,11 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
+import SelectGridCompany from './selectgrid/company'
 
 export default {
   name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog },
+  components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectGridCompany },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   data() {
