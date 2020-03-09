@@ -28,10 +28,11 @@
 
       <div>
         <el-input
-          ref="minusLeftFilterInput"
+          ref="refFocus"
           v-model="dataJson.filterText"
           class="filterInput"
           placeholder="输入关键字进行过滤"
+          @keyup.enter.native="handleButtonSearch"
         >
           <el-button slot="append" ref="buttonSearch" icon="el-icon-search" class="buttonSearch" @click="handleButtonSearch" />
         </el-input>
@@ -300,6 +301,12 @@ export default {
         if (newVal) {
           // 显示popover
           this.settings.isUpIcon = true
+          // 展开时，调用查询
+          this.getDataList()
+          // 控件focus
+          this.$nextTick(() => {
+            this.$refs['refFocus'].focus()
+          })
         } else {
           // 隐藏popover
           this.settings.isUpIcon = false
