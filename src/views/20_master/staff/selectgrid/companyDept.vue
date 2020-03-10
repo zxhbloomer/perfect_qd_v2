@@ -50,6 +50,7 @@
               node-key="id"
               default-expand-all
               class="tree"
+              @current-change="handleCurrentChange"
             >
               <span slot-scope="{ node, data }" class="custom-tree-node">
                 <span>
@@ -70,8 +71,8 @@
           <div class="floatLeft">
             <el-button type="danger" @click="doReset()">重置</el-button>
           </div>
-          <el-button plain>取 消</el-button>
-          <el-button @click="doInsert()">确 定</el-button>
+          <el-button plain :disabled="settings.listLoading" @click="settings.visible = false">取 消</el-button>
+          <el-button plain :disabled="settings.listLoading || settings.btnDisabledStatus.disabledOk " @click="doOk()">确 定</el-button>
         </el-footer>
       </el-container>
     </el-popover>
@@ -273,6 +274,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -297,9 +302,7 @@ export default {
         listLoading: true,
         // 按钮状态：是否可用
         btnDisabledStatus: {
-          disabledInsert: true,
-          disabledUpdate: true,
-          disabledDelete: true
+          disabledOk: true
         },
         defaultProps: {
           children: 'children',
@@ -324,12 +327,7 @@ export default {
         if (newVal) {
           // 显示popover
           this.settings.isUpIcon = true
-          // 展开时，调用查询
-          this.getDataList()
-          // 控件focus
-          this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
-          })
+          this.initCreated()
         } else {
           // 隐藏popover
           this.settings.isUpIcon = false
@@ -371,6 +369,26 @@ export default {
   methods: {
     // 页面初始化
     initCreated() {
+      // 初始化
+      this.dataJson = {
+        // 下拉选项json
+        selectOptions: [],
+        filterText: '',
+        treeData: [],
+        // 单条数据 json
+        currentJson: null,
+        tempJson: {
+          org_type: ''
+        },
+        tempJsonOriginal: null
+      }
+      this.settings.btnDisabledStatus.disabledOk = true
+      // 展开时，调用查询
+      this.getDataList()
+      // 控件focus
+      this.$nextTick(() => {
+        this.$refs['refFocus'].focus()
+      })
     },
     // 单击事件
     handleClick() {
@@ -386,6 +404,9 @@ export default {
       this.getDataList()
     },
     getDataList() {
+      if (this.settings.visible === false) {
+        return
+      }
       // 查询逻辑
       this.settings.listLoading = true
       getTreeListApi(this.dataJson.searchForm).then(response => {
@@ -418,8 +439,25 @@ export default {
         })
       }
     },
-    handleDoubleClick() {
-      alert(1)
+    // 点击确定按钮
+    doOk() {
+      this.settings.visible = false
+    },
+    // 当前选中节点变化时触发的事件
+    handleCurrentChange(row) {
+      this.dataJson.currentJson = Object.assign({}, row) // copy obj
+      this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
+      this.dataJson.tempJson = Object.assign({}, row) // copy obj
+      this.dataJson.currentJson = this.$refs.treeObject.getCurrentNode()
+      this.dataJson.currentJson.currentkey = this.$refs.treeObject.getCurrentKey()
+      this.settings.btnDisabledStatus.disabledOk = true
+      if (this.type === this.dataJson.currentJson.type) {
+        this.settings.btnDisabledStatus.disabledOk = false
+      }
+    },
+    // 重置
+    doReset() {
+      this.initCreated()
     }
   }
 }

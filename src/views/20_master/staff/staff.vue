@@ -371,7 +371,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="xx">
-                  <select-grid-company />
+                  <select-company-dept :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />
@@ -441,11 +441,11 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
-import SelectGridCompany from './selectgrid/company'
+import SelectCompanyDept from './selectgrid/companyDept'
 
 export default {
   name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectGridCompany },
+  components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   data() {
