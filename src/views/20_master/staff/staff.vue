@@ -885,8 +885,8 @@ export default {
     handleUpdate() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
       this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
-      this.getUserBeanById()
-
+      var userData = this.getUserBeanById()
+      this.dataJson.tempJson.user = Object.assign({}, userData)
       if (this.dataJson.tempJson.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
@@ -1207,7 +1207,8 @@ export default {
     // -------------------不同的页签，标签进行的验证 s------------------
     getUserBeanById() {
       getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
-        this.dataJson.tempJson.user = Object.assign({}, response.data)
+        // this.dataJson.tempJson.user = Object.assign({}, response.data)
+        return response.data
       })
     },
     handleSexDictChange(val) {
