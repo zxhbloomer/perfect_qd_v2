@@ -24,46 +24,56 @@
       :title="title"
       width="400"
       trigger="manual"
+      popper-class="popper-class"
     >
-
-      <div>
-        <el-input
-          ref="refFocus"
-          v-model="dataJson.filterText"
-          class="filterInput"
-          placeholder="输入关键字进行过滤"
-          @keyup.enter.native="handleButtonSearch"
-        >
-          <el-button slot="append" ref="buttonSearch" icon="el-icon-search" class="buttonSearch" @click="handleButtonSearch" />
-        </el-input>
-        <div style="overflow-y:auto;overflow-x:auto;" class="mytree">
-          <el-tree
-            ref="treeObject"
-            :data="dataJson.treeData"
-            :props="dataJson.defaultProps"
-            :filter-node-method="filterNode"
-            :expand-on-click-node="false"
-            :indent="0"
-            highlight-current
-            node-key="id"
-            default-expand-all
-            class="tree"
+      <el-container>
+        <el-header>请选择</el-header>
+        <el-main>
+          <el-input
+            ref="refFocus"
+            v-model="dataJson.filterText"
+            class="filterInput"
+            placeholder="输入关键字进行过滤"
+            @keyup.enter.native="handleButtonSearch"
           >
-            <span slot-scope="{ node, data }" class="custom-tree-node">
-              <span>
-                <svg-icon v-if="data.type === '10'" icon-class="perfect-icon-tenant" class="el-icon--right" />
-                <svg-icon v-else-if="data.type === '20'" icon-class="perfect-icon-group" class="el-icon--right" />
-                <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
-                <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
-                <svg-icon v-else-if="data.type === '50'" icon-class="perfect-icon-position" class="el-icon--right" />
-                {{ node.label }}
+            <el-button slot="append" ref="buttonSearch" icon="el-icon-search" class="buttonSearch" @click="handleButtonSearch" />
+          </el-input>
+          <div style="overflow-y:auto;overflow-x:auto;" class="mytree">
+            <el-tree
+              ref="treeObject"
+              :data="dataJson.treeData"
+              :props="dataJson.defaultProps"
+              :filter-node-method="filterNode"
+              :expand-on-click-node="false"
+              :indent="0"
+              highlight-current
+              node-key="id"
+              default-expand-all
+              class="tree"
+            >
+              <span slot-scope="{ node, data }" class="custom-tree-node">
+                <span>
+                  <svg-icon v-if="data.type === '10'" icon-class="perfect-icon-tenant" class="el-icon--right" />
+                  <svg-icon v-else-if="data.type === '20'" icon-class="perfect-icon-group" class="el-icon--right" />
+                  <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
+                  <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
+                  <svg-icon v-else-if="data.type === '50'" icon-class="perfect-icon-position" class="el-icon--right" />
+                  {{ node.label }}
+                </span>
+                <span>[{{ data.type_text }}]</span>
               </span>
-              <span>[{{ data.type_text }}]</span>
-            </span>
-          </el-tree>
-        </div>
-      </div>
-
+            </el-tree>
+          </div>
+        </el-main>
+        <el-footer style="text-align:right">
+          <el-divider />
+          <div class="floatLeft">
+            <el-button type="danger" @click="doReset()">重置</el-button>
+          </div>
+          <el-button plain>取 消</el-button>
+          <el-button @click="doInsert()">确 定</el-button>
+        </el-footer>
+      </el-container>
     </el-popover>
   </div>
 </template>
@@ -71,6 +81,12 @@
 <style>
   .pointer_cursor {
     cursor:pointer
+  }
+  .popper-class{
+    padding: 0;
+  }
+  .popper-class[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: #115aa5;
   }
 </style>
 
@@ -84,6 +100,13 @@
 </style>
 
 <style scoped>
+.el-header {
+  padding: 10px 10px 10px 10px;
+  background: #115aa5;
+  color: #fff;
+  height: 100% !important;
+}
+
 .treeStyle {
   overflow: auto;
   border: 1px solid #ebeef5;
@@ -394,6 +417,9 @@ export default {
           this.$refs.treeObject.filter(this.dataJson.filterText)
         })
       }
+    },
+    handleDoubleClick() {
+      alert(1)
     }
   }
 }
