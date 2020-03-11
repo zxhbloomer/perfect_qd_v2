@@ -371,7 +371,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="xx">
-                  <select-company-dept :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                  <select-company-dept placeholder="请选择" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />

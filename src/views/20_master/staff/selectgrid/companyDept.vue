@@ -7,8 +7,6 @@
       readonly
       style="cursor:pointer"
       @click.native="handleClick"
-      @keydown.native.down.stop.prevent="navigateOptions('next')"
-      @keydown.native.up.stop.prevent="navigateOptions('prev')"
       @keydown.native.enter.prevent="handleClick"
       @keydown.native.esc.stop.prevent="settings.visible = false"
       @keydown.native.tab="settings.visible = false"
@@ -27,7 +25,7 @@
       popper-class="popper-class"
     >
       <el-container>
-        <el-header>请选择</el-header>
+        <el-header>请选择{{ showTitle }}</el-header>
         <el-main>
           <el-input
             ref="refFocus"
@@ -318,6 +316,16 @@ export default {
     },
     iconClass() {
       return (this.settings.visible ? 'arrow-up is-reverse' : 'arrow-up')
+    },
+    showTitle() {
+      switch (this.type) {
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+          return '企业'
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+          return '部门'
+        default:
+          return ''
+      }
     }
   },
   // 监听器
