@@ -22,6 +22,7 @@
       placement="top"
       width="420"
       title="高级查询"
+      popper-class="perfect_popper"
     >
       <el-form
         :inline="true"
@@ -38,6 +39,7 @@
         <el-form-item label="">
           <el-input v-model.trim="dataJson.searchForm.simple_name" clearable placeholder="简称" />
         </el-form-item>
+        <el-divider />
         <div style="text-align: right; margin: 0">
           <el-button type="text">重置</el-button>
           <el-button type="primary">提交</el-button>

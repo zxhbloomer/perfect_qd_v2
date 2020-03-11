@@ -39,12 +39,14 @@
   left: 50%;
   margin-right: 3px;
   border-top-width: 0;
-  border-bottom-color: #b7b7b7; }
-  .el-popper[x-placement^="bottom"] .popper__arrow::after {
-    top: 1px;
-    margin-left: -6px;
-    border-top-width: 0;
-    border-bottom-color: #fff; }
+  border-bottom-color: #b7b7b7; 
+}
+.el-popper[x-placement^="bottom"] .popper__arrow::after {
+  top: 1px;
+  margin-left: -6px;
+  border-top-width: 0;
+  border-bottom-color: #fff; 
+}
 
 .el-popper[x-placement^="right"] {
   margin-left: 12px; }
@@ -91,15 +93,40 @@
   text-align: justify;
   font-size: 14px;
   -webkit-box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5); }
-  .el-popover--plain {
-    padding: 18px 20px; }
-  .el-popover__title {
-    color: #303133;
-    font-size: 16px;
-    line-height: 1;
-    margin-bottom: 12px; }
-  .el-popover__reference:focus:not(.focusing), .el-popover__reference:focus:hover {
-    outline-width: 0; }
-  .el-popover:focus:active, .el-popover:focus {
-    outline-width: 0; }
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5); 
+}
+.el-popover--plain {
+  padding: 18px 20px; 
+}
+.el-popover__title {
+  color: #303133;
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.el-popover__reference:focus:not(.focusing), .el-popover__reference:focus:hover {
+  outline-width: 0; 
+}
+.el-popover:focus:active, .el-popover:focus {
+  outline-width: 0; 
+}
+
+/** 自定义添加演示，蓝色  */
+.perfect_popper{
+  padding: 0;
+}
+.perfect_popper[x-placement^="bottom"] .popper__arrow::after {
+  border-bottom-color: #115aa5;
+}
+.perfect_popper .el-popover__title {
+  font-size: 16px;
+  line-height: 1;
+  padding: 10px 10px 10px 10px;
+  background: #115aa5;
+  color: #fff;
+  height: 100% !important;
+}
+
+.perfect_popper > form {
+  padding: 10px 10px 10px 10px;
+}

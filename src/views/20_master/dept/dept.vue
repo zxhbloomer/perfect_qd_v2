@@ -26,6 +26,7 @@
       placement="top"
       width="420"
       title="高级查询"
+      popper-class="perfect_popper"
     >
       <el-form
         :inline="true"
@@ -38,6 +39,7 @@
         <el-form-item v-show="meDialogSetting.dialogStatus" label="">
           <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
         </el-form-item>
+        <el-divider />
         <div style="text-align: right; margin: 0">
           <el-button type="text" @click="doResetSearch()">重置</el-button>
           <el-button type="primary" @click="handleSearch">提交</el-button>

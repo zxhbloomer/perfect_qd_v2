@@ -26,6 +26,7 @@
       placement="top"
       width="420"
       title="高级查询"
+      popper-class="perfect_popper"
     >
       <el-form
         :inline="true"
@@ -45,6 +46,7 @@
         <el-form-item label="">
           <delete-type-normal v-model="dataJson.searchForm.is_del" />
         </el-form-item>
+        <el-divider />
         <div style="text-align: right; margin: 0">
           <el-button type="text" @click="doResetSearch()">重置</el-button>
           <el-button type="primary" @click="handleSearch">提交</el-button>

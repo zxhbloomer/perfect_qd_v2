@@ -45,6 +45,7 @@
             style="width: 100%"
           />
         </el-form-item>
+        <el-divider />
         <div style="text-align: right; margin: 0">
           <el-button type="text" @click="doResetSearch()">重置</el-button>
           <el-button type="primary" @click="handleSearch">提交</el-button>
