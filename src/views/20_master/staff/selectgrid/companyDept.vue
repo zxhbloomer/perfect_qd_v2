@@ -4,6 +4,7 @@
       ref="refSelectGrid"
       v-popover:popover
       :placeholder="placeholder"
+      :value="value"
       readonly
       style="cursor:pointer"
       @click.native="handleClick"
@@ -12,6 +13,7 @@
       @keydown.native.tab="settings.visible = false"
     >
       <template slot="suffix">
+        <i v-if="isDataSet" class="el-input__icon el-icon-circle-close el-input__clear" @click="clearMe" />
         <i v-show="!showClose" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" />
         <i v-if="showClose" class="el-select__caret el-input__icon el-icon-circle-close" @click="handleClearClick" />
       </template>
@@ -43,7 +45,7 @@
               cancel-button-text="取消"
               icon="el-icon-info"
               icon-color="red"
-              title="没找到数据，点击确定跳转到组织机构进行添加？"
+              title="没找到数据，点击确定后跳转到组织机构进行添加？请注意保存。"
               @onConfirm="handleForward"
             >
               <el-button slot="reference" type="primary" icon="el-icon-edit" style="padding:7px 7px; height:27px" />
@@ -83,7 +85,7 @@
             <el-button type="danger" @click="doReset()">重置</el-button>
           </div>
           <el-button plain :disabled="settings.listLoading" @click="settings.visible = false">取 消</el-button>
-          <el-button plain :disabled="settings.listLoading || settings.btnDisabledStatus.disabledOk " @click="doOk()">确 定</el-button>
+          <el-button plain :disabled="settings.listLoading || settings.btnDisabledStatus.disabledOk " type="primary" @click="handleOk()">确 定</el-button>
         </el-footer>
       </el-container>
     </el-popover>
@@ -272,6 +274,7 @@
 
 <script>
 import { getTreeListApi } from '@/api/20_master/org/org'
+import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   name: 'SelectGrid', // 页面id，和router中的name需要一致，作为缓存
@@ -289,6 +292,11 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    // 返回和设定的值
+    value: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -326,6 +334,13 @@ export default {
     showClose() {
       const hasValue = false
       return hasValue
+    },
+    isDataSet() {
+      if (isNotEmpty(this.value)) {
+        return true
+      } else {
+        return false
+      }
     },
     iconClass() {
       return (this.settings.visible ? 'arrow-up is-reverse' : 'arrow-up')
@@ -403,6 +418,7 @@ export default {
       //   },
       //   tempJsonOriginal: null
       // }
+      debugger
       Object.assign(this.$data.dataJson, this.$options.data.call(this).dataJson)
       this.settings.btnDisabledStatus.disabledOk = true
       // 展开时，调用查询
@@ -462,7 +478,10 @@ export default {
       }
     },
     // 点击确定按钮
-    doOk() {
+    handleOk() {
+      // 关闭父窗体（弹出框）
+      this.$emit('onReturnData', this.dataJson.currentJson)
+      this.value = this.dataJson.currentJson.name
       this.settings.visible = false
     },
     // 当前选中节点变化时触发的事件
@@ -483,7 +502,17 @@ export default {
     },
     // 点击跳转到组织机构页面
     handleForward() {
+      // 关闭父窗体（弹出框）
+      this.$emit('closeParentDialog')
+
+      // 通知路由，打开组织机构页面
       this.$router.push({ name: this.PROGRAMS.P_ORG })
+    },
+    // 删除数据
+    clearMe() {
+      debugger
+      this.value = null
+      this.$emit('onReturnData', { company_id: '', company_name: '', company_simple_name: '' })
     }
   }
 }

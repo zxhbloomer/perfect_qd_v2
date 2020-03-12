@@ -371,12 +371,18 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="所属公司">
-                  <select-company-dept placeholder="请选择所属公司" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                  <select-company-dept
+                    v-model.trim="dataJson.tempJson.company_simple_name"
+                    placeholder="请选择所属公司"
+                    :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY"
+                    @closeParentDialog="handleDialogClose"
+                    @onReturnData="handleReturnData"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="默认部门">
-                  <select-company-dept placeholder="请选择默认部门" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                  <select-company-dept v-model.trim="dataJson.tempJson.user.name" placeholder="请选择默认部门" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />
@@ -395,7 +401,7 @@
         <div class="floatLeft">
           <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
-        <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取 消</el-button>
+        <el-button plain :disabled="settings.listLoading" @click="handleDialogClose">取 消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确 定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确 定</el-button>
@@ -1234,8 +1240,18 @@ export default {
     },
     handlePsdDialogCloseCancel() {
       this.popSettingsData.searchDialogDataTwo.dialogVisible = false
-    }
+    },
     // -------------------不同的页签，标签进行的验证 e------------------
+    // 弹出框关闭
+    handleDialogClose() {
+      this.popSettingsData.dialogFormVisible = false
+    },
+    // 返回数据后，并关闭弹出页面
+    handleReturnData(val) {
+      this.dataJson.tempJson.company_id = val.id
+      this.dataJson.tempJson.company_name = val.name
+      this.dataJson.tempJson.company_simple_name = val.simple_name
+    }
 
     // -------------------验证部分------------------
     // validateLogin_name(rule, value, callback) {
