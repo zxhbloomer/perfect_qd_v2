@@ -370,8 +370,13 @@
             <template slot="label">所属信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="xx">
-                  <select-company-dept placeholder="请选择" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                <el-form-item label="所属公司">
+                  <select-company-dept placeholder="请选择所属公司" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="默认部门">
+                  <select-company-dept placeholder="请选择默认部门" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />

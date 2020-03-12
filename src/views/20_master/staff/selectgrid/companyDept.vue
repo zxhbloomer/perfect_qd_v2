@@ -32,10 +32,23 @@
             v-model="dataJson.filterText"
             class="filterInput"
             placeholder="输入关键字进行过滤"
+            style="width:calc(100% - 40px)"
             @keyup.enter.native="handleButtonSearch"
           >
             <el-button slot="append" ref="buttonSearch" icon="el-icon-search" class="buttonSearch" @click="handleButtonSearch" />
           </el-input>
+          <div class="floatRight">
+            <el-popconfirm
+              confirm-button-text="确定"
+              cancel-button-text="取消"
+              icon="el-icon-info"
+              icon-color="red"
+              title="没找到数据，点击确定跳转到组织机构进行添加？"
+              @onConfirm="handleForward"
+            >
+              <el-button slot="reference" type="primary" icon="el-icon-edit" style="padding:7px 7px; height:27px" />
+            </el-popconfirm>
+          </div>
           <div style="overflow-y:auto;overflow-x:auto;" class="mytree">
             <el-tree
               ref="treeObject"
@@ -466,6 +479,10 @@ export default {
     // 重置
     doReset() {
       this.initCreated()
+    },
+    // 点击跳转到组织机构页面
+    handleForward() {
+      this.$router.push({ name: 'P00000170' })
     }
   }
 }
