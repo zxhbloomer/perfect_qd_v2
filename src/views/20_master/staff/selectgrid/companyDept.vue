@@ -13,7 +13,7 @@
       @keydown.native.tab="settings.visible = false"
     >
       <template slot="suffix">
-        <i v-if="isDataSet" class="el-input__icon el-icon-circle-close el-input__clear" @click="clearMe" />
+        <i v-if="isDataSet" class="el-input__icon el-icon-circle-close el-input__clear" @click.stop="clearMe" />
         <i v-show="!showClose" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" />
         <i v-if="showClose" class="el-select__caret el-input__icon el-icon-circle-close" @click="handleClearClick" />
       </template>
@@ -418,7 +418,6 @@ export default {
       //   },
       //   tempJsonOriginal: null
       // }
-      debugger
       Object.assign(this.$data.dataJson, this.$options.data.call(this).dataJson)
       this.settings.btnDisabledStatus.disabledOk = true
       // 展开时，调用查询
@@ -510,7 +509,6 @@ export default {
     },
     // 删除数据
     clearMe() {
-      debugger
       this.value = null
       this.$emit('onReturnData', { company_id: '', company_name: '', company_simple_name: '' })
     }
