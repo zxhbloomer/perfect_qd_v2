@@ -269,7 +269,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import SimpleUpload from '@/layout/components/00_common/SimpleUpload'
 
 export default {
-  name: this.PROGRAMS.P_ROLE, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000000', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SimpleUpload },
   directives: { elDragDialog },
   mixins: [resizeMixin],

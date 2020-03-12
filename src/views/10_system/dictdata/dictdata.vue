@@ -302,7 +302,7 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import dicttypeDialog from '@/views/10_system/dicttype/dialog/dialog'
 
 export default {
-  name: this.PROGRAMS.P_DICT_DATA, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000050', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SimpleUpload, dicttypeDialog, DeleteTypeNormal },
   directives: { elDragDialog },
   mixins: [resizeMixin],
@@ -434,7 +434,7 @@ export default {
         // 弹出窗口会否显示
         dialogFormVisible: false,
         // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=' + this.PROGRAMS.P_DICT_DATA,
+        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000050',
         // 错误数据文件
         errorFileUrl: ''
       }

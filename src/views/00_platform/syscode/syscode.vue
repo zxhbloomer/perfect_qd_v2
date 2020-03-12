@@ -146,7 +146,7 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {
-  name: this.PROGRAMS.P_SYSCODE, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000180', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

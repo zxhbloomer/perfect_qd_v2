@@ -449,7 +449,7 @@ import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
 import SelectCompanyDept from './selectgrid/companyDept'
 
 export default {
-  name: this.PROGRAMS.P_STAFF, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
   directives: { elDragDialog },
   mixins: [resizeMixin],
@@ -642,7 +642,7 @@ export default {
         // 弹出窗口会否显示
         dialogFormVisible: false,
         // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=' + this.PROGRAMS.P_DICT_TYPE,
+        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
         // 错误数据文件
         errorFileUrl: ''
       },

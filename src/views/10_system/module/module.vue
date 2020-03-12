@@ -348,7 +348,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 
 export default {
-  name: this.PROGRAMS.P_PAGE, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000040', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, resourceDialog, SelectDicts, DeleteTypeNormal, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

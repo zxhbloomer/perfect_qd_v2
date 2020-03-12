@@ -332,7 +332,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import moduleDialog from '@/views/10_system/module/dialog/dialog'
 
 export default {
-  name: this.PROGRAMS.P_MENU, // 页面id，和router中的name需要一致，作为缓存
+  name: 'P00000120', // 页面id，和router中的name需要一致，作为缓存
   components: { SelectDict, moduleDialog },
   directives: { elDragDialog },
   mixins: [resizeMixin],
@@ -461,7 +461,7 @@ export default {
         // 弹出窗口会否显示
         dialogFormVisible: false,
         // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=' + this.PROGRAMS.P_DICT_TYPE,
+        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
         // 错误数据文件
         errorFileUrl: ''
       },
