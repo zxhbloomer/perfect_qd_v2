@@ -18,7 +18,7 @@
 import resizeMixin from './tenantResizeHandlerMixin'
 
 export default {
-  name: 'P00000080', // 页面id，和router中的name需要一致，作为缓存
+  name: this.PROGRAMS.P_TENANT, // 页面id，和router中的name需要一致，作为缓存
   components: {
     left: () => import('./left/left'), // 左侧tree
     right: () => import('./right/right') // 右侧list

@@ -157,7 +157,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import noMoreClick from '@/directive/noMoreClick'
 
 export default {
-  name: 'P00000060', // 页面id，和router中的name需要一致，作为缓存
+  name: this.PROGRAMS.P_CONFIG, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination },
   directives: { elDragDialog, noMoreClick },
   mixins: [resizeMixin],

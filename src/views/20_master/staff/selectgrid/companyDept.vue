@@ -482,7 +482,7 @@ export default {
     },
     // 点击跳转到组织机构页面
     handleForward() {
-      this.$router.push({ name: 'P00000170' })
+      this.$router.push({ name: this.PROGRAMS.P_ORG })
     }
   }
 }

@@ -246,7 +246,7 @@ export default {
         // 弹出窗口会否显示
         dialogFormVisible: false,
         // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
+        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=' + this.PROGRAMS.P_DICT_TYPE,
         // 错误数据文件
         errorFileUrl: ''
       }

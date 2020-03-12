@@ -30,7 +30,8 @@ import * as filters from './filters' // global filters
 
 // add by zxh
 import commonFunction from './common/commonFunction'
-import constants from './common/constants/constants'
+import constants_type from './common/constants/constants_dict'
+import constants_program from './common/constants/constants_program'
 import EventProxy from 'vue-event-proxy'
 import global from './common/global/global'
 // 引入组件和样式
@@ -39,7 +40,8 @@ import RouterTab from '@/components/RouterTab/install'
 Vue.use(RouterTab)
 
 Vue.use(commonFunction)
-Vue.prototype.CONSTANTS = constants
+Vue.prototype.CONSTANTS = constants_type
+Vue.prototype.PROGRAMS = constants_program
 Vue.prototype.GLOBAL = global
 Vue.use(EventProxy)
 
