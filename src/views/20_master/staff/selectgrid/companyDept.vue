@@ -391,18 +391,19 @@ export default {
     // 页面初始化
     initCreated() {
       // 初始化
-      this.dataJson = {
-        // 下拉选项json
-        selectOptions: [],
-        filterText: '',
-        treeData: [],
-        // 单条数据 json
-        currentJson: null,
-        tempJson: {
-          org_type: ''
-        },
-        tempJsonOriginal: null
-      }
+      // this.dataJson = {
+      //   // 下拉选项json
+      //   selectOptions: [],
+      //   filterText: '',
+      //   treeData: [],
+      //   // 单条数据 json
+      //   currentJson: null,
+      //   tempJson: {
+      //     org_type: ''
+      //   },
+      //   tempJsonOriginal: null
+      // }
+      Object.assign(this.$data.dataJson, this.$options.data.call(this).dataJson)
       this.settings.btnDisabledStatus.disabledOk = true
       // 展开时，调用查询
       this.getDataList()
