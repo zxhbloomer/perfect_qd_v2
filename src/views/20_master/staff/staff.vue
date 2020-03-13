@@ -376,13 +376,19 @@
                     placeholder="请选择所属公司"
                     :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY"
                     @closeParentDialog="handleDialogClose"
-                    @onReturnData="handleReturnData"
+                    @onReturnData="handleCompanyReturnData"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="默认部门">
-                  <select-company-dept v-model.trim="dataJson.tempJson.user.name" placeholder="请选择默认部门" :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY" />
+                  <select-company-dept
+                    v-model.trim="dataJson.tempJson.dept_simple_name"
+                    placeholder="请选择默认部门"
+                    :type="CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT"
+                    @closeParentDialog="handleDialogClose"
+                    @onReturnData="handleDeptReturnData"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />
@@ -1246,11 +1252,17 @@ export default {
     handleDialogClose() {
       this.popSettingsData.dialogFormVisible = false
     },
-    // 返回数据后，并关闭弹出页面
-    handleReturnData(val) {
+    // 返回数据后，并关闭弹出页面，企业
+    handleCompanyReturnData(val) {
       this.dataJson.tempJson.company_id = val.id
       this.dataJson.tempJson.company_name = val.name
       this.dataJson.tempJson.company_simple_name = val.simple_name
+    },
+    // 返回数据后，并关闭弹出页面，部门
+    handleDeptReturnData(val) {
+      this.dataJson.tempJson.dept_id = val.id
+      this.dataJson.tempJson.dept_name = val.name
+      this.dataJson.tempJson.dept_simple_name = val.simple_name
     }
 
     // -------------------验证部分------------------

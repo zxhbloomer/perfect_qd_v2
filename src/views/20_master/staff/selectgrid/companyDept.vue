@@ -2,9 +2,9 @@
   <div class="el-select">
     <el-input
       ref="refSelectGrid"
+      v-model.trim="dataJson.tempJson.inputData"
       v-popover:popover
       :placeholder="placeholder"
-      :value="value"
       readonly
       style="cursor:pointer"
       @click.native="handleClick"
@@ -309,7 +309,8 @@ export default {
         // 单条数据 json
         currentJson: null,
         tempJson: {
-          org_type: ''
+          org_type: '',
+          inputData: ''
         },
         tempJsonOriginal: null
       },
@@ -336,7 +337,7 @@ export default {
       return hasValue
     },
     isDataSet() {
-      if (isNotEmpty(this.value)) {
+      if (isNotEmpty(this.dataJson.tempJson.inputData)) {
         return true
       } else {
         return false
@@ -480,7 +481,7 @@ export default {
     handleOk() {
       // 关闭父窗体（弹出框）
       this.$emit('onReturnData', this.dataJson.currentJson)
-      this.value = this.dataJson.currentJson.name
+      this.dataJson.tempJson.inputData = this.dataJson.currentJson.name
       this.settings.visible = false
     },
     // 当前选中节点变化时触发的事件
@@ -509,7 +510,7 @@ export default {
     },
     // 删除数据
     clearMe() {
-      this.value = null
+      this.dataJson.tempJson.inputData = null
       this.$emit('onReturnData', { company_id: '', company_name: '', company_simple_name: '' })
     }
   }
