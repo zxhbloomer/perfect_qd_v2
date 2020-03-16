@@ -600,17 +600,37 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 点击跳转到组织机构页面
+    // 点击跳转到组织机构页面，并关闭本页面
     handleForward() {
-      // 通知路由，打开组织机构页面
-      this.$router.push({ name: this.PROGRAMS.P_ORG })
+      // this.$confirm('查看该员工详情，需要关闭当前页面，请注意保存！', '确认信息', {
+      // }).then(() => {
+      //   // 通知路由，打开组织机构页面
+      //   this.$router.push({ name: this.PROGRAMS.P_STAFF, params: { name: 11 }})
+      //   this.popSettingsData.dialogFormVisible = false
+      // }).catch(action => {
+
+      // })
+      console.log(111)
     },
     // 穿梭框增加按钮
     renderTransfer(h, option) {
       return (
+        // h('span',
+        //   option.label,
+        //   h('el-button',
+        //     {
+        //       props: {
+        //         type: 'primary',
+        //         icon: 'el-icon-edit',
+        //         style: 'padding:7px 7px; float: right'
+        //       },
+        //       on: { click: this.save }
+        //     }
+        //   )
+        // )
         <span>
           { option.label }
-          <el-button slot='reference' type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' click='handleForward' />
+          <el-button type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' v-on:click={this.handleForward()}/>
         </span>
       )
     }
