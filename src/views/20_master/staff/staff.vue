@@ -755,6 +755,9 @@ export default {
   },
   created() {
     this.initShow()
+    if (this.$route.params.name !== undefined) {
+      this.dataJson.searchForm.name = this.$route.params.name
+    }
   },
   mounted() {
     // 描绘完成

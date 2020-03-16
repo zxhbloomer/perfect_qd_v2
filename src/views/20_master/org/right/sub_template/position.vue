@@ -629,7 +629,7 @@ export default {
         // )
         <span>
           { option.label }
-          <el-button type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' on-click={() => this.handleForward('123')} />
+          <el-button type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' on-click={() => this.handleForward(option.label)} />
         </span>
       )
     }
