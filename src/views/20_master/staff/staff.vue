@@ -1254,13 +1254,13 @@ export default {
     },
     // 返回数据后，并关闭弹出页面，企业
     handleCompanyReturnData(val) {
-      this.dataJson.tempJson.company_id = val.id
+      this.dataJson.tempJson.company_id = val.serial_id
       this.dataJson.tempJson.company_name = val.name
       this.dataJson.tempJson.company_simple_name = val.simple_name
     },
     // 返回数据后，并关闭弹出页面，部门
     handleDeptReturnData(val) {
-      this.dataJson.tempJson.dept_id = val.id
+      this.dataJson.tempJson.dept_id = val.serial_id
       this.dataJson.tempJson.dept_name = val.name
       this.dataJson.tempJson.dept_simple_name = val.simple_name
     }

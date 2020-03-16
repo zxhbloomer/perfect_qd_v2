@@ -310,7 +310,7 @@ export default {
         currentJson: null,
         tempJson: {
           org_type: '',
-          inputData: ''
+          inputData: this.value
         },
         tempJsonOriginal: null
       },
