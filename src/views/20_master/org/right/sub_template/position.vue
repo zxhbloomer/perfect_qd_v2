@@ -600,12 +600,17 @@ export default {
         this.settings.listLoading = false
       })
     },
+    // 点击跳转到组织机构页面
+    handleForward() {
+      // 通知路由，打开组织机构页面
+      this.$router.push({ name: this.PROGRAMS.P_ORG })
+    },
     // 穿梭框增加按钮
     renderTransfer(h, option) {
       return (
         <span>
           { option.label }
-          <el-button slot='reference' type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' />
+          <el-button slot='reference' type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' click='handleForward' />
         </span>
       )
     }
