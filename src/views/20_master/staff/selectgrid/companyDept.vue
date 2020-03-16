@@ -310,6 +310,7 @@ export default {
         currentJson: null,
         tempJson: {
           org_type: '',
+          // 组件之间通讯，传值
           inputData: this.value
         },
         tempJsonOriginal: null
