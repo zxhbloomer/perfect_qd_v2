@@ -98,6 +98,7 @@
               :data="popSettingsData.transfer.staff_all"
               :titles="['未选择人员', '已选择人员']"
               :button-texts="['人员反选', '选择人员']"
+              :render-content="renderTransfer"
             />
           </el-col>
         </el-row>
@@ -598,6 +599,15 @@ export default {
         // this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
       })
+    },
+    // 穿梭框增加按钮
+    renderTransfer(h, option) {
+      return (
+        <span>
+          { option.label }
+          <el-button slot='reference' type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' />
+        </span>
+      )
     }
   }
 }
