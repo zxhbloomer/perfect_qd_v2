@@ -23,6 +23,7 @@
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">员工信息<el-badge v-show="dataJson.listData.staff_count>0" :value="dataJson.listData.staff_count" type="danger" /></template>
+        <staff-template :height="height - 42" />
       </el-tab-pane>
     </el-tabs>
 
@@ -77,11 +78,12 @@ import groupTemplate from '@/views/20_master/org/right/sub_template/group'
 import companyTemplate from '@/views/20_master/org/right/sub_template/company'
 import deptTemplate from '@/views/20_master/org/right/sub_template/dept'
 import positionTemplate from '@/views/20_master/org/right/sub_template/position'
+import staffTemplate from '@/views/20_master/org/right/sub_template/staff'
 // import { parseTime } from '@/utils'
 
 export default {
   name: 'P00000172', // 页面id，和router中的name需要一致，作为缓存
-  components: { orgTemplate, groupTemplate, companyTemplate, deptTemplate, positionTemplate },
+  components: { orgTemplate, groupTemplate, companyTemplate, deptTemplate, positionTemplate, staffTemplate },
   directives: { elDragDialog },
   props: {
     height: {

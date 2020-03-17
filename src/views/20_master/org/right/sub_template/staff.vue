@@ -20,12 +20,20 @@
         <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重置</el-button>
       </el-form-item>
     </el-form>
-
-    <el-button-group>
-      <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
-      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
-      <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleExport">导出</el-button>
-    </el-button-group>
+    <el-tabs type="card">
+      <el-tab-pane>
+        <template slot="label">当组织下所有员工<el-badge :value="100" type="danger" /></template>
+      </el-tab-pane>
+      <el-tab-pane>
+        <template slot="label">所有员工<el-badge :value="100" type="danger" /></template>
+      </el-tab-pane>
+      <el-tab-pane>
+        <template slot="label">所属公司未指定<el-badge :value="100" type="danger" /></template>
+      </el-tab-pane>
+      <el-tab-pane>
+        <template slot="label">默认部门未指定<el-badge :value="100" type="danger" /></template>
+      </el-tab-pane>
+    </el-tabs>
     <el-table
       ref="multipleTable"
       v-loading="settings.listLoading"
@@ -45,7 +53,6 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="员工姓名" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="simple_name" label="姓名简称" />
@@ -71,7 +78,6 @@
       </el-table-column>
       <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
-    <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
     <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
     <el-dialog
@@ -451,20 +457,18 @@
 <script>
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/staff/staff'
 import { getUserBeanByIdApi } from '@/api/user'
-import resizeMixin from './staffResizeHandlerMixin'
-import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
-import SelectCompanyDept from './selectgrid/companyDept'
+import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
 
 export default {
-  name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
+  // name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
+  components: { DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
   directives: { elDragDialog },
-  mixins: [resizeMixin],
+  mixins: [],
   data() {
     return {
       dataJson: {
@@ -540,7 +544,6 @@ export default {
         },
         // loading 状态
         listLoading: true,
-        tableHeight: this.setUIheight(),
         duration: 4000,
         // 日期类型下拉选项json
         pickerOptions: {

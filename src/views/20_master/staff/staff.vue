@@ -458,7 +458,7 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
-import SelectCompanyDept from './selectgrid/companyDept'
+import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
 
 export default {
   name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
