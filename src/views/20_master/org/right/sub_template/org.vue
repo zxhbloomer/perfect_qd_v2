@@ -514,7 +514,7 @@ export default {
     // table选择框
     handleSelectionChange(arr) {
       arr.forEach(function(val, index, arr) {
-        console.log(val, index, arr)
+        // console.log(val, index, arr)
       })
       this.dataJson.multipleSelection = arr
     },

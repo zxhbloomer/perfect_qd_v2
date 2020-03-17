@@ -89,8 +89,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-divider />
-        <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取 消</el-button>
-        <!-- <el-button plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledOK " @click="doOk()">确 定</el-button> -->
+        <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取消</el-button>
+        <!-- <el-button plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledOK " @click="doOk()">确定</el-button> -->
       </div>
     </el-dialog>
 

@@ -467,7 +467,7 @@ export default {
       alert('TODO:xxx')
     },
     handleTabsClick(tab, event) {
-      console.log(tab, event)
+      // console.log(tab, event)
     }
   }
 }

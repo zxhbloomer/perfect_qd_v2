@@ -84,8 +84,8 @@
           <div class="floatLeft">
             <el-button type="danger" @click="doReset()">重置</el-button>
           </div>
-          <el-button plain :disabled="settings.listLoading" @click="settings.visible = false">取 消</el-button>
-          <el-button plain :disabled="settings.listLoading || settings.btnDisabledStatus.disabledOk " type="primary" @click="handleOk()">确 定</el-button>
+          <el-button plain :disabled="settings.listLoading" @click="settings.visible = false">取消</el-button>
+          <el-button plain :disabled="settings.listLoading || settings.btnDisabledStatus.disabledOk " type="primary" @click="handleOk()">确定</el-button>
         </el-footer>
       </el-container>
     </el-popover>

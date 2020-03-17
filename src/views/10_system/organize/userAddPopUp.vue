@@ -66,8 +66,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogStatus==='create'?createData():doUpdateData()">确 定</el-button>
-        <el-button type="info" @click="doCloseDialog()">取 消</el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():doUpdateData()">确定</el-button>
+        <el-button type="info" @click="doCloseDialog()">取消</el-button>
       </div>
     </el-dialog>
   </div>
