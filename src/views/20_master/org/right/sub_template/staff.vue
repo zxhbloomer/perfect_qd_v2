@@ -20,7 +20,7 @@
         <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-tabs type="card">
+    <el-tabs type="card" class="floatLeft">
       <el-tab-pane>
         <template slot="label">当组织下所有员工<el-badge :value="100" type="danger" /></template>
       </el-tab-pane>
