@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <el-form
       ref="minusForm"
       :inline="true"
@@ -26,12 +26,6 @@
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">所有员工<el-badge :value="100" type="danger" /></template>
-      </el-tab-pane>
-      <el-tab-pane>
-        <template slot="label">所属公司未指定<el-badge :value="100" type="danger" /></template>
-      </el-tab-pane>
-      <el-tab-pane>
-        <template slot="label">默认部门未指定<el-badge :value="100" type="danger" /></template>
       </el-tab-pane>
     </el-tabs>
     <el-table
