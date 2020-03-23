@@ -179,3 +179,15 @@ export function dragsaveApi(data) {
     data
   })
 }
+
+/**
+ * 组织架构：员工页签
+ * @param {*} data
+ */
+export function getStaffTabListApi(data) {
+  return request({
+    url: '/api/v1/org/staff/list',
+    method: 'post',
+    data
+  })
+}
