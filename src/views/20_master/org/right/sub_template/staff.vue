@@ -53,8 +53,8 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="sex_text" label="性别" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="birthday" label="生日" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="email" label="邮箱地址" />
-      <el-table-column show-overflow-tooltip :sort-orders="settings.sortOrders" min-width="150" prop="company_simple_name" label="所属公司" />
-      <el-table-column show-overflow-tooltip :sort-orders="settings.sortOrders" min-width="150" prop="dept_simple_name" label="默认部门" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_simple_name" label="所属公司" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_simple_name" label="默认部门" />
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
