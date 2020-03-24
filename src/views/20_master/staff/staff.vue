@@ -254,7 +254,6 @@
             </el-row>
             <el-row>
               <el-col :span="12">
-                {{ dataJson.tempJson.user }}
                 <el-form-item label="登录模式：" prop="login_type">
                   <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
                 </el-form-item>
@@ -903,10 +902,10 @@ export default {
       })
     },
     // 点击按钮 更新
-    handleUpdate() {
+    async handleUpdate() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
       this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
-      var userData = this.getUserBeanById()
+      var userData = await this.getUserBeanById()
       this.dataJson.tempJson.user = Object.assign({}, userData)
       if (this.dataJson.tempJson.id === undefined) {
         this.showErrorMsg('请选择一条数据')
@@ -1226,8 +1225,8 @@ export default {
       })
     },
     // -------------------不同的页签，标签进行的验证 s------------------
-    getUserBeanById() {
-      getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
+    async getUserBeanById() {
+      return await getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
         // this.dataJson.tempJson.user = Object.assign({}, response.data)
         return response.data
       })
