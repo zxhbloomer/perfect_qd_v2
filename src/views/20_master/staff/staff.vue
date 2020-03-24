@@ -22,9 +22,9 @@
     </el-form>
 
     <el-button-group>
-      <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新 增</el-button>
-      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修 改</el-button>
-      <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleExport">导 出</el-button>
+      <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleExport">导出</el-button>
     </el-button-group>
     <el-table
       ref="multipleTable"
@@ -254,6 +254,7 @@
             </el-row>
             <el-row>
               <el-col :span="12">
+                {{ dataJson.tempJson.user }}
                 <el-form-item label="登录模式：" prop="login_type">
                   <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
                 </el-form-item>
