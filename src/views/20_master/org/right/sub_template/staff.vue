@@ -34,7 +34,7 @@
       :data="dataJson.listData"
       :element-loading-text="'正在拼命加载中...'"
       element-loading-background="rgba(255, 255, 255, 0.5)"
-      :height="settings.tableHeight"
+      :height="height"
       stripe
       border
       fit
@@ -464,6 +464,12 @@ export default {
   components: { DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
   directives: { elDragDialog },
   mixins: [],
+  props: {
+    height: {
+      type: Number,
+      default: 200
+    }
+  },
   data() {
     return {
       dataJson: {
@@ -480,12 +486,6 @@ export default {
           code: '',
           is_del: '0', // 未删除
           org_code: '' // 左边树种的结点code
-        },
-        // 分页控件的json
-        paging: {
-          current: 1,
-          size: 20,
-          total: 0
         },
         // table使用的json
         listData: null,
@@ -847,13 +847,11 @@ export default {
       this.getDataList()
     },
     getDataList() {
-      this.dataJson.searchForm.pageCondition.current = this.dataJson.paging.current
-      this.dataJson.searchForm.pageCondition.size = this.dataJson.paging.size
       // 查询逻辑
       this.settings.listLoading = true
       getStaffTabListApi(this.dataJson.searchForm).then(response => {
         // 增加对象属性，columnTypeShowIcon，columnNameShowIcon
-        const recorders = response.data.records
+        const recorders = response.data
         const newRecorders = recorders.map(v => {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
         })

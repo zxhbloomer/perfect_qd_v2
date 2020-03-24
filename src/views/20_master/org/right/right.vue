@@ -23,7 +23,7 @@
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">员工信息<el-badge v-show="dataJson.listData.staff_count>0" :value="dataJson.listData.staff_count" type="danger" /></template>
-        <staff-template :height="height - 42" />
+        <staff-template :height="height - 57" />
       </el-tab-pane>
     </el-tabs>
 
