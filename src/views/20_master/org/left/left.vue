@@ -484,7 +484,7 @@ export default {
   created() {
     // 初始化查询
     this.getDataList()
-    this.$on('global:getDataListLeft', _data => {
+    this.$on(this.EMITS.EMIT_ORG_LEFT, _data => {
       this.handleRefresh()
     })
   },
@@ -492,8 +492,8 @@ export default {
     this.initSearchButton()
     // 和right开始绑定事件
     // 描绘完成
-    this.$on('global:getDataList_loading', _data => { this.settings.listLoading = true })
-    this.$on('global:getDataList_loading_ok', _data => { this.settings.listLoading = false })
+    this.$on(this.EMITS.EMIT_LOADING, _data => { this.settings.listLoading = true })
+    this.$on(this.EMITS.EMIT_LOADING_OK, _data => { this.settings.listLoading = false })
   },
   methods: {
     // 选择or重置按钮的初始化
@@ -535,8 +535,8 @@ export default {
       this.dataJson.currentJson = this.$refs.treeObject.getCurrentNode()
       this.dataJson.currentJson.currentkey = this.$refs.treeObject.getCurrentKey()
       // 通知兄弟组件
-      this.$off('global:getDataList')
-      this.$emit('global:getDataList', row)
+      this.$off(this.EMITS.EMIT_ORG_CHANGE)
+      this.$emit(this.EMITS.EMIT_ORG_CHANGE, row)
     },
     // 兄弟组件发过来的调用请求
     handleDataChange() {
@@ -966,8 +966,8 @@ export default {
       this.doDragSave()
     },
     doDragSave() {
-      this.$off('global:getDataList_loading')
-      this.$emit('global:getDataList_loading')
+      this.$off(this.EMITS.EMIT_LOADING)
+      this.$emit(this.EMITS.EMIT_LOADING)
       dragsaveApi(this.dataJson.treeData).then((_data) => {
         this.$notify({
           title: '更新成功',
@@ -980,8 +980,8 @@ export default {
         this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
         this.getDataList()
-        this.$off('global:getDataList_loading_ok')
-        this.$emit('global:getDataList_loading_ok')
+        this.$off(this.EMITS.EMIT_LOADING_OK)
+        this.$emit(this.EMITS.EMIT_LOADING_OK)
       }, (_error) => {
         this.$notify({
           title: '更新错误',
@@ -991,8 +991,8 @@ export default {
         })
         // this.popSettingsData.dialogFormVisible = false
         this.settings.listLoading = false
-        this.$off('global:getDataList_loading_ok')
-        this.$emit('global:getDataList_loading_ok')
+        this.$off(this.EMITS.EMIT_LOADING_OK)
+        this.$emit(this.EMITS.EMIT_LOADING_OK)
       })
     },
     allowDrop(draggingNode, dropNode, type) {

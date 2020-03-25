@@ -100,7 +100,8 @@ export default {
           name: '',
           datetimerange: ''
         },
-
+        // 左侧树的数据
+        leftTreeData: null,
         // 级联选择器数据
         cascader: {
           data: null,
@@ -303,8 +304,13 @@ export default {
   },
   mounted() {
     // 描绘完成
-    this.$on('global:getDataList', _data => {
+    this.$on(this.EMITS.EMIT_ORG_CHANGE, _data => {
+      this.dataJson.leftTreeData = _data
       this.getDataList(_data)
+    })
+    // 当岗位成员有发生变更，接收通知
+    this.$on(this.EMITS.EMIT_ORG_POSITION_UPDATED, _data => {
+      this.getDataList(this.dataJson.leftTreeData)
     })
   },
   created() {
@@ -332,8 +338,8 @@ export default {
     },
     getDataList(val) {
       // 通知兄弟组件
-      this.$off('global:getDataList_loading')
-      this.$emit('global:getDataList_loading')
+      this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING)
+      this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING)
       // 查询逻辑
       this.settings.listLoading = true
       this.dataJson.searchForm = Object.assign({}, val)
@@ -342,8 +348,8 @@ export default {
         this.dataJson.listData = recorders
         this.settings.listLoading = false
         // 通知兄弟组件
-        this.$off('global:getDataList_loading_ok')
-        this.$emit('global:getDataList_loading_ok')
+        this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+        this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
       })
     },
     // 重置按钮

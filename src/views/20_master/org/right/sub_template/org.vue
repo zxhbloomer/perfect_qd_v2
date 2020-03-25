@@ -369,7 +369,7 @@ export default {
   },
   mounted() {
     // 描绘完成
-    this.$on('global:getDataList', _data => {
+    this.$on(this.EMITS.EMIT_ORG_CHANGE, _data => {
       this.getDataList(_data)
     })
   },
@@ -441,8 +441,8 @@ export default {
     },
     getDataList(val) {
       // 通知兄弟组件
-      this.$off('global:getDataList_loading')
-      this.$emit('global:getDataList_loading')
+      this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING)
+      this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING)
       // 查询逻辑
       this.settings.listLoading = true
       this.dataJson.searchForm = Object.assign({}, val)
@@ -454,8 +454,8 @@ export default {
         this.dataJson.listData = newRecorders
         this.settings.listLoading = false
         // 通知兄弟组件
-        this.$off('global:getDataList_loading_ok')
-        this.$emit('global:getDataList_loading_ok')
+        this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+        this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
       })
     },
     // 重置查询区域

@@ -723,7 +723,12 @@ export default {
   },
   mounted() {
     // 描绘完成
-    this.$on('global:getDataList', _data => {
+    this.$on(this.EMITS.EMIT_ORG_CHANGE, _data => {
+      this.dataJson.searchForm.org_code = _data.code
+      this.initShow()
+    })
+    // 当岗位成员有发生变更，接收通知
+    this.$on(this.EMITS.EMIT_ORG_POSITION_UPDATED, _data => {
       this.dataJson.searchForm.org_code = _data.code
       this.initShow()
     })

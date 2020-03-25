@@ -345,7 +345,7 @@ export default {
     },
     initShow() {
       // 初始化查询
-      this.$on('global:getDataList', _data => {
+      this.$on(this.EMITS.EMIT_ORG_CHANGE, _data => {
         this.dataJson.searchForm.condition = _data
         this.getDataList()
       })
@@ -416,8 +416,8 @@ export default {
     },
     getDataList() {
       // 通知兄弟组件
-      this.$off('global:getDataList_loading')
-      this.$emit('global:getDataList_loading')
+      this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING)
+      this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING)
       this.dataJson.searchForm.pageCondition.current = this.dataJson.paging.current
       this.dataJson.searchForm.pageCondition.size = this.dataJson.paging.size
       // 查询逻辑
@@ -430,8 +430,8 @@ export default {
         this.dataJson.paging.records = {}
         this.settings.listLoading = false
         // 通知兄弟组件
-        this.$off('global:getDataList_loading_ok')
-        this.$emit('global:getDataList_loading_ok')
+        this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+        this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
       })
     },
     // 关闭弹出窗口
@@ -471,8 +471,8 @@ export default {
       this.popSettingsData.searchDialogData.selectedDataJson = val
       this.popSettingsData.searchDialogData.dialogVisible = false
       // 通知兄弟组件
-      this.$off('global:getDataListLeft')
-      this.$emit('global:getDataListLeft')
+      this.$off(this.EMITS.EMIT_ORG_LEFT)
+      this.$emit(this.EMITS.EMIT_ORG_LEFT)
       // 查询数据并返回
     },
     // 集团：关闭对话框：取消
