@@ -22,10 +22,10 @@
     </el-form>
     <el-tabs type="card" class="floatLeft">
       <el-tab-pane>
-        <template slot="label">当组织下所有员工<el-badge :value="100" type="danger" /></template>
+        <template slot="label">当组织下所有员工<el-badge :value="dataJson.tabsCount.currentOrgStaffCount" type="danger" /></template>
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">所有员工<el-badge :value="100" type="danger" /></template>
+        <template slot="label">所有员工<el-badge :value="dataJson.tabsCount.allOrgStaffCount" type="danger" /></template>
       </el-tab-pane>
     </el-tabs>
     <el-table
@@ -102,12 +102,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="员工姓名：" prop="name">
-                  <el-input ref="refFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" placeholder="请输入" />
+                  <el-input ref="refFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="员工姓名拼音：" prop="name_py">
-                  <el-input v-model.trim="dataJson.tempJson.name_py" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name_py" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.name_py" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -115,12 +115,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="员工姓名简称：" prop="simple_name">
-                  <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="员工姓名简称拼音：" prop="simple_name_py">
-                  <el-input v-model.trim="dataJson.tempJson.simple_name_py" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name_py" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.simple_name_py" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -128,12 +128,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="身份证号码：" prop="id_card">
-                  <el-input v-model.trim="dataJson.tempJson.id_card" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.id_card" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.id_card" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="护照号码：" prop="passport">
-                  <el-input v-model.trim="dataJson.tempJson.passport" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.passport" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.passport" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -141,7 +141,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="名族：" prop="nation">
-                  <el-input v-model.trim="dataJson.tempJson.nation" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.nation" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.nation" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -178,7 +178,7 @@
             </el-row>
 
             <el-form-item label="描述：" prop="descr">
-              <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" placeholder="请输入" />
+              <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :disabled="true" placeholder="请输入" />
             </el-form-item>
 
           </el-tab-pane>
@@ -188,12 +188,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="家庭电话：" prop="home_phone">
-                  <el-input v-model.trim="dataJson.tempJson.home_phone" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.home_phone" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.home_phone" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="办公室电话：" prop="office_phone">
-                  <el-input v-model.trim="dataJson.tempJson.office_phone" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.office_phone" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.office_phone" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -201,12 +201,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="手机号码：" prop="mobile_phone">
-                  <el-input v-model.trim="dataJson.tempJson.mobile_phone" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.mobile_phone" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.mobile_phone" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="手机备用号码：" prop="mobile_phone_backup">
-                  <el-input v-model.trim="dataJson.tempJson.mobile_phone_backup" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.mobile_phone_backup" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.mobile_phone_backup" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -214,12 +214,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="邮箱地址：" prop="email">
-                  <el-input v-model.trim="dataJson.tempJson.email" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.email" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.email" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="邮箱备用地址：" prop="email_backup">
-                  <el-input v-model.trim="dataJson.tempJson.email_backup" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.email_backup" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.email_backup" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -256,7 +256,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="登录模式：" prop="login_type">
-                  <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="!isAccountLoginType" @change="handleSysLoginTypeChange" />
+                  <radio-dict v-model="dataJson.tempJson.user.login_type" :para="CONSTANTS.DICT_SYS_LOGIN_TYPE" :disabled="true" @change="handleSysLoginTypeChange" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -264,12 +264,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="登录用户名：" prop="user.login_name">
-                  <el-input v-model.trim="dataJson.tempJson.user.login_name" clearable show-word-limit :maxlength="dataJson.inputSettings.user.maxLength.login_name" placeholder="请输入" :disabled="!isAccountLoginType" />
+                  <el-input v-model.trim="dataJson.tempJson.user.login_name" clearable show-word-limit :disabled="true" placeholder="请输入" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="设置密码：" prop="">
-                  <el-button type="primary" icon="el-icon-unlock" :disabled="!isAccountLoginType" @click="handelSetPassword">设置密码</el-button>
+                  <el-button type="primary" icon="el-icon-unlock" :disabled="true" @click="handelSetPassword">设置密码</el-button>
                   <el-tag v-show="!(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="success" effect="dark">已设置密码</el-tag>
                   <el-tag v-show="(dataJson.tempJson.user.pwd === '' || dataJson.tempJson.user.pwd === null || dataJson.tempJson.user.pwd === undefined)" type="danger" effect="dark">未设置密码</el-tag>
                 </el-form-item>
@@ -287,7 +287,7 @@
                   end-placeholder="生效结束日期"
                   align="right"
                   style="width: 100%"
-                  :disabled="!isAccountLoginType"
+                  :disabled="true"
                 />
               </el-form-item>
             </el-row>
@@ -295,7 +295,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="登录用户类型：" prop="type">
-                  <select-dict v-model="dataJson.tempJson.user.type" :para="CONSTANTS.DICT_USR_LOGIN_TYPE" init-placeholder="请选择登录用户类型" :disabled="!isAccountLoginType" />
+                  <select-dict v-model="dataJson.tempJson.user.type" :para="CONSTANTS.DICT_USR_LOGIN_TYPE" init-placeholder="请选择登录用户类型" :disabled="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -306,7 +306,7 @@
                     inactive-color="#dcdfe6"
                     active-text="已删除"
                     inactive-text="未删除"
-                    :disabled="!isAccountLoginType"
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-col>
@@ -315,7 +315,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="用户锁定时间：" prop="locked_time">
-                  <el-date-picker v-model="dataJson.tempJson.user.locked_time" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" :disabled="!isAccountLoginType" />
+                  <el-date-picker v-model="dataJson.tempJson.user.locked_time" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" :disabled="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -326,7 +326,7 @@
                     inactive-color="#dcdfe6"
                     active-text="已锁定"
                     inactive-text="未锁定"
-                    :disabled="!isAccountLoginType"
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-col>
@@ -346,7 +346,7 @@
                     inactive-color="#dcdfe6"
                     active-text="已修改"
                     inactive-text="未修改"
-                    :disabled="!isAccountLoginType"
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-col>
@@ -362,7 +362,7 @@
             </el-row>
 
             <el-form-item label="描述：" prop="descr">
-              <el-input v-model.trim="dataJson.tempJson.user.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" placeholder="请输入" />
+              <el-input v-model.trim="dataJson.tempJson.user.descr" clearable show-word-limit type="textarea" :disabled="true" placeholder="请输入" />
             </el-form-item>
 
           </el-tab-pane>
@@ -473,6 +473,11 @@ export default {
   data() {
     return {
       dataJson: {
+        // 页签cout数量
+        tabsCount: {
+          currentOrgStaffCount: 0,
+          allOrgStaffCount: 0
+        },
         // 查询使用的json
         searchForm: {
           // 翻页条件
@@ -500,29 +505,7 @@ export default {
         // 单条数据 json
         currentJson: null,
         tempJson: null,
-        inputSettings: {
-          maxLength: {
-            name: 20,
-            name_py: 20,
-            simple_name: 10,
-            simple_name_py: 15,
-            id_card: 25,
-            passport: 20,
-            nation: 20,
-            home_phone: 15,
-            office_phone: 15,
-            mobile_phone: 15,
-            mobile_phone_backup: 15,
-            email: 20,
-            email_backup: 20,
-            descr: 200
-          },
-          user: {
-            maxLength: {
-              login_name: 20
-            }
-          }
-        },
+
         // 当前表格中的索引，第几条
         rowIndex: 0,
         // 当前选中的行（checkbox）
@@ -849,9 +832,12 @@ export default {
     getDataList() {
       // 查询逻辑
       this.settings.listLoading = true
+      Object.assign(this.$data.dataJson.tabsCount, this.$options.data.call(this).dataJson.tabsCount)
       getStaffTabListApi(this.dataJson.searchForm).then(response => {
+        this.dataJson.tabsCount.currentOrgStaffCount = response.data.currentOrgStaffCount
+        this.dataJson.tabsCount.allOrgStaffCount = response.data.allOrgStaffCount
         // 增加对象属性，columnTypeShowIcon，columnNameShowIcon
-        const recorders = response.data
+        const recorders = response.data.list
         const newRecorders = recorders.map(v => {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
         })
