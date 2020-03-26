@@ -48,7 +48,12 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="员工姓名" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="员工姓名">
+        <template slot-scope="scope">
+          <span> {{ scope.row.name }} </span>
+          <el-link type="primary" @click="handleShowInfo(scope.row)"><i class="el-icon-info" /></el-link>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="simple_name" label="姓名简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="sex_text" label="性别" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="birthday" label="生日" />
@@ -729,6 +734,10 @@ export default {
   },
   created() {
     // this.initShow()
+    // 数据初始化
+    this.initTempJsonOriginal()
+    // 数据初始化
+    this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
   },
   mounted() {
     // 描绘完成
@@ -763,7 +772,6 @@ export default {
     initShow() {
       // 初始化查询
       this.getDataList()
-
       // 数据初始化
       this.initTempJsonOriginal()
       // 数据初始化
@@ -984,6 +992,10 @@ export default {
           break
       }
       this.dataJson.searchForm.active_tabs_index = tab.index
+    },
+    handleShowInfo(val) {
+      debugger
+      alert(val)
     }
 
     // -------------------验证部分------------------
