@@ -20,7 +20,7 @@
         <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-tabs type="card" class="floatLeft">
+    <el-tabs type="card" class="floatLeft" @tab-click="handleTabsClick">
       <el-tab-pane>
         <template slot="label">当组织下所有员工<el-badge :value="dataJson.tabsCount.currentOrgStaffCount" type="danger" /></template>
       </el-tab-pane>
@@ -488,9 +488,10 @@ export default {
           },
           // 查询条件
           name: '',
-          code: '',
-          is_del: '0', // 未删除
-          org_code: '' // 左边树种的结点code
+          code: '', // 左边树种的结点code
+          // original_code: '', // 左边树种的结点code
+          active_tabs_index: 0, // 当前被激活的页签
+          is_del: '0' // 未删除
         },
         // table使用的json
         listData: null,
@@ -660,6 +661,14 @@ export default {
       } else {
         return false
       }
+    },
+    /**
+     * 考虑所有员工的方法
+     * 1:根据code的定义规则，0001xxxx|xxxx|，每4位为一个层，所以找到第一组的4个
+     * 2：并设置回code中去
+     */
+    getRootOrg() {
+      return this.dataJson.searchForm.code.substring(0, 4)
     }
   },
   // 监听器
@@ -724,12 +733,12 @@ export default {
   mounted() {
     // 描绘完成
     this.$on(this.EMITS.EMIT_ORG_CHANGE, _data => {
-      this.dataJson.searchForm.org_code = _data.code
+      this.dataJson.searchForm.code = _data.code
+      this.dataJson.searchForm.original_code = _data.code
       this.initShow()
     })
     // 当岗位成员有发生变更，接收通知
     this.$on(this.EMITS.EMIT_ORG_POSITION_UPDATED, _data => {
-      this.dataJson.searchForm.org_code = _data.code
       this.initShow()
     })
   },
@@ -958,6 +967,23 @@ export default {
       this.dataJson.tempJson.dept_id = val.serial_id
       this.dataJson.tempJson.dept_name = val.name
       this.dataJson.tempJson.dept_simple_name = val.simple_name
+    },
+    // tabs点击事件
+    handleTabsClick(tab, event) {
+      if (this.dataJson.searchForm.active_tabs_index === tab.index) {
+        return
+      }
+      switch (tab.index) {
+        case '0':
+          // 当组织下员工
+          this.initShow()
+          break
+        case '1':
+          // 所有员工
+          this.initShow()
+          break
+      }
+      this.dataJson.searchForm.active_tabs_index = tab.index
     }
 
     // -------------------验证部分------------------
