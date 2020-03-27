@@ -191,3 +191,15 @@ export function getStaffTabListApi(data) {
     data
   })
 }
+
+/**
+ * 查询用户接口，
+ * @param {*} data
+ */
+export function getUserDataByIdApi(query) {
+  return request({
+    url: '/api/v1/staff/list',
+    method: 'post',
+    data: query
+  })
+}

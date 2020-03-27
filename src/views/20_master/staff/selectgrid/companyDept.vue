@@ -5,6 +5,7 @@
       v-model.trim="dataJson.tempJson.inputData"
       v-popover:popover
       :placeholder="placeholder"
+      :disabled="disabled"
       readonly
       style="cursor:pointer"
       @click.native="handleClick"
@@ -13,7 +14,7 @@
       @keydown.native.tab="settings.visible = false"
     >
       <template slot="suffix">
-        <i v-if="isDataSet" class="el-input__icon el-icon-circle-close el-input__clear" @click.stop="clearMe" />
+        <i v-if="isDataSet && !disabled" class="el-input__icon el-icon-circle-close el-input__clear" @click.stop="clearMe" />
         <i v-show="!showClose" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" />
         <i v-if="showClose" class="el-select__caret el-input__icon el-icon-circle-close" @click="handleClearClick" />
       </template>
@@ -281,6 +282,10 @@ export default {
   components: { },
   mixins: [],
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     placeholder: {
       type: String,
       default: ''
@@ -431,6 +436,9 @@ export default {
     },
     // 单击事件
     handleClick() {
+      if (this.disabled) {
+        return
+      }
       this.settings.visible = !this.settings.visible
     },
     doDestroy() {
@@ -511,6 +519,9 @@ export default {
     },
     // 删除数据
     clearMe() {
+      if (this.disabled) {
+        return
+      }
       this.dataJson.tempJson.inputData = null
       this.$emit('onReturnData', { company_id: '', company_name: '', company_simple_name: '' })
     }
