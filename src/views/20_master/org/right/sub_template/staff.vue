@@ -486,7 +486,7 @@ export default {
           id: null,
           name: '',
           code: '', // 左边树种的结点code
-          // original_code: '', // 左边树种的结点code
+          original_code: '', // 左边树种的结点code
           active_tabs_index: 0, // 当前被激活的页签
           is_del: '0' // 未删除
         },
@@ -833,10 +833,10 @@ export default {
           sort: '-u_time' // 排序
         },
         // 查询条件
-        code: '',
+        code: this.dataJson.searchForm.code,
         name: '',
         simple_name: '',
-        is_del: 'null'
+        is_del: '0' // 未删除
       }
     },
     // 关闭弹出窗口
