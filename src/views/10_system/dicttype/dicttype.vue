@@ -215,6 +215,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, importExcelApi, deleteApi } from '@/api/10_system/dicttype/dicttype'
 import resizeMixin from './dicttypeResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -223,7 +224,7 @@ import SimpleUpload from '@/layout/components/00_common/SimpleUpload'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 
 export default {
-  name: 'P00000030', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_DICT_TYPE, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SimpleUpload, DeleteTypeNormal },
   directives: { elDragDialog },
   mixins: [resizeMixin],

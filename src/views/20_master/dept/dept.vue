@@ -259,6 +259,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/dept/dept'
 import resizeMixin from './deptResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -269,7 +270,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import { isNotEmpty } from '@/utils/index.js'
 
 export default {
-  name: 'P00000150', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_DEPT, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal, staffDialog, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

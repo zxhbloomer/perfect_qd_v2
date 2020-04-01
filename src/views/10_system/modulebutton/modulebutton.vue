@@ -179,6 +179,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, deleteApi, saveListApi, realDeleteSelectionApi } from '@/api/10_system/modulebutton/modulebutton'
 import resizeMixin from './modulebuttonResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -187,7 +188,7 @@ import moduleDialog from '@/views/10_system/module/dialog/dialog'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 
 export default {
-  name: 'P00000041', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_BUTTON, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, moduleDialog, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

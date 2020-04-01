@@ -15,10 +15,11 @@
   </div>
 </template>
 <script>
+import constants_program from '@/common/constants/constants_program'
 import resizeMixin from './orgResizeHandlerMixin'
 
 export default {
-  name: 'P00000170', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_ORG, // 页面id，和router中的name需要一致，作为缓存
   components: {
     left: () => import('./left/left'), // 左侧tree
     right: () => import('./right/right') // 右侧list

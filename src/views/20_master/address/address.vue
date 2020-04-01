@@ -159,6 +159,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, realDeleteSelectionApi } from '@/api/20_master/address/address'
 import { getAreasCascaderApi, getProvincerListApi, getCityListApi, getAreaListApi } from '@/api/00_common/systemArea'
 import resizeMixin from './addressResizeHandlerMixin'
@@ -167,7 +168,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 
 export default {
-  name: 'P00000130', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_ADDRESS, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, RadioDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

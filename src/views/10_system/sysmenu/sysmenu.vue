@@ -325,6 +325,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getCascaderListApi, getListApi, updateApi, addMenuGroupApi, addSubMenuApi, deleteApi, realDeleteSelectionApi } from '@/api/10_system/sysmenu/sysmenu'
 import resizeMixin from './sysmenuResizeHandlerMixin'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -332,7 +333,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import moduleDialog from '@/views/10_system/module/dialog/dialog'
 
 export default {
-  name: 'P00000120', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_MENU, // 页面id，和router中的name需要一致，作为缓存
   components: { SelectDict, moduleDialog },
   directives: { elDragDialog },
   mixins: [resizeMixin],

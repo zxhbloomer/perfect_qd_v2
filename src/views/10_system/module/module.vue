@@ -338,6 +338,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/module/module'
 import resizeMixin from './moduleResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -348,7 +349,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 
 export default {
-  name: 'P00000040', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_PAGE, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, resourceDialog, SelectDicts, DeleteTypeNormal, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

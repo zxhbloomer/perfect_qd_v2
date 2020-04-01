@@ -150,6 +150,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi } from '@/api/10_system/config/config'
 import resizeMixin from './configResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -157,7 +158,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import noMoreClick from '@/directive/noMoreClick'
 
 export default {
-  name: 'P00000060', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_CONFIG, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination },
   directives: { elDragDialog, noMoreClick },
   mixins: [resizeMixin],

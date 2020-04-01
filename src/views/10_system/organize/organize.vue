@@ -18,6 +18,7 @@
   </div>
 </template>
 <script>
+
 import resizeMixin from './organizeResizeHandlerMixin'
 
 export default {

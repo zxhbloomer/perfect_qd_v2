@@ -139,6 +139,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi } from '@/api/00_platform/syscode/syscode'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import resizeMixin from './syscodeResizeHandlerMixin'
@@ -146,7 +147,7 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {
-  name: 'P00000180', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_SYSCODE, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],

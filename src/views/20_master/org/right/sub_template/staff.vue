@@ -446,6 +446,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getStaffTabListApi, getUserDataByIdApi } from '@/api/20_master/org/org'
 import { getUserBeanByIdApi } from '@/api/user'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -456,7 +457,7 @@ import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
 import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
 
 export default {
-  // name: 'P00000140', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_STAFF, // 页面id，和router中的name需要一致，作为缓存
   components: { DeleteTypeNormal, RadioDict, SelectDict, psdDialog, SelectCompanyDept },
   directives: { elDragDialog },
   mixins: [],

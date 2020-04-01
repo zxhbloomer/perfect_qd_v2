@@ -293,6 +293,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, importExcelApi, deleteApi, saveListApi } from '@/api/10_system/dictdata/dictdata'
 import resizeMixin from './dictdataResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -302,7 +303,7 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import dicttypeDialog from '@/views/10_system/dicttype/dialog/dialog'
 
 export default {
-  name: 'P00000050', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_DICT_DATA, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SimpleUpload, dicttypeDialog, DeleteTypeNormal },
   directives: { elDragDialog },
   mixins: [resizeMixin],

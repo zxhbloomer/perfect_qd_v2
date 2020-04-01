@@ -186,13 +186,14 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/resource/resource'
 import resizeMixin from '@/views/10_system/resource/resourceResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {
-  name: 'P00000020', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_RESOURCE, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination },
   directives: { elDragDialog },
   mixins: [resizeMixin],
