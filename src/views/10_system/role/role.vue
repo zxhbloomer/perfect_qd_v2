@@ -262,6 +262,7 @@
 </style>
 
 <script>
+import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, importExcelApi, deleteApi, enableApi } from '@/api/10_system/role/role'
 import resizeMixin from './roleResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -269,7 +270,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import SimpleUpload from '@/layout/components/00_common/SimpleUpload'
 
 export default {
-  name: 'P00000000', // 页面id，和router中的name需要一致，作为缓存
+  name: constants_program.P_ROLE, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, SimpleUpload },
   directives: { elDragDialog },
   mixins: [resizeMixin],
