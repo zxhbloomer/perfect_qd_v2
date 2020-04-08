@@ -16,7 +16,7 @@ const P_GROUP = 'P00000100'
 const P_MENU = 'P00000120'
 /** 租户管理 */
 const P_TENANT = 'P00000080'
-/** 租户管理 */
+/** 系统参数 */
 const P_CONFIG = 'P00000060'
 /** 模块按钮 */
 const P_BUTTON = 'P00000041'
@@ -32,6 +32,9 @@ const P_SYSCODE = 'P00000180'
 const P_RESOURCE = 'P00000020'
 /** 角色 */
 const P_ROLE = 'P00000000'
+
+/** VUE Name 页面维护 */
+const P_VUE_SETTING = 'P00000190'
 
 export default {
   /** 组织机构 */
@@ -52,7 +55,7 @@ export default {
   P_MENU,
   /** 租户管理 */
   P_TENANT,
-  /** 租户管理 */
+  /** 系统参数 */
   P_CONFIG,
   /** 模块按钮 */
   P_BUTTON,
@@ -67,5 +70,7 @@ export default {
   /** 资源管理 */
   P_RESOURCE,
   /** 角色 */
-  P_ROLE
+  P_ROLE,
+  /** VUE Name 页面编号维护 */
+  P_VUE_SETTING
 }

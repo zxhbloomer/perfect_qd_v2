@@ -121,6 +121,11 @@ export const asyncRoutes = [
         name: 'P00000180',
         meta: { title: '系统编码', icon: 'syscode' }
       },
+      { path: 'vue',
+        component: () => import('@/views/10_system/vuesetting/vue'),
+        name: 'P00000190',
+        meta: { title: 'vue页面维护', icon: 'syscode' }
+      },
       {
         path: 'dic',
         // component: subMenu,
