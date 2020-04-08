@@ -14,10 +14,10 @@
         <delete-type-normal v-model="dataJson.searchForm.is_del" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="el-icon-s-promotion">高级搜索</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-zoom-in">高级查询</el-button>
       </el-form-item>
     </el-form>
     <el-popover
@@ -456,7 +456,7 @@ export default {
           countThree: 0,
           countFour: 0
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,

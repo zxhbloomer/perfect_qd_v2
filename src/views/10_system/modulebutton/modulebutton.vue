@@ -14,7 +14,7 @@
         <el-input v-model.trim="dataJson.searchForm.module_name" clearable placeholder="模块名称" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重置</el-button>
@@ -288,7 +288,7 @@ export default {
           code: [{ required: true, message: '请输入按钮', trigger: 'change' }],
           perms: [{ required: true, message: '请输入集团全称', trigger: 'change' }]
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,

@@ -189,7 +189,7 @@ export default {
           parent_id: [{ required: true, message: '请输入上级菜单', trigger: 'change' }],
           name: [{ required: true, message: '请选择菜单名称', trigger: 'change' }]
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
@@ -200,7 +200,7 @@ export default {
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,

@@ -15,10 +15,10 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="el-icon-s-promotion">高级搜索</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-zoom-in">高级查询</el-button>
       </el-form-item>
     </el-form>
 
@@ -574,17 +574,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: 'dictTypeName, dict_value' // 排序
-        },
-        // 查询条件
-        name: null,
-        config_key: null
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 重置按钮
     doReset() {

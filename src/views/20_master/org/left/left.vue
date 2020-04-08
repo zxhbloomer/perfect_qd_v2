@@ -359,35 +359,35 @@ export default {
         btnDisabledStatus: {
           disabledOK: false
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataThree: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataFour: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataFive: {
           // 弹出框显示参数
           dialogVisible: false,

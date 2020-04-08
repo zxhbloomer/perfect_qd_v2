@@ -12,7 +12,7 @@
         <el-input v-model="searchForm.role_name" placeholder="权限组名称" />
       </el-form-item>
       <el-form-item :size="getSize()">
-        <el-button type="primary" icon="el-icon-search" plain @click="handleSearch">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" plain @click="handleSearch">查询</el-button>
       </el-form-item>
     </el-form>
     <el-button-group>

@@ -14,10 +14,10 @@
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="部门全称" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="el-icon-s-promotion">高级搜索</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-zoom-in">高级查询</el-button>
       </el-form-item>
     </el-form>
 
@@ -381,28 +381,28 @@ export default {
           // code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入部门简称', trigger: 'change' }]
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataThree: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataFour: {
           // 弹出框显示参数
           dialogVisible: false,

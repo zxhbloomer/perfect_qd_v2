@@ -189,7 +189,7 @@ export default {
           code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入部门简称', trigger: 'change' }]
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogData: {
           // 弹出框显示参数
           dialogVisible: false,

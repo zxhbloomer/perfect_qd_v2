@@ -231,7 +231,7 @@ export default {
           countThree: 0,
           countFour: 0
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogData: {
           // 弹出框显示参数
           dialogVisible: false,

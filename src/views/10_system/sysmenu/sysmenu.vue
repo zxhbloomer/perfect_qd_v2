@@ -14,7 +14,7 @@
         <select-dict v-model="dataJson.searchForm.visible" :para="CONSTANTS.DICT_SYS_VISIBLE_TYPE" init-placeholder="请选择菜单类型" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button v-popover:popover type="primary" plain icon="perfect-icon-reset" @click="doResetSearch">重置</el-button>
@@ -442,14 +442,14 @@ export default {
           parent_id: [{ required: true, message: '请输入上级菜单', trigger: 'change' }],
           name: [{ required: true, message: '请选择菜单名称', trigger: 'change' }]
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
-        // 弹出的搜索框参数设置
+        // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
           dialogVisible: false,

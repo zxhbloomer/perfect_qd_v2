@@ -11,10 +11,10 @@
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="角色名称" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-popover:popover type="primary" plain icon="el-icon-search">高级搜索</el-button>
+        <el-button v-popover:popover type="primary" plain icon="el-icon-zoom-in">高级查询</el-button>
       </el-form-item>
     </el-form>
     <el-popover
