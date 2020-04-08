@@ -11,7 +11,7 @@
         <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="页面编号" />
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.title" clearable placeholder="页面名称" />
+        <el-input v-model.trim="dataJson.searchForm.meta_title" clearable placeholder="页面名称" />
       </el-form-item>
 
       <el-form-item>
@@ -104,24 +104,24 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="页面编号：" prop="name">
-              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.name" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="popSettingsData.dialogStatus==='update'" />
+              <el-input v-model.trim="dataJson.tempJson.name" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="popSettingsData.dialogStatus==='update'" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="变量：" prop="code">
-              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" />
+              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="页面名称：" prop="meta_title">
-              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.meta_title" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_title" :disabled="popSettingsData.dialogStatus==='update'" />
+              <el-input v-model.trim="dataJson.tempJson.meta_title" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_title" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单icon：" prop="meta_icon">
-              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.meta_icon" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_icon" />
+              <el-input v-model.trim="dataJson.tempJson.meta_icon" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_icon" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -209,7 +209,7 @@ export default {
           },
           // 查询条件
           name: '',
-          title: '',
+          meta_title: '',
           code: ''
         },
         // 分页控件的json
@@ -289,9 +289,9 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入参数名称', trigger: 'change' }],
-          config_key: [{ required: true, message: '请输入参数键名', trigger: 'change' }],
-          value: [{ required: true, message: '请输入参数键值', trigger: 'change' }]
+          code: [{ required: true, message: '请输入变量', trigger: 'change' }],
+          component: [{ required: true, message: '请输入模块', trigger: 'change' }],
+          meta_title: [{ required: true, message: '请输入页面名称', trigger: 'change' }]
         }
       }
     }
@@ -400,7 +400,7 @@ export default {
       this.popSettingsData.dialogFormVisible = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
+        this.$refs['refFocus'].focus()
       })
     },
     // 点击按钮 更新
@@ -422,7 +422,7 @@ export default {
       this.popSettingsData.btnShowStatus.showCopyInsert = false
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refUpdateFocus'].focus()
+        this.$refs['refFocus'].focus()
       })
     },
     // 导出按钮
@@ -498,7 +498,7 @@ export default {
       this.popSettingsData.btnShowStatus.showCopyInsert = true
       // 修改时控件focus
       this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
+        this.$refs['refFocus'].focus()
       })
     },
     handleCurrentChange(row) {
@@ -594,7 +594,7 @@ export default {
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refUpdateFocus'].focus()
+            this.$refs['refFocus'].focus()
           })
           break
         case 'copyInsert':
@@ -606,7 +606,7 @@ export default {
 
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refInsertFocus'].focus()
+            this.$refs['refFocus'].focus()
           })
           break
         case 'insert':
@@ -616,7 +616,7 @@ export default {
           this.dataJson.tempJson = {}
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refInsertFocus'].focus()
+            this.$refs['refFocus'].focus()
           })
           break
       }

@@ -197,7 +197,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="字典键值：" prop="dict_value">
-              <el-input ref="refDictValue" v-model.trim="dataJson.tempJson.dict_value" controls-position="right" :maxlength="dataJson.inputSettings.maxLength.dict_value" />
+              <el-input ref="refDictValue" v-model.trim="dataJson.tempJson.dict_value" clearable show-word-limit controls-position="right" :maxlength="dataJson.inputSettings.maxLength.dict_value" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -349,7 +349,7 @@ export default {
         tempJson: null,
         inputSettings: {
           maxLength: {
-            dict_value: 10,
+            dict_value: 20,
             lable: 20,
             descr: 200,
             dbversion: 0,
