@@ -35,3 +35,15 @@ export function insertApi(data) {
     data
   })
 }
+
+/**
+ * 物理删除选择数据
+ * @param {*} data
+ */
+export function realDeleteSelectionApi(data) {
+  return request({
+    url: '/api/v1/vue/delete',
+    method: 'post',
+    data
+  })
+}

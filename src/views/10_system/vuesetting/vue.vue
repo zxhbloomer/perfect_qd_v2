@@ -187,7 +187,7 @@
 
 <script>
 import constants_program from '@/common/constants/constants_program'
-import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi } from '@/api/10_system/vuesetting/vue'
+import { getListApi, updateApi, insertApi, realDeleteSelectionApi } from '@/api/10_system/vuesetting/vue'
 import resizeMixin from './vueResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -457,28 +457,6 @@ export default {
         this.handleExportSelectionData()
       }
     },
-    // 全部数据导出
-    handleExportAllData() {
-      // loading
-      this.settings.listLoading = true
-      // 开始导出
-      exportAllApi(this.dataJson.searchForm).then(response => {
-        this.settings.listLoading = false
-      })
-    },
-    // 部分数据导出
-    handleExportSelectionData() {
-      // loading
-      this.settings.listLoading = true
-      const selectionJson = []
-      this.dataJson.multipleSelection.forEach(function(value, index, array) {
-        selectionJson.push({ 'id': value.id })
-      })
-      // 开始导出
-      exportSelectionApi(selectionJson).then(response => {
-        this.settings.listLoading = false
-      })
-    },
     // 点击按钮 复制新增
     handleCopyInsert() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
@@ -737,6 +715,48 @@ export default {
         // 选中数据删除
         this.handleRealDeleteSelectionData()
       }
+    },
+    // 选中数据删除
+    handleRealDeleteSelectionData() {
+      // loading
+      this.settings.listLoading = true
+      const selectionJson = []
+      this.dataJson.multipleSelection.forEach(function(value, index, array) {
+        selectionJson.push({ 'id': value.id })
+      })
+      var _message = '是否要删除选择的数据？'
+      // 选择全部的时候
+      this.$confirm(_message, '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确认',
+        cancelButtonText: '取消'
+      }).then(() => {
+        // loading
+        this.settings.listLoading = true
+        // 开始删除
+        realDeleteSelectionApi(selectionJson).then((_data) => {
+          this.$notify({
+            title: '删除成功',
+            message: _data.message,
+            type: 'success',
+            duration: this.settings.duration
+          })
+          this.getDataList()
+          // loading
+          this.settings.listLoading = false
+        }, (_error) => {
+          this.$notify({
+            title: '删除错误',
+            message: _error.message,
+            type: 'error',
+            duration: this.settings.duration
+          })
+          this.settings.listLoading = false
+        })
+      }).catch(action => {
+        // 右上角X
+        this.settings.listLoading = false
+      })
     }
   }
 }

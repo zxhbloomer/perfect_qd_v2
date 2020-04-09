@@ -450,7 +450,7 @@ export default {
       const selectionJson = []
       selectionJson.push({ 'id': row.id })
       if (_value === true) {
-        _message = '是否要删除该条数据？'
+        _message = '是否要删除选择的数据？'
       } else {
         _message = '是否要复原该条数据？'
       }
