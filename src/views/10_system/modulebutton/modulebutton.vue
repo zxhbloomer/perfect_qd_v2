@@ -899,7 +899,7 @@ export default {
     handleRealyDelete() {
       // 没有选择任何数据的情况
       if (this.dataJson.multipleSelection.length <= 0) {
-        this.$alert('请在表格中选择数据进行删除', '空数据错误', {
+        this.$alert('请在表格中选择数据进行删除', '未选择数据错误', {
           confirmButtonText: '关闭',
           type: 'error'
         }).then(() => {

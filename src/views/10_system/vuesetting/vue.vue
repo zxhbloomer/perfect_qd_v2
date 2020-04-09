@@ -49,6 +49,7 @@
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-circle-close" :loading="settings.listLoading" @click="handleRealyDelete">物理删除</el-button>
     </el-button-group>
 
     <el-table
@@ -430,7 +431,7 @@ export default {
     handleExport() {
       // 没有选择任何数据的情况
       if (this.dataJson.multipleSelection.length <= 0) {
-        this.$alert('请在表格中选择数据进行导出', '空数据错误', {
+        this.$alert('请在表格中选择数据进行导出', '未选择数据错误', {
           confirmButtonText: '关闭',
           type: 'error'
         }).then(() => {
@@ -721,8 +722,22 @@ export default {
       this.popSettingsData.btnDisabledStatus.disabledInsert = true
       this.popSettingsData.btnDisabledStatus.disabledUpdate = true
       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
+    },
+    // 删除按钮
+    handleRealyDelete() {
+      // 没有选择任何数据的情况
+      if (this.dataJson.multipleSelection.length <= 0) {
+        this.$alert('请在表格中选择数据进行删除', '未选择数据错误', {
+          confirmButtonText: '关闭',
+          type: 'error'
+        }).then(() => {
+          this.settings.btnShowStatus.showDelete = false
+        })
+      } else {
+        // 选中数据删除
+        this.handleRealDeleteSelectionData()
+      }
     }
-
   }
 }
 </script>
