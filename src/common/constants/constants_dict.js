@@ -11,7 +11,7 @@ const DICT_SYS_VISIBLE_TYPE_HIDDEN = '1'
 const DICT_SYS_VISIBLE_TYPE_ALL = 'null'
 
 /** 按钮类型： */
-const DICT_BTN_NAME_TYPE = 'btn_name_type'
+const DICT_BTN_NAME_TYPE = 'sys_btn_type'
 
 /** 地址簿_tag标签  */
 const DICT_SYS_ADDRESS_TAG_TYPE = 'sys_address_tag_type'
