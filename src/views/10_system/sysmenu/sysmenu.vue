@@ -54,6 +54,14 @@
       <el-table-column header-align="center" label="按钮">
         <el-table-column header-align="center" label="新增" />
         <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
+        <el-table-column header-align="center" label="修改" />
       </el-table-column>
     </el-table>
 
@@ -844,12 +852,12 @@ export default {
       this.settings.listLoading = true
       getListApi(this.dataJson.searchForm).then(response => {
         // 增加对象属性，columnTypeShowIcon，columnNameShowIcon
-        const recorders = response.data
+        const recorders = response.data.menu_data
         const newRecorders = recorders.map(v => {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
         })
         this.dataJson.listData = newRecorders
-        this.dataJson.paging = response.data
+        this.dataJson.paging = response.data.menu_data
         this.dataJson.paging.records = {}
         this.settings.listLoading = false
       })
