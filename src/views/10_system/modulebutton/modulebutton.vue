@@ -44,7 +44,7 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
-      <el-table-column type="index" width="45" />
+      <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip min-width="100" prop="module_code" label="模块编号" />
       <el-table-column show-overflow-tooltip min-width="80" prop="module_name" label="模块名称" />
       <el-table-column show-overflow-tooltip min-width="80" prop="code" label="按钮编号" />

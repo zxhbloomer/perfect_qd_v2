@@ -90,7 +90,7 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="38" :reserve-selection="true" prop="id" />
-      <el-table-column type="index" width="38" />
+      <el-table-column type="index" width="38" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="角色编码" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="type" label="角色类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="角色名称" />

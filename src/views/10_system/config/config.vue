@@ -49,7 +49,7 @@
       @cell-mouse-leave="handleCellMouseLeave"
     >
       <el-table-column type="selection" width="45" prop="id" />
-      <el-table-column type="index" width="45" />
+      <el-table-column type="index" width="45" label="No" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="130" prop="name" label="参数名称" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="130" prop="config_key" label="参数键名" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="value" label="参数键值" />

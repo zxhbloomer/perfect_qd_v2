@@ -54,7 +54,7 @@
       @cell-mouse-leave="handleCellMouseLeave"
     >
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
-      <el-table-column type="index" width="45" />
+      <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="字典类型" column-key="columnCode">
         <template slot-scope="scope">
           <el-link v-if="!meDialogSetting.dialogStatus" type="primary" :href="'#/sys/dic/dictdata?dictTypeCode=' + scope.row.code">{{ scope.row.code }}

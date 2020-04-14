@@ -56,7 +56,7 @@
       @cell-mouse-leave="handleCellMouseLeave"
     >
       <el-table-column type="selection" width="45" prop="id" />
-      <el-table-column type="index" width="45" />
+      <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip min-width="130" prop="dictTypeCode" label="字典类型" />
       <el-table-column show-overflow-tooltip min-width="130" prop="dictTypeName" label="字典类型名称" />
       <el-table-column show-overflow-tooltip min-width="120" prop="label" label="字典标签" />

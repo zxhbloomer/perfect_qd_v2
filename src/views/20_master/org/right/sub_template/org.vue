@@ -20,7 +20,7 @@
       @current-change="handleCurrentChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="index" width="45" />
+      <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip min-width="250" prop="code" label="组织机构编码" />
       <el-table-column show-overflow-tooltip min-width="250" prop="name" label="组织机构名称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="simple_name" label="组织机构简称" />

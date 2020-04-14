@@ -47,12 +47,14 @@
       @current-change="handleCurrentChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="index" width="45" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="name" label="菜单名称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="code" label="菜单编号" />
-      <el-table-column show-overflow-tooltip min-width="80" prop="sort" label="排序" />
-      <el-table-column show-overflow-tooltip min-width="80" prop="type_name" label="菜单类型" />
-      <el-table-column min-width="150" prop="u_time" label="更新时间" />
+      <el-table-column header-align="center" type="index" width="45" />
+      <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="name" label="菜单名称" />
+      <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="code" label="菜单编号" />
+      <el-table-column header-align="center" show-overflow-tooltip min-width="80" prop="type_name" label="菜单类型" />
+      <el-table-column header-align="center" label="按钮">
+        <el-table-column header-align="center" label="新增" />
+        <el-table-column header-align="center" label="修改" />
+      </el-table-column>
     </el-table>
 
     <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->

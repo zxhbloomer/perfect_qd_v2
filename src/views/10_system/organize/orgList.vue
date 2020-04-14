@@ -35,7 +35,7 @@
       @sort-change="handleSortChange"
     >
       <el-table-column type="selection" width="40" />
-      <el-table-column type="index" />
+      <el-table-column type="index" label="No" />
       <el-table-column sortable label="层级ID" min-width="120" />
       <el-table-column sortable label="组织名称" min-width="120" />
       <el-table-column sortable label="简称" min-width="120" />
