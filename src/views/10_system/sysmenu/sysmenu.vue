@@ -58,7 +58,7 @@
           align="center"
           :prop="button_column.code"
           :label="button_column.name"
-          min-width="20"
+          min-width="25"
         >
           <template v-slot="column_lists">
             <div v-for="item in column_lists.row.module_info" :key="item.id">
