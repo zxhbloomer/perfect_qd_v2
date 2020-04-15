@@ -58,7 +58,9 @@
           align="center"
           :prop="button_column.code"
           :label="button_column.name"
+          min-width="20"
         >
+          11
           <template v-slot="column_lists">
             <div v-for="item in column_lists.row.module_info" :key="item.id">
               <div v-if="item.code === button_column.code" style="align:center">
