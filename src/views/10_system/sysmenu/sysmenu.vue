@@ -53,21 +53,20 @@
       <el-table-column header-align="center" show-overflow-tooltip min-width="80" prop="type_name" label="菜单类型" />
       <el-table-column header-align="center" label="按钮">
         <el-table-column
-          v-for="{ prop, label } in module_info"
-          :key="prop"
-          :prop="prop"
-          :label="label"
-        />
-        <el-table-column header-align="center" label="新增" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
-        <el-table-column header-align="center" label="修改" />
+          v-for="button_column in dataJson.menu_buttons"
+          :key="button_column.code"
+          align="center"
+          :prop="button_column.code"
+          :label="button_column.name"
+        >
+          <template v-slot="column_lists">
+            <div v-for="item in column_lists.row.module_info" :key="item.id">
+              <div v-if="item.code === button_column.code" style="align:center">
+                〇
+              </div>
+            </div>
+          </template>
+        </el-table-column>
       </el-table-column>
     </el-table>
 
@@ -383,6 +382,8 @@ export default {
         },
         // table使用的json
         listData: null,
+        // 按钮json
+        menu_buttons: null,
         // 单条数据 json的，初始化原始数据
         tempJsonOriginal: {
           id: undefined,
@@ -863,6 +864,7 @@ export default {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
         })
         this.dataJson.listData = newRecorders
+        this.dataJson.menu_buttons = response.data.menu_buttons
         this.dataJson.paging = response.data.menu_data
         this.dataJson.paging.records = {}
         this.settings.listLoading = false
