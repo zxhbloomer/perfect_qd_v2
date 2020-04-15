@@ -60,12 +60,16 @@
           :label="button_column.name"
           min-width="20"
         >
-          11
           <template v-slot="column_lists">
             <div v-for="item in column_lists.row.module_info" :key="item.id">
-              <div v-if="item.code === button_column.code" style="align:center">
+              <!-- 存在按钮数据时 -->
+              <div v-if="item.code === button_column.code">
                 〇
               </div>
+            </div>
+            <!-- 不存在按钮数据时 -->
+            <div v-if="column_lists.row.module_info.length === 0">
+              -
             </div>
           </template>
         </el-table-column>
