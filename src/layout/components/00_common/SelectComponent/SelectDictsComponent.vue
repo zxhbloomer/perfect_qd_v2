@@ -1,3 +1,4 @@
+<!--字典表下拉选项框，可多选-->
 <template>
   <el-select
     :placeholder="initPlaceholder"

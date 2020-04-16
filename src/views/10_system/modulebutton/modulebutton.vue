@@ -109,7 +109,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="按钮：" prop="code">
-              <select-dict v-model="dataJson.tempJson.code" :para="CONSTANTS.DICT_BTN_NAME_TYPE" @change="handleChange" />
+              <select-dict-group v-model="dataJson.tempJson.code" :para="CONSTANTS.DICT_BTN_NAME_TYPE" @change="handleChange" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -185,11 +185,11 @@ import resizeMixin from './modulebuttonResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import moduleDialog from '@/views/10_system/module/dialog/dialog'
-import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
+import SelectDictGroup from '@/layout/components/00_common/SelectComponent/SelectDictGroupComponent'
 
 export default {
   name: constants_program.P_BUTTON, // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, moduleDialog, SelectDict },
+  components: { Pagination, moduleDialog, SelectDictGroup },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   data() {

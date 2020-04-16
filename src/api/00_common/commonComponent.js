@@ -17,7 +17,19 @@ export function getDeleteTypeNormalApi() {
  */
 export function getDictDataApi(data) {
   return request({
-    url: '/api/v1/common/component/select/bypara/list',
+    url: '/api/v1/common/component/select/dict/list',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 根据参数，取所有的下拉选项的数据bean
+ * @param {*} data
+ */
+export function getDictGroupDataApi(data) {
+  return request({
+    url: '/api/v1/common/component/select/dict/group_list',
     method: 'post',
     data
   })

@@ -1,4 +1,4 @@
-<!--字典表下拉选项框，不可多选-->
+<!--字典表下拉选项框，分组，不可多选-->
 <template>
   <el-select
     :placeholder="initPlaceholder"
@@ -11,20 +11,27 @@
     @input="$emit('input', $event)"
     @change="handleChange"
   >
-    <el-option
-      v-for="item in dataJson.selectOptions"
-      :key="item.value"
-      :label="item.name"
-      :value="item.value"
-    />
+    <el-option-group
+      v-for="group in dataJson.selectOptions"
+      :key="group.label_code"
+      :label="group.label"
+    >
+      <el-option
+        v-for="item in group.options"
+        :key="item.value"
+        :label="item.name"
+        :value="item.value"
+      />
+    </el-option-group>
+
   </el-select>
 </template>
 
 <script>
-import { getDictDataApi } from '@/api/00_common/commonComponent'
+import { getDictGroupDataApi } from '@/api/00_common/commonComponent'
 
 export default {
-  name: 'SelectDictComponent',
+  name: 'SelectDictGroupComponent',
   props: {
     // 返回和设定的值
     value: {
@@ -83,7 +90,7 @@ export default {
     },
     getRemoteData() {
       this.dataJson.searchForm.para = this.para
-      getDictDataApi(this.dataJson.searchForm).then((_data) => {
+      getDictGroupDataApi(this.dataJson.searchForm).then((_data) => {
         this.dataJson.selectOptions = _data.data
         this.dataJson.settings.listLoading = false
       }, (_error) => {
@@ -92,9 +99,11 @@ export default {
     handleChange(val) {
       let selectedData
       this.dataJson.selectOptions.forEach((k) => {
-        if (k.value === val) {
-          selectedData = k
-        }
+        k.options.forEach((l) => {
+          if (l.value === val) {
+            selectedData = l
+          }
+        })
       })
 
       this.$emit('change', val, selectedData)
