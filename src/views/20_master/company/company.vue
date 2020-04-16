@@ -57,6 +57,7 @@
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
     <el-table
       ref="multipleTable"
@@ -100,6 +101,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column sortable="custom" min-width="45" :sort-orders="settings.sortOrders" prop="u_name" label="更新者" />
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -133,24 +135,24 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="社会信用代码：" prop="code">
-                  <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" placeholder="请输入" />
+                  <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="企业全称：" prop="name">
-                  <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" placeholder="请输入" />
+                  <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="企业简称：" prop="simple_name">
-                  <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="法定代表人：" prop="juridical_name">
-                  <el-input v-model.trim="dataJson.tempJson.juridical_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.juridical_name" placeholder="请输入" />
+                  <el-input v-model.trim="dataJson.tempJson.juridical_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.juridical_name" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -158,12 +160,12 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="注册资本（万）：" prop="register_capital">
-                  <el-input-number v-model.trim="dataJson.tempJson.register_capital" clearable show-word-limit controls-position="right" :min="0" :max="1000000" style="width: 100%" placeholder="请输入" />
+                  <el-input-number v-model.trim="dataJson.tempJson.register_capital" clearable show-word-limit controls-position="right" :min="0" :max="1000000" style="width: 100%" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="企业类型：" prop="type">
-                  <select-dict v-model="dataJson.tempJson.type" :para="CONSTANTS.DICT_SYS_COMPANY_TYPE" init-placeholder="请选择企业类型" />
+                  <select-dict v-model="dataJson.tempJson.type" :para="CONSTANTS.DICT_SYS_COMPANY_TYPE" init-placeholder="请选择企业类型" :disabled="isView" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -171,7 +173,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="成立日期：" prop="setup_date">
-                  <el-date-picker v-model="dataJson.tempJson.setup_date" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" @change="handleSetup_dateChange()" />
+                  <el-date-picker v-model="dataJson.tempJson.setup_date" value-format="yyyy-MM-dd" type="date" clearable :placeholder="isPlaceholderShow('选择日期')" style="width: 100%" :disabled="isView" @change="handleSetup_dateChange()" />
                 </el-form-item>
               </el-col>
               <el-col :span="12" />
@@ -179,18 +181,16 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="营业有效期 ：" prop="end_date">
-                  <el-date-picker ref="refEnd_date" v-model="dataJson.tempJson.end_date" value-format="yyyy-MM-dd" type="date" clearable placeholder="选择日期" style="width: 100%" :disabled="popSettingsData.rules_disable.end_date" @change="handleEnd_dateChange()" />
+                  <el-date-picker ref="refEnd_date" v-model="dataJson.tempJson.end_date" value-format="yyyy-MM-dd" type="date" clearable :placeholder="isPlaceholderShow('选择日期')" style="width: 100%" :disabled="popSettingsData.rules_disable.end_date || isView" @change="handleEnd_dateChange()" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="营业有效期长期：" prop="long_term">
-                  <el-switch v-model="dataJson.tempJson.long_term" inactive-text="营业有效期" active-text="长期" @change="handleLongTermChange" />
-                </el-form-item>
+                  <el-switch v-model="dataJson.tempJson.long_term" inactive-text="营业有效期" active-text="长期" :disabled="isView" @change="handleLongTermChange" /></el-form-item>
               </el-col>
             </el-row>
             <el-form-item label="描述：" prop="descr">
-              <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" placeholder="请输入" />
-            </el-form-item>
+              <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isView" /></el-form-item>
 
           </el-tab-pane>
 
@@ -247,7 +247,7 @@
             <el-row v-show="popSettingsData.dialogStatus === 'update'">
               <el-col :span="12">
                 <el-form-item label="更新者：" prop="u_id">
-                  <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+                  <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -264,11 +264,11 @@
       <div slot="footer" class="dialog-footer">
         <el-divider />
         <div class="floatLeft">
-          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+          <el-button v-show="!isView" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
         <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showUpdate && !isView" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
       </div>
     </el-dialog>
@@ -403,6 +403,7 @@ export default {
       popSettingsData: {
         // 弹出窗口状态名称
         textMap: {
+          view: '查看',
           update: '修改',
           insert: '新增',
           copyInsert: '复制新增'
@@ -488,6 +489,16 @@ export default {
         return false
       } else {
         return true
+      }
+    },
+    // 是否为查看模式
+    isView() {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+        // 查看模式
+        return true
+      } else {
+        // 非查看模式
+        return false
       }
     }
   },
@@ -708,6 +719,20 @@ export default {
       this.$nextTick(() => {
         this.$refs['refUpdateFocus'].focus()
       })
+    },
+    // 查看
+    handleView() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
+      this.getAddressDataByid()
+
+      if (this.dataJson.tempJson.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 修改
+      this.popSettingsData.dialogStatus = 'view'
+      this.popSettingsData.dialogFormVisible = true
     },
     // 导出按钮
     handleExport() {
@@ -1111,6 +1136,14 @@ export default {
     handleEditMeDialogCancel() {
       if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
         this.$emit('editMeDialogCancelClick')
+      }
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isView) {
+        return ''
+      } else {
+        return val
       }
     }
   }
