@@ -109,7 +109,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="按钮：" prop="code">
-              <select-dict-group v-model="dataJson.tempJson.code" :para="CONSTANTS.DICT_BTN_NAME_TYPE" @change="handleChange" />
+              <select-dict-group v-model="dataJson.tempJson.name" :para="CONSTANTS.DICT_BTN_NAME_TYPE" @change="handleChange" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
