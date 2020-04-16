@@ -74,7 +74,18 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
-      <el-table-column type="index" width="45" label="No" />
+      <!-- <el-table-column type="index" width="45" label="No" /> -->
+      <el-table-column
+        label="No"
+        type="index"
+        width="50"
+        align="center"
+      >
+        <template v-slot="scope">
+          <span>{{ (dataJson.searchForm.pageCondition.current - 1) * dataJson.searchForm.pageCondition.size + scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
@@ -95,6 +106,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="u_name" label="更新者" />
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -150,7 +162,7 @@
         <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
             <el-form-item label="更新者：" prop="u_id">
-              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
