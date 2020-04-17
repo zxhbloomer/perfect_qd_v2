@@ -16,6 +16,7 @@
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleRealyDelete">删除</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
     <el-table
       ref="multipleTable"
@@ -44,6 +45,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="is_default" label="默认" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="tag_name" label="标签" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="detail_address" label="详细地址" />
+      <el-table-column sortable="custom" min-width="45" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -121,7 +123,7 @@
         <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
             <el-form-item label="更新人：" prop="u_id">
-              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -293,6 +295,7 @@ export default {
       popSettingsData: {
         // 弹出窗口状态名称
         textMap: {
+          view: '查看',
           update: '修改',
           insert: '新增',
           copyInsert: '复制新增'
@@ -346,6 +349,16 @@ export default {
         return false
       } else {
         return true
+      }
+    },
+    // 是否为查看模式
+    isViewModel() {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+        // 查看模式
+        return true
+      } else {
+        // 非查看模式
+        return false
       }
     }
   },
@@ -514,6 +527,16 @@ export default {
       this.$nextTick(() => {
         this.$refs['refInsertFocus'].focus()
       })
+    },
+    // 查看
+    handleView() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      if (this.dataJson.tempJson.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      this.popSettingsData.dialogStatus = 'view'
+      this.popSettingsData.dialogFormVisible = true
     },
     // 导出按钮
     handleExport() {
