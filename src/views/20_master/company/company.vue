@@ -695,11 +695,11 @@ export default {
       })
     },
     // 点击按钮 更新
-    handleUpdate() {
+    async handleUpdate() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
       this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
-      this.getAddressDataByid()
-
+      var _data = await this.getAddressDataByid()
+      this.popSettingsData.searchDialogDataOne.selectedDataJson = Object.assign({}, _data)
       if (this.dataJson.tempJson.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
@@ -1115,9 +1115,10 @@ export default {
       this.$refs.dataSubmitForm.validateField('setup_date')
       this.$refs.dataSubmitForm.validateField('end_date')
     },
-    getAddressDataByid() {
-      getDataByIdApi({ id: this.dataJson.tempJson.address_id }).then(response => {
-        this.popSettingsData.searchDialogDataOne.selectedDataJson = Object.assign({}, response.data)
+    async getAddressDataByid() {
+      return await getDataByIdApi({ id: this.dataJson.tempJson.address_id }).then(response => {
+        // this.popSettingsData.searchDialogDataOne.selectedDataJson = Object.assign({}, response.data)
+        return response.data
       })
     },
     // 自动弹出编辑窗口
