@@ -86,7 +86,6 @@ service.interceptors.response.use(
     console.log('err' + error) // for debug
     // 1：定义message
     let showMsg = ''
-
     // if (error.response === undefined) {
     //   console.log('error.response is undefined')
     // }
