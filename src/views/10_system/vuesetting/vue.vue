@@ -79,7 +79,7 @@
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="140" prop="component" label="模块" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="100" prop="meta_title" label="页面名称" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="meta_icon" label="菜单icon" />
-      <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="u_name" label="更新者" />
+      <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="160" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -135,7 +135,7 @@
         </el-form-item>
         <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
-            <el-form-item label="更新者：" prop="u_id">
+            <el-form-item label="更新人：" prop="u_id">
               <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>

@@ -227,7 +227,7 @@
 
             <el-row>
               <el-col :span="12">
-                <el-form-item label="更新者：" prop="u_id">
+                <el-form-item label="更新人：" prop="u_id">
                   <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
                 </el-form-item>
               </el-col>

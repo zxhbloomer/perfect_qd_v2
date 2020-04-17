@@ -106,7 +106,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="45" :sort-orders="settings.sortOrders" prop="u_name" label="更新者" />
+      <el-table-column sortable="custom" min-width="45" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -161,7 +161,7 @@
         </el-form-item>
         <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
-            <el-form-item label="更新者：" prop="u_id">
+            <el-form-item label="更新人：" prop="u_id">
               <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>

@@ -51,7 +51,7 @@
       <el-table-column sortable label="电子邮件" min-width="120" />
       <el-table-column sortable label="创建者" min-width="120" />
       <el-table-column sortable label="创建时间" min-width="120" />
-      <el-table-column sortable label="更新者" min-width="120" />
+      <el-table-column sortable label="更新人" min-width="120" />
       <el-table-column sortable label="更新时间" min-width="120" />
     </el-table>
     <userAddPopUp :dialog-status="dialogStatus" :dialog-visible="dialogVisible" @setDialogVisible="setDialogVisible" />
