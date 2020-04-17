@@ -159,7 +159,7 @@
         <el-form-item label="描述：" prop="descr">
           <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :disabled="isView" />
         </el-form-item>
-        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+        <el-row v-show="popSettingsData.dialogStatus === 'update' || isView">
           <el-col :span="12">
             <el-form-item label="更新人：" prop="u_id">
               <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
