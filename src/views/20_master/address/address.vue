@@ -45,7 +45,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="is_default" label="默认" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="tag_name" label="标签" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="detail_address" label="详细地址" />
-      <el-table-column sortable="custom" min-width="45" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
+      <el-table-column sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
