@@ -79,25 +79,26 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="联系人：" prop="link_man">
-              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.link_man" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.link_man" placeholder="请输入" />
+              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.link_man" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.link_man" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="电话：" prop="phone">
-              <el-input v-model.trim="dataJson.tempJson.phone" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.phone" placeholder="请输入" />
+              <el-input v-model.trim="dataJson.tempJson.phone" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.phone" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="邮编：" prop="postal_code">
-              <el-input v-model.trim="dataJson.tempJson.postal_code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.postal_code" placeholder="请输入" />
+              <el-input v-model.trim="dataJson.tempJson.postal_code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.postal_code" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="默认地址：" prop="is_default">
               <el-switch
                 v-model="dataJson.tempJson.is_default"
+                :disabled="isViewModel"
               />
             </el-form-item>
           </el-col>
@@ -106,19 +107,20 @@
           <el-cascader
             ref="refCascader"
             v-model="dataJson.tempJson.cascader_areas"
-            placeholder="请选择省市区"
+            :placeholder="isPlaceholderShow('请选择省市区')"
             filterable
             clearable
             :options="dataJson.cascader.data"
             style="width: 100%"
+            :disabled="isViewModel"
             @change="handleCascaderChange"
           />
         </el-form-item>
         <el-form-item label="详细地址：" prop="detail_address">
-          <el-input v-model.trim="dataJson.tempJson.detail_address" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.detail_address" placeholder="请输入" />
+          <el-input v-model.trim="dataJson.tempJson.detail_address" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.detail_address" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
         </el-form-item>
         <el-form-item label="标签：" prop="tag">
-          <radio-dict v-model="dataJson.tempJson.tag" :para="CONSTANTS.DICT_SYS_ADDRESS_TAG_TYPE" @change="handleRadioDictChange" />
+          <radio-dict v-model="dataJson.tempJson.tag" :para="CONSTANTS.DICT_SYS_ADDRESS_TAG_TYPE" :disabled="isViewModel" @change="handleRadioDictChange" />
         </el-form-item>
         <el-row v-show="popSettingsData.dialogStatus === 'update'">
           <el-col :span="12">
@@ -136,7 +138,7 @@
       <div slot="footer" class="dialog-footer">
         <el-divider />
         <div class="floatLeft">
-          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
         <el-button plain @click="popSettingsData.dialogFormVisible = false">取消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
@@ -874,6 +876,14 @@ export default {
         })
         this.settings.listLoading = false
       })
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isViewModel) {
+        return ''
+      } else {
+        return val
+      }
     }
   }
 }
