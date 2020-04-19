@@ -46,7 +46,7 @@
               cancel-button-text="取消"
               icon="el-icon-info"
               icon-color="red"
-              title="没找到数据，点击确定后跳转到组织机构进行添加？请注意保存。"
+              title="点击确定后跳转到组织机构页面进行编辑？请注意保存当前数据。"
               @onConfirm="handleForward"
             >
               <el-button slot="reference" type="primary" icon="el-icon-edit" style="padding:7px 7px; height:27px" />
@@ -302,6 +302,11 @@ export default {
     value: {
       type: String,
       default: null
+    },
+    // 初始选择的行
+    currentId: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -462,17 +467,45 @@ export default {
         this.settings.listLoading = false
         this.$nextTick(() => {
           let current_node = null
-          if (this.dataJson.currentJson === null) {
+          if (this.currentId === null) {
             current_node = this.dataJson.treeData[0]
             this.$refs.treeObject.setCurrentKey(this.dataJson.treeData[0].id)
             this.$refs.treeObject.getCurrentNode(current_node)
           } else {
-            current_node = this.dataJson.currentJson
-            this.$refs.treeObject.setCurrentKey(this.dataJson.currentJson.currentkey)
-            this.$refs.treeObject.getCurrentNode(current_node)
+            var _node = this.getCurrentElement(this.dataJson.treeData, this.currentId)
+            this.$refs.treeObject.setCurrentKey(_node.id)
+            this.$refs.treeObject.getCurrentNode(_node)
+            // this.$refs.treeObject.setCurrentKey(this.currentId)
+            // this.$refs.treeObject.getCurrentNode(current_node)
           }
         })
       })
+    },
+    // 获取当前的选中的节点
+    getCurrentElement(treeData, val) {
+      for (const element of treeData) {
+        debugger
+
+        switch (this.type) {
+          case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+            // 企业
+            if (element.serial_id === val && element.serial_type === 'm_company') {
+              return element
+            }
+            break
+          case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+            // 部门
+            if (element.serial_id === val && element.serial_type === 'm_dept') {
+              return element
+            }
+            break
+          default:
+            return null
+        }
+        if (element.children) {
+          return this.getCurrentElement(element.children, val)
+        }
+      }
     },
     filterNode(value, data) {
       if (!value) return true
