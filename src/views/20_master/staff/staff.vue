@@ -71,7 +71,7 @@
         </template>
       </el-table-column>
       <el-table-column sortable="custom" min-width="90" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
