@@ -70,7 +70,8 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="70" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
+      <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
@@ -228,7 +229,7 @@
             <el-row v-show="popSettingsData.dialogStatus === 'update'">
               <el-col :span="12">
                 <el-form-item label="更新人：" prop="u_id">
-                  <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+                  <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -416,7 +417,7 @@
         </div>
         <el-button plain :disabled="settings.listLoading" @click="handleDialogClose">取消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showUpdate && !isViewModel" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
       </div>
     </el-dialog>
