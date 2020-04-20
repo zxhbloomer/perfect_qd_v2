@@ -484,8 +484,6 @@ export default {
     // 获取当前的选中的节点
     getCurrentElement(treeData, val) {
       for (const element of treeData) {
-        debugger
-
         switch (this.type) {
           case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
             // 企业
@@ -502,7 +500,7 @@ export default {
           default:
             return null
         }
-        if (element.children) {
+        if (element.children.length > 0) {
           return this.getCurrentElement(element.children, val)
         }
       }
@@ -531,6 +529,7 @@ export default {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
       this.dataJson.tempJson = Object.assign({}, row) // copy obj
+      this.dataJson.tempJson.inputData = this.value
       this.dataJson.currentJson = this.$refs.treeObject.getCurrentNode()
       this.dataJson.currentJson.currentkey = this.$refs.treeObject.getCurrentKey()
       this.settings.btnDisabledStatus.disabledOk = true

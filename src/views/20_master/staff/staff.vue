@@ -52,8 +52,8 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="sex_text" label="性别" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="birthday" label="生日" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="email" label="邮箱地址" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_simple_name" label="所属公司" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_simple_name" label="默认部门" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_name" label="所属公司" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_name" label="默认部门" />
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
@@ -75,6 +75,7 @@
 
     <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
     <el-dialog
+      v-if="popSettingsData.dialogFormVisible"
       v-el-drag-dialog
       :title="popSettingsData.textMap[popSettingsData.dialogStatus]"
       :visible.sync="popSettingsData.dialogFormVisible"
@@ -372,7 +373,7 @@
               <el-col :span="12">
                 <el-form-item label="所属公司：">
                   <select-company-dept
-                    v-model.trim="dataJson.tempJson.company_simple_name"
+                    v-model.trim="dataJson.tempJson.company_name"
                     placeholder="请选择所属公司"
                     :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY"
                     :current-id="dataJson.tempJson.company_id"
@@ -384,7 +385,7 @@
               <el-col :span="12">
                 <el-form-item label="默认部门：">
                   <select-company-dept
-                    v-model.trim="dataJson.tempJson.dept_simple_name"
+                    v-model.trim="dataJson.tempJson.dept_name"
                     placeholder="请选择默认部门"
                     :type="CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT"
                     :current-id="dataJson.tempJson.dept_id"
