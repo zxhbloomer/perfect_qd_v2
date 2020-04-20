@@ -2,7 +2,7 @@
   <div class="el-select">
     <el-input
       ref="refSelectGrid"
-      v-model.trim="dataJson.tempJson.inputData"
+      v-model.trim="value"
       v-popover:popover
       :placeholder="placeholder"
       :disabled="disabled"
