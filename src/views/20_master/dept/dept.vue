@@ -52,6 +52,7 @@
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleExport">导出</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
     <el-table
       ref="multipleTable"
@@ -98,6 +99,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column sortable="custom" min-width="90" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -131,25 +133,25 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="部门编号：" prop="code">
-              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" />
+              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel || isViewModel" :placeholder="isPlaceholderShow('请输入')" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门全称：" prop="name">
-              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
+              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="部门简称：" prop="simple_name">
-              <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" />
+              <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="部门主管：" prop="handler_id">
-              <el-input v-model.trim="popSettingsData.searchDialogDataOne.selectedDataJson.name" disabled>
-                <el-button slot="append" ref="selectOne" icon="el-icon-search" @click="handleStaffDialogClickOne">
+              <el-input v-model.trim="popSettingsData.searchDialogDataOne.selectedDataJson.name" disabled :placeholder="isPlaceholderShow('请选择')">
+                <el-button slot="append" ref="selectOne" icon="el-icon-search" :disabled="isViewModel" @click="handleStaffDialogClickOne">
                   选择
                 </el-button>
               </el-input>
@@ -160,8 +162,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="部门副主管：" prop="sub_handler_id">
-              <el-input v-model.trim="popSettingsData.searchDialogDataTwo.selectedDataJson.name" disabled>
-                <el-button slot="append" ref="selectTwo" icon="el-icon-search" @click="handleStaffDialogClickTwo">
+              <el-input v-model.trim="popSettingsData.searchDialogDataTwo.selectedDataJson.name" disabled :placeholder="isPlaceholderShow('请选择')">
+                <el-button slot="append" ref="selectTwo" icon="el-icon-search" :disabled="isViewModel" @click="handleStaffDialogClickTwo">
                   选择
                 </el-button>
               </el-input>
@@ -169,8 +171,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="上级主管领导：" prop="handler_id">
-              <el-input v-model.trim="popSettingsData.searchDialogDataThree.selectedDataJson.name" disabled>
-                <el-button slot="append" ref="selectThree" icon="el-icon-search" @click="handleStaffDialogClickThree">
+              <el-input v-model.trim="popSettingsData.searchDialogDataThree.selectedDataJson.name" disabled :placeholder="isPlaceholderShow('请选择')">
+                <el-button slot="append" ref="selectThree" icon="el-icon-search" :disabled="isViewModel" @click="handleStaffDialogClickThree">
                   选择
                 </el-button>
               </el-input>
@@ -181,8 +183,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="上级分管领导：" prop="response_leader_id">
-              <el-input v-model.trim="popSettingsData.searchDialogDataFour.selectedDataJson.name" disabled>
-                <el-button slot="append" ref="selectTwo" icon="el-icon-search" @click="handleStaffDialogClickFour">
+              <el-input v-model.trim="popSettingsData.searchDialogDataFour.selectedDataJson.name" disabled :placeholder="isPlaceholderShow('请选择')">
+                <el-button slot="append" ref="selectFour" icon="el-icon-search" :disabled="isViewModel" @click="handleStaffDialogClickFour">
                   选择
                 </el-button>
               </el-input>
@@ -191,12 +193,12 @@
         </el-row>
 
         <el-form-item label="描述：" prop="descr">
-          <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" />
+          <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
         </el-form-item>
-        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+        <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
           <el-col :span="12">
-            <el-form-item label="更新人：" prop="u_id">
-              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+            <el-form-item label="更新人：" prop="u_name">
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -352,6 +354,7 @@ export default {
       popSettingsData: {
         // 弹出窗口状态名称
         textMap: {
+          view: '查看',
           update: '修改',
           insert: '新增',
           copyInsert: '复制新增'
@@ -435,6 +438,14 @@ export default {
         return false
       } else {
         return true
+      }
+    },
+    // 是否为查看模式
+    isViewModel() {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+        return true
+      } else {
+        return false
       }
     }
   },
@@ -655,6 +666,7 @@ export default {
       this.initStaffSelectButtonOne()
       this.initStaffSelectButtonTwo()
       this.initStaffSelectButtonThree()
+      this.initStaffSelectButtonFour()
       // 控件focus
       this.$nextTick(() => {
         this.$refs['refFocus'].focus()
@@ -681,10 +693,25 @@ export default {
       this.initStaffSelectButtonOne()
       this.initStaffSelectButtonTwo()
       this.initStaffSelectButtonThree()
+      this.initStaffSelectButtonFour()
       // 控件focus
       this.$nextTick(() => {
         this.$refs['refUpdateFocus'].focus()
       })
+    },
+    handleView() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      if (this.dataJson.tempJson.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 修改
+      this.popSettingsData.dialogStatus = 'view'
+      this.popSettingsData.dialogFormVisible = true
+      this.initStaffSelectButtonOne()
+      this.initStaffSelectButtonTwo()
+      this.initStaffSelectButtonThree()
+      this.initStaffSelectButtonFour()
     },
     // 导出按钮
     handleExport() {
@@ -749,6 +776,11 @@ export default {
       // 修改
       this.popSettingsData.dialogStatus = 'copyInsert'
       this.popSettingsData.dialogFormVisible = true
+      this.initStaffSelectButtonOne()
+      this.initStaffSelectButtonTwo()
+      this.initStaffSelectButtonThree()
+      this.initStaffSelectButtonFour()
+
       this.$nextTick(() => {
         this.$refs['dataSubmitForm'].clearValidate()
       })
@@ -976,7 +1008,11 @@ export default {
     // 选择or重置按钮的初始化
     initStaffSelectButtonOne() {
       this.$nextTick(() => {
-        this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        if (this.isViewModel) {
+          this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append'
+        } else {
+          this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        }
       })
     },
     handleStaffDialogClickOne() {
@@ -997,7 +1033,11 @@ export default {
     // 选择or重置按钮的初始化
     initStaffSelectButtonTwo() {
       this.$nextTick(() => {
-        this.$refs.selectTwo.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        if (this.isViewModel) {
+          this.$refs.selectTwo.$el.parentElement.className = 'el-input-group__append'
+        } else {
+          this.$refs.selectTwo.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        }
       })
     },
     handleStaffDialogClickTwo() {
@@ -1018,7 +1058,11 @@ export default {
     // 选择or重置按钮的初始化
     initStaffSelectButtonThree() {
       this.$nextTick(() => {
-        this.$refs.selectThree.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        if (this.isViewModel) {
+          this.$refs.selectThree.$el.parentElement.className = 'el-input-group__append'
+        } else {
+          this.$refs.selectThree.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        }
       })
     },
     handleStaffDialogClickThree() {
@@ -1039,7 +1083,11 @@ export default {
     // 选择or重置按钮的初始化
     initStaffSelectButtonFour() {
       this.$nextTick(() => {
-        this.$refs.selectFour.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        if (this.isViewModel) {
+          this.$refs.selectFour.$el.parentElement.className = 'el-input-group__append'
+        } else {
+          this.$refs.selectFour.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
+        }
       })
     },
     handleStaffDialogClickFour() {
@@ -1079,6 +1127,14 @@ export default {
       this.popSettingsData.dialogFormVisible = false
       // 关闭自动弹出编辑窗口
       this.handleEditMeDialogCancel()
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isViewModel) {
+        return ''
+      } else {
+        return val
+      }
     }
   }
 }

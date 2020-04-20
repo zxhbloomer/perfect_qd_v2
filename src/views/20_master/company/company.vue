@@ -245,9 +245,9 @@
               <el-input v-model.trim="popSettingsData.searchDialogDataOne.selectedDataJson.detail_address" disabled />
             </el-form-item>
 
-            <el-row v-show="popSettingsData.dialogStatus === 'update'">
+            <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
               <el-col :span="12">
-                <el-form-item label="更新人：" prop="u_id">
+                <el-form-item label="更新人：" prop="u_name">
                   <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
                 </el-form-item>
               </el-col>

@@ -49,10 +49,10 @@
       <el-table-column type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="员工姓名" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="simple_name" label="姓名简称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="姓名简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="sex_text" label="性别" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="birthday" label="生日" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="email" label="邮箱地址" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="email" label="邮箱地址" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_name" label="所属公司" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_name" label="默认部门" />
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
@@ -70,8 +70,8 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="70" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="90" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
+      <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
@@ -228,7 +228,7 @@
 
             <el-row v-show="popSettingsData.dialogStatus === 'update'">
               <el-col :span="12">
-                <el-form-item label="更新人：" prop="u_id">
+                <el-form-item label="更新人：" prop="u_name">
                   <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
                 </el-form-item>
               </el-col>
