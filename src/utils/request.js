@@ -124,7 +124,12 @@ service.interceptors.response.use(
           if (JSON.stringify(error.response.data).includes('ECONNREFUSED')) {
             showMsg = '请联系管理员，服务器没有响应。'
           } else {
-            showMsg = error.response.data.message
+            if (error.config.responseType === 'arraybuffer') {
+              var decodedString = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(error.response.data)))
+              showMsg = decodedString.message
+            } else {
+              showMsg = error.response.data.message
+            }
           }
           break
         case 503:
