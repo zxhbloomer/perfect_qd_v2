@@ -1,3 +1,5 @@
+import '@babel/polyfill'
+
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
@@ -18,8 +20,6 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
-
-import '@babel/polyfill'
 
 /**
  * If you don't want to use mock-server
