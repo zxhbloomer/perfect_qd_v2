@@ -1,5 +1,5 @@
 import { asyncRoutes, convertToOneRouter, constantRoutes } from '@/router'
-import deepcopy from 'deepcopy'
+import deepcopy from 'utils-copy'
 
 // import { constantRoutes } from '@/router'
 

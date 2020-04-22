@@ -43,7 +43,7 @@
     "url": "https://github.com/PanJiaChen/vue-element-admin/issues"
   },
   "dependencies": {
-    "deepcopy": "2.0.0",
+    "utils-copy": "1.1.1",
     "vue2-verify": "1.1.5",
     "vue-event-proxy": "1.0.5",
     "axios": "^0.19.0",

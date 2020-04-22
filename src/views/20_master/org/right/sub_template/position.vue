@@ -166,7 +166,7 @@ import { getPositionListApi, getStaffTransferListApi, setStaffTransferApi } from
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
-import deepcopy from 'deepcopy'
+import deepcopy from 'utils-copy'
 
 export default {
   name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
