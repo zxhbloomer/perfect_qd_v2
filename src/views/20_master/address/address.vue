@@ -196,6 +196,8 @@ export default {
                 }))
                 resolve(nodes)
                 that.settings.listLoading = false
+              }).finally(() => {
+                this.settings.listLoading = false
               })
               break
             case 1:
@@ -209,6 +211,8 @@ export default {
                 }))
                 resolve(nodes)
                 that.settings.listLoading = false
+              }).finally(() => {
+                this.settings.listLoading = false
               })
               break
             case 2:
@@ -222,6 +226,8 @@ export default {
                 }))
                 resolve(nodes)
                 that.settings.listLoading = false
+              }).finally(() => {
+                this.settings.listLoading = false
               })
               break
             default:
@@ -549,6 +555,8 @@ export default {
           type: 'error'
         }).then(() => {
           this.settings.btnShowStatus.showExport = false
+        }).finally(() => {
+          this.settings.listLoading = false
         })
       } else if (this.dataJson.multipleSelection.length === this.dataJson.listData.length) {
         // 选择全部的时候
@@ -576,6 +584,7 @@ export default {
       this.settings.listLoading = true
       // 开始导出
       exportAllApi(this.dataJson.searchForm).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -589,6 +598,7 @@ export default {
       })
       // 开始导出
       exportSelectionApi(selectionJson).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -654,6 +664,7 @@ export default {
         this.dataJson.listData = newRecorders
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -685,6 +696,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -714,6 +726,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -786,6 +799,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -816,6 +830,7 @@ export default {
       this.settings.listLoading = true
       getAreasCascaderApi().then(response => {
         this.dataJson.cascader.data = response.data
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -874,6 +889,7 @@ export default {
           type: 'error',
           duration: this.settings.duration
         })
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },

@@ -108,7 +108,7 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="按钮：" prop="code">
+            <el-form-item label="按钮：" prop="name">
               <select-dict-group v-model="dataJson.tempJson.name" :para="CONSTANTS.DICT_BTN_NAME_TYPE" @change="handleChange" />
             </el-form-item>
           </el-col>
@@ -812,6 +812,8 @@ export default {
     },
     handleChange(val, label) {
       this.dataJson.tempJson.name = label.name
+      this.dataJson.tempJson.code = val
+      debugger
     },
     // 排序上
     handleSortUp(scope, index) {

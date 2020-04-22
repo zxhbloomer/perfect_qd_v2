@@ -873,6 +873,7 @@ export default {
         this.dataJson.menu_buttons = response.data.menu_buttons
         this.dataJson.paging = response.data.menu_data
         this.dataJson.paging.records = {}
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
