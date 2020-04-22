@@ -198,6 +198,13 @@ $color-primary: #bfbfbf;
 		transition: all .4s ease-in-out;
   }
 
+  @media screen and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    &-container {
+      overflow-x: visible;
+      overflow-y: visible;
+    }
+  }
+
   &-iframe {
     position: absolute;
     top: 0;

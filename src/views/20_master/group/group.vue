@@ -707,6 +707,7 @@ export default {
         this.dataJson.paging.records = {}
         // 自动打开编辑页面
         this.handleEditMeDialog(this.dataJson.listData[0])
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
