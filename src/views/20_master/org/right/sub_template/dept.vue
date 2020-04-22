@@ -407,10 +407,11 @@ export default {
         this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
-        this.settings.listLoading = false
         // 通知兄弟组件
         this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
         this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+      }).finally(() => {
+        this.settings.listLoading = false
       })
     },
     // 关闭弹出窗口

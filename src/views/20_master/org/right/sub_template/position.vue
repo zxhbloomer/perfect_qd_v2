@@ -483,10 +483,11 @@ export default {
         this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
-        this.settings.listLoading = false
         // 通知兄弟组件
         this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
         this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+      }).finally(() => {
+        this.settings.listLoading = false
       })
     },
     // 关闭弹出窗口
@@ -558,6 +559,7 @@ export default {
         this.popSettingsData.transfer.staff_all = response.data.staff_all
         this.popSettingsData.transfer.staff_positions = response.data.staff_positions
         this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
         this.settings.listLoading = false
       })
       this.popSettingsData.btnDisabledStatus.disabledReset = true
@@ -587,7 +589,6 @@ export default {
         })
         this.emitEvent(_data)
         this.popSettingsData.dialogFormVisible = false
-        this.settings.listLoading = false
       }, (_error) => {
         this.$notify({
           title: '更新错误',
@@ -596,6 +597,7 @@ export default {
           duration: this.settings.duration
         })
         // this.popSettingsData.dialogFormVisible = false
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },

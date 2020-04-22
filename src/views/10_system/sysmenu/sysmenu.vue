@@ -731,7 +731,6 @@ export default {
             duration: this.settings.duration
           })
           this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
         }, (_error) => {
           this.$notify({
             title: '更新错误',
@@ -741,6 +740,7 @@ export default {
           })
           row.is_del = !row.is_del
           this.popSettingsData.dialogFormVisible = false
+        }).finally(() => {
           this.settings.listLoading = false
         })
       }).catch(action => {
@@ -897,7 +897,6 @@ export default {
             })
             this.getDataList()
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '更新错误',
@@ -906,6 +905,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -971,7 +971,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '插入错误',
@@ -980,6 +979,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -1024,6 +1024,7 @@ export default {
       this.settings.listLoading = true
       getCascaderListApi().then(response => {
         this.dataJson.cascader.data = response.data
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -1065,7 +1066,6 @@ export default {
             })
             this.getDataList()
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '复制新增错误',
@@ -1074,6 +1074,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }

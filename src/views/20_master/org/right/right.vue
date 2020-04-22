@@ -346,10 +346,11 @@ export default {
       getAllOrgDataCountApi(this.dataJson.searchForm).then(response => {
         const recorders = response.data
         this.dataJson.listData = recorders
-        this.settings.listLoading = false
         // 通知兄弟组件
         this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
         this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+      }).finally(() => {
+        this.settings.listLoading = false
       })
     },
     // 重置按钮

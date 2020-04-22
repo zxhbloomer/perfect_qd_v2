@@ -628,8 +628,6 @@ export default {
             type: 'success',
             duration: this.settings.duration
           })
-          this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
         }, (_error) => {
           this.$notify({
             title: '更新错误',
@@ -638,6 +636,7 @@ export default {
             duration: this.settings.duration
           })
           row.is_del = !row.is_del
+        }).finally(() => {
           this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         })
@@ -749,6 +748,7 @@ export default {
       this.settings.listLoading = true
       // 开始导出
       exportAllApi(this.dataJson.searchForm).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -762,6 +762,7 @@ export default {
       })
       // 开始导出
       exportSelectionApi(selectionJson).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -831,6 +832,7 @@ export default {
         this.dataJson.paging.records = {}
         // 自动打开编辑页面
         this.handleEditMeDialog(this.dataJson.listData[0])
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -853,7 +855,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
             // 关闭自动弹出编辑窗口
             this.handleEditMeDialogOk()
           }, (_error) => {
@@ -864,9 +865,10 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
             // 关闭自动弹出编辑窗口
             this.handleEditMeDialogOk()
+          }).finally(() => {
+            this.settings.listLoading = false
           })
         }
       })
@@ -886,7 +888,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '复制新增错误',
@@ -895,6 +896,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -958,7 +960,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '插入错误',
@@ -967,6 +968,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }

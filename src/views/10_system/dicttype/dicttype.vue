@@ -469,8 +469,6 @@ export default {
             type: 'success',
             duration: this.settings.duration
           })
-          this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
         }, (_error) => {
           this.$notify({
             title: '更新错误',
@@ -479,6 +477,7 @@ export default {
             duration: this.settings.duration
           })
           row.is_del = !row.is_del
+        }).finally(() => {
           this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         })
@@ -565,6 +564,7 @@ export default {
       this.settings.listLoading = true
       // 开始导出
       exportAllApi(this.dataJson.searchForm).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -578,6 +578,7 @@ export default {
       })
       // 开始导出
       exportSelectionApi(selectionJson).then(response => {
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -619,6 +620,7 @@ export default {
         this.dataJson.listData = newRecorders
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -640,8 +642,6 @@ export default {
               type: 'success',
               duration: this.settings.duration
             })
-            this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '更新错误',
@@ -649,6 +649,7 @@ export default {
               type: 'error',
               duration: this.settings.duration
             })
+          }).finally(() => {
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           })
@@ -713,8 +714,6 @@ export default {
               type: 'success',
               duration: this.settings.duration
             })
-            this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '插入错误',
@@ -722,6 +721,7 @@ export default {
               type: 'error',
               duration: this.settings.duration
             })
+          }).finally(() => {
             this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           })
@@ -749,6 +749,8 @@ export default {
       }, (_error) => {
         // this.showErrorMsg('发生了异常，请联系管理员！', _error.data)
         console.log('发生了异常，请联系管理员！:' + JSON.stringify(_error))
+      }).finally(() => {
+        this.settings.listLoading = false
       })
     },
     // 文件上传失败

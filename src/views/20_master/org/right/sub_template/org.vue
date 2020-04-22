@@ -452,10 +452,11 @@ export default {
           return { ...v, columnTypeShowIcon: false, columnNameShowIcon: false }
         })
         this.dataJson.listData = newRecorders
-        this.settings.listLoading = false
         // 通知兄弟组件
         this.$off(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
         this.$emit(this.EMITS.EMIT_ORG_CHANGE_LOADING_OK)
+      }).finally(() => {
+        this.settings.listLoading = false
       })
     },
     // 重置查询区域

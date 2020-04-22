@@ -488,8 +488,6 @@ export default {
             type: 'success',
             duration: this.settings.duration
           })
-          this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
         }, (_error) => {
           this.$notify({
             title: '更新错误',
@@ -498,11 +496,12 @@ export default {
             duration: this.settings.duration
           })
           row.is_del = !row.is_del
-          this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
         })
       }).catch(action => {
         row.is_del = !row.is_del
+      }).finally(() => {
+        this.popSettingsData.dialogFormVisible = false
+        this.settings.listLoading = false
       })
     },
     // 点击按钮 新增
@@ -623,6 +622,7 @@ export default {
         this.dataJson.listData = newRecorders
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -654,6 +654,8 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
+            this.popSettingsData.dialogFormVisible = false
             this.settings.listLoading = false
           })
         }
@@ -674,7 +676,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '复制新增错误',
@@ -683,6 +684,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -745,7 +747,6 @@ export default {
               duration: this.settings.duration
             })
             this.popSettingsData.dialogFormVisible = false
-            this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
               title: '插入错误',
@@ -754,6 +755,7 @@ export default {
               duration: this.settings.duration
             })
             // this.popSettingsData.dialogFormVisible = false
+          }).finally(() => {
             this.settings.listLoading = false
           })
         }
@@ -880,7 +882,7 @@ export default {
           type: 'error',
           duration: this.settings.duration
         })
-        this.popSettingsData.dialogFormVisible = false
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
@@ -930,7 +932,6 @@ export default {
         })
         this.getDataList()
         // loading
-        this.settings.listLoading = false
       }, (_error) => {
         this.$notify({
           title: '删除错误',
@@ -938,6 +939,7 @@ export default {
           type: 'error',
           duration: this.settings.duration
         })
+      }).finally(() => {
         this.settings.listLoading = false
       })
     }

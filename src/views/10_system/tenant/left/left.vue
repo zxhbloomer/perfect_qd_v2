@@ -196,6 +196,7 @@ export default {
       getTreeListApi(this.dataJson.searchForm).then(response => {
         this.dataJson.treeData = response.data
         this.getListAfterProcess()
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },
