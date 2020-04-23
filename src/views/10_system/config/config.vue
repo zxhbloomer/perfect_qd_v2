@@ -25,7 +25,9 @@
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-circle-close" :loading="settings.listLoading" @click="handleRealyDelete">物理删除</el-button>
       <el-button :disabled="!settings.btnShowStatus.showExport" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleExport">导出</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
 
     <el-table
@@ -53,7 +55,23 @@
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="130" prop="name" label="参数名称" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="130" prop="config_key" label="参数键名" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="value" label="参数键值" />
+      <el-table-column min-width="50" :sort-orders="settings.sortOrders" label="启用状态" :render-header="renderHeaderIsEnabled">
+        <template slot-scope="scope">
+          <el-tooltip :content="scope.row.is_enable === 'false' ? '启用状态：未启用' : '启用状态：已启用' " placement="top" :open-delay="500">
+            <el-switch
+              v-model="scope.row.is_enable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="true"
+              :inactive-value="false"
+              :width="30"
+              @change="handleEnable(scope.row)"
+            />
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="descr" label="描述" />
+      <el-table-column sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="160" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -80,27 +98,27 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="参数名称：" prop="name">
-              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.name" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="popSettingsData.dialogStatus==='update'" />
+              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.name" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="popSettingsData.dialogStatus==='update' || isViewModel" :placeholder="isPlaceholderShow('请输入')" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="参数键名：" prop="config_key">
-              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.config_key" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.config_key" />
+              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.config_key" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.config_key" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-form-item label="参数键值：" prop="value">
-            <el-input v-model.trim="dataJson.tempJson.value" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.value" />
+            <el-input v-model.trim="dataJson.tempJson.value" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.value" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
           </el-form-item>
         </el-row>
         <el-form-item label="描述：" prop="descr">
-          <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" />
+          <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
         </el-form-item>
-        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+        <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
           <el-col :span="12">
             <el-form-item label="更新人：" prop="u_id">
-              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -113,7 +131,7 @@
       <div slot="footer" class="dialog-footer">
         <el-divider />
         <div class="floatLeft">
-          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" :loading="settings.listLoading" @click="doReset()">重置</el-button>
+          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" :loading="settings.listLoading" @click="doReset()">重置</el-button>
         </div>
         <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" v-no-more-click plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " :loading="settings.listLoading" @click="doInsert()">确定</el-button>
@@ -151,7 +169,7 @@
 
 <script>
 import constants_program from '@/common/constants/constants_program'
-import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi } from '@/api/10_system/config/config'
+import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, realDeleteSelectionApi, enabledApi } from '@/api/10_system/config/config'
 import resizeMixin from './configResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -227,6 +245,7 @@ export default {
       popSettingsData: {
         // 弹出窗口状态名称
         textMap: {
+          view: '查看',
           update: '修改',
           insert: '新增',
           copyInsert: '复制新增'
@@ -256,6 +275,18 @@ export default {
           config_key: [{ required: true, message: '请输入参数键名', trigger: 'change' }],
           value: [{ required: true, message: '请输入参数键值', trigger: 'change' }]
         }
+      }
+    }
+  },
+  computed: {
+    // 是否为查看模式
+    isViewModel() {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+        // 查看模式
+        return true
+      } else {
+        // 非查看模式
+        return false
       }
     }
   },
@@ -387,6 +418,17 @@ export default {
       this.$nextTick(() => {
         this.$refs['refUpdateFocus'].focus()
       })
+    },
+    // 查看
+    handleView() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      if (this.dataJson.tempJson.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 修改
+      this.popSettingsData.dialogStatus = 'view'
+      this.popSettingsData.dialogFormVisible = true
     },
     // 导出按钮
     handleExport() {
@@ -694,8 +736,119 @@ export default {
       this.popSettingsData.btnDisabledStatus.disabledInsert = true
       this.popSettingsData.btnDisabledStatus.disabledUpdate = true
       this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
+    },
+    // 删除按钮
+    handleRealyDelete() {
+      // 没有选择任何数据的情况
+      if (this.dataJson.multipleSelection.length <= 0) {
+        this.$alert('请在表格中选择数据进行删除', '未选择数据错误', {
+          confirmButtonText: '关闭',
+          type: 'error'
+        }).then(() => {
+          this.settings.btnShowStatus.showDelete = false
+        })
+      } else {
+        // 选中数据删除
+        this.handleRealDeleteSelectionData()
+      }
+    },
+    // 选中数据删除
+    handleRealDeleteSelectionData() {
+      // loading
+      this.settings.listLoading = true
+      const selectionJson = []
+      this.dataJson.multipleSelection.forEach(function(value, index, array) {
+        selectionJson.push({ 'id': value.id })
+      })
+      // 开始删除
+      realDeleteSelectionApi(selectionJson).then((_data) => {
+        this.$notify({
+          title: '删除成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        this.getDataList()
+        // loading
+      }, (_error) => {
+        this.$notify({
+          title: '删除错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isViewModel) {
+        return ''
+      } else {
+        return val
+      }
+    },
+    renderHeaderIsEnabled: function(h, { column }) {
+      return (
+        <span>{column.label}
+          <el-tooltip
+            class='item'
+            effect='dark'
+            placement='bottom'
+          >
+            <div slot='content'>
+            删除状态提示：<br/>
+            绿色：已启用  <br/>
+            红色：未启用
+            </div>
+            <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
+          </el-tooltip>
+        </span>
+      )
+    },
+    // 删除操作
+    handleEnabled(row) {
+      let _message = ''
+      const _value = row.is_del
+      const selectionJson = []
+      selectionJson.push({ 'id': row.id })
+      if (_value === true) {
+        _message = '是否要删除选择的数据？'
+      } else {
+        _message = '是否要复原该条数据？'
+      }
+      // 选择全部的时候
+      this.$confirm(_message, '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确认',
+        cancelButtonText: '取消'
+      }).then(() => {
+        // loading
+        this.settings.listLoading = true
+        enabledApi(selectionJson).then((_data) => {
+          this.$notify({
+            title: '更新成功',
+            message: _data.message,
+            type: 'success',
+            duration: this.settings.duration
+          })
+        }, (_error) => {
+          this.$notify({
+            title: '更新错误',
+            message: _error.message,
+            type: 'error',
+            duration: this.settings.duration
+          })
+          row.is_del = !row.is_del
+        }).finally(() => {
+          this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        })
+      }).catch(action => {
+        row.is_del = !row.is_del
+      })
     }
-
   }
 }
 </script>

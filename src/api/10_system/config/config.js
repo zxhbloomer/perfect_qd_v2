@@ -73,3 +73,27 @@ export function importExcelApi(data) {
     data
   })
 }
+
+/**
+ * 物理删除选择数据
+ * @param {*} data
+ */
+export function realDeleteSelectionApi(data) {
+  return request({
+    url: '/api/v1/config/delete',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 物理删除选择数据
+ * @param {*} data
+ */
+export function enabledApi(data) {
+  return request({
+    url: '/api/v1/config/enabled',
+    method: 'post',
+    data
+  })
+}
