@@ -10,6 +10,15 @@ import Layout from '@/layout'
 // import subMenu from '@/views/10_system/submenu'
 
 /**
+ * 解决Vue-Router升级导致的Uncaught (in promise)问题
+ */
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
+/**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  *
