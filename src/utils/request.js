@@ -173,12 +173,13 @@ service.interceptors.response.use(
             })
             break
           case 401:
-            showMsg = '请联系管理员，您没有权限访问这些资源！'
-            MessageBox.confirm(showMsg, '错误信息', {
-              showCancelButton: false,
+            showMsg = '您的登录已经超时，请点击确定重新登录！'
+            MessageBox.confirm(showMsg, '登录已过期', {
+              showCancelButton: true,
               confirmButtonText: '确定',
               type: 'error'
             }).then(() => {
+              this.$router.push(`/login?redirect=${this.$route.fullPath}`)
             })
             break
           default:
