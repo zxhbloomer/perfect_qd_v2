@@ -5,6 +5,9 @@ import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
+import Vue from 'vue'
+import Router from 'vue-router'
+Vue.use(Router)
 
 // create an axios instance
 const service = axios.create({
