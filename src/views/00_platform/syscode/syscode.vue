@@ -15,6 +15,7 @@
       <el-button type="primary" icon="el-icon-circle-plus-outline" :loading="settings.listLoading" @click="handleInsert">新增</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleUpdate">修改</el-button>
       <el-button :disabled="!settings.btnShowStatus.showCopyInsert" type="primary" icon="el-icon-edit-outline" :loading="settings.listLoading" @click="handleCopyInsert">复制新增</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
     <el-table
       ref="multipleTable"
@@ -41,6 +42,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="当前code" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="auto_create" disabled label="当前序号" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="prefex" disabled label="前缀" />
+      <el-table-column sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
       <el-table-column sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
@@ -69,19 +71,19 @@
           <el-col :span="12">
             <el-form-item label="编码类型：" prop="type">
               <!-- <el-input ref="refFocus" v-model.trim="dataJson.tempJson.type" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.type" /> -->
-              <select-dict v-model="dataJson.tempJson.type" :para="CONSTANTS.DICT_SYS_CODE_TYPE" init-placeholder="请选择编码类型" />
+              <select-dict v-model="dataJson.tempJson.type" :para="CONSTANTS.DICT_SYS_CODE_TYPE" init-placeholder="请选择编码类型" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="编码规则：" prop="rule">
-              <select-dict v-model="dataJson.tempJson.rule" :para="CONSTANTS.DICT_SYS_CODE_RULE_TYPE" init-placeholder="请选择编码规则" />
+              <select-dict v-model="dataJson.tempJson.rule" :para="CONSTANTS.DICT_SYS_CODE_RULE_TYPE" init-placeholder="请选择编码规则" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="前缀：" prop="prefex">
-              <el-input v-model.trim="dataJson.tempJson.prefex" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.prefex" />
+              <el-input v-model.trim="dataJson.tempJson.prefex" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.prefex" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,10 +99,10 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-show="popSettingsData.dialogStatus === 'update'">
+        <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
           <el-col :span="12">
-            <el-form-item label="更新人：" prop="u_id">
-              <el-input v-model.trim="dataJson.tempJson.u_id" disabled />
+            <el-form-item label="更新人：" prop="u_name">
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -113,7 +115,7 @@
       <div slot="footer" class="dialog-footer">
         <el-divider />
         <div class="floatLeft">
-          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
         <el-button plain :disabled="settings.listLoading" @click="popSettingsData.dialogFormVisible = false">取消</el-button>
         <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
@@ -289,6 +291,16 @@ export default {
         return false
       } else {
         return true
+      }
+    },
+    // 是否为查看模式
+    isViewModel() {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+        // 查看模式
+        return true
+      } else {
+        // 非查看模式
+        return false
       }
     }
   },
@@ -489,6 +501,16 @@ export default {
         // this.$refs['refFocus'].focus()
       })
     },
+    handleView() {
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
+      if (this.dataJson.tempJson.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 修改
+      this.popSettingsData.dialogStatus = 'view'
+      this.popSettingsData.dialogFormVisible = true
+    },
     // 点击按钮 复制新增
     handleCopyInsert() {
       this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
@@ -684,6 +706,14 @@ export default {
     // table选择框
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isViewModel) {
+        return ''
+      } else {
+        return val
+      }
     }
   }
 }
