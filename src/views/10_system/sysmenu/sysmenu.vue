@@ -33,13 +33,13 @@
       :element-loading-text="'正在拼命加载中...'"
       element-loading-background="rgba(255, 255, 255, 0.5)"
       :height="settings.tableHeight"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       stripe
       border
       fit
       highlight-current-row
       style="width: 100%"
       default-expand-all
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       row-key="id"
       @row-click="handleRowClick"
       @row-dblclick="handleRowDbClick"
