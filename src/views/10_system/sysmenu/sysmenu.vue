@@ -37,7 +37,6 @@
       border
       fit
       highlight-current-row
-      :default-sort="{prop: 'u_time', order: 'descending'}"
       style="width: 100%"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
