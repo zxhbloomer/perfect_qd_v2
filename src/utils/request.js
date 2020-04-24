@@ -47,6 +47,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    debugger
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000) {
@@ -181,7 +182,7 @@ service.interceptors.response.use(
               type: 'error'
             }).then(() => {
               // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-              router.push('/login')
+              router.push(`/login?redirect=${router.currentRoute.fullPath}`)
             })
             break
           default:
