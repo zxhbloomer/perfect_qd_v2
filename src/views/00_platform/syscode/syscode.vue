@@ -573,6 +573,7 @@ export default {
         this.dataJson.listData = newRecorders
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
+      }).finally(() => {
         this.settings.listLoading = false
       })
     },

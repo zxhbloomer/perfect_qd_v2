@@ -5,9 +5,7 @@ import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import fileDownload from 'js-file-download'
-import Vue from 'vue'
-import Router from 'vue-router'
-Vue.use(Router)
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -182,7 +180,8 @@ service.interceptors.response.use(
               confirmButtonText: '确定',
               type: 'error'
             }).then(() => {
-              this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+              // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+              router.push('/login')
             })
             break
           default:
