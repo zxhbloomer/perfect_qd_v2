@@ -55,6 +55,15 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="email" label="邮箱地址" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_name" label="所属公司" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_name" label="默认部门" />
+
+      <el-table-column header-align="center" label="岗位信息" min-width="150">
+        <template v-slot="column_lists">
+          <el-tag v-for="item in column_lists.row.positions" :key="item.position_id" class="position_tag" @click.stop="handlePositionClick(item.position_id)">
+            {{ item.position_name }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
@@ -433,6 +442,9 @@
 </template>
 
 <style scoped>
+  .position_tag{
+   cursor: pointer;
+  }
   .floatRight {
     float: right;
   }
@@ -1318,6 +1330,10 @@ export default {
       } else {
         return val
       }
+    },
+    handlePositionClick(val) {
+      // 通知路由，打开岗位页面
+      this.$router.push({ name: this.PROGRAMS.P_POSITION, params: { position_id: val }})
     }
   }
 }
