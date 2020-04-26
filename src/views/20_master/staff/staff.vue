@@ -408,8 +408,27 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="岗位信息：">
+                  <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                      <span>该员工岗位清单</span>
+                      <el-button style="float: right; padding: 3px 0" type="text">调整</el-button>
+                    </div>
+                    <el-scrollbar style="height:150px" :wrap-style="[{'overflow-x':'hidden'}]">
+                      <div v-for="item in dataJson.tempJson.positions" :key="item.position_id" class="text item">
+                        {{ item.position_name }}
+                      </div>
+                    </el-scrollbar>
+                  </el-card>
+                </el-form-item>
+              </el-col>
               <el-col :span="12" />
             </el-row>
+
           </el-tab-pane>
 
           <el-tab-pane label="权限信息">
@@ -442,6 +461,15 @@
 </template>
 
 <style scoped>
+
+  .el-card /deep/ .el-card__header {
+    padding: 10px 10px;
+  }
+
+  .el-card /deep/ .el-card__body {
+    padding: 10px ;
+  }
+
   .position_tag{
    cursor: pointer;
   }

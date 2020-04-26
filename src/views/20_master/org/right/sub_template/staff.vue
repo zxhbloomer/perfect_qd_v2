@@ -22,7 +22,7 @@
     </el-form>
     <el-tabs type="card" class="floatLeft" @tab-click="handleTabsClick">
       <el-tab-pane>
-        <template slot="label">当组织下所有员工<el-badge :value="dataJson.tabsCount.currentOrgStaffCount" type="danger" /></template>
+        <template slot="label">当前组织下员工<el-badge :value="dataJson.tabsCount.currentOrgStaffCount" type="danger" /></template>
       </el-tab-pane>
       <el-tab-pane>
         <template slot="label">所有员工<el-badge :value="dataJson.tabsCount.allOrgStaffCount" type="danger" /></template>

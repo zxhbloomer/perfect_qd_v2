@@ -39,7 +39,7 @@
           </el-link>
           <span>
             （
-            <el-link type="primary" @click="handleEdit(scope.row.id)">
+            <el-link type="primary" @click="handleView(scope.row.id, scope.row)">
               {{ scope.row.staff_count }}
             </el-link>
             ）
@@ -72,7 +72,7 @@
 
     <el-dialog
       v-el-drag-dialog
-      title="维护岗位成员"
+      :title="popSettingsData.position_title"
       :visible="popSettingsData.dialogFormVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -169,7 +169,7 @@ import positionDialog from '@/views/20_master/position/dialog/dialog'
 import deepcopy from 'utils-copy'
 
 export default {
-  name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
+  // name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, positionDialog },
   directives: { elDragDialog },
   mixins: [],
@@ -275,7 +275,9 @@ export default {
           staff_positions: [],
           old_staff_positions: [],
           current_row: null
-        }
+        },
+        // 弹出框title，岗位名称
+        position_title: ''
       }
     }
   },
@@ -543,6 +545,7 @@ export default {
     },
     // 编辑岗位成员
     handleEditStaffMember(val, row) {
+      this.popSettingsData.position_title = '维护岗位【' + row.name + '】成员'
       // 初始化数据
       this.popSettingsData.transfer = {
         position_id: null,
@@ -557,6 +560,34 @@ export default {
       this.popSettingsData.transfer.position_id = val
       getStaffTransferListApi(this.popSettingsData.transfer).then(response => {
         this.popSettingsData.transfer.staff_all = response.data.staff_all
+        this.popSettingsData.transfer.staff_positions = response.data.staff_positions
+        this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+      this.popSettingsData.btnDisabledStatus.disabledReset = true
+    },
+    // 查看岗位成员
+    handleView(val, row) {
+      this.popSettingsData.position_title = '查看岗位【' + row.name + '】成员'
+      // 初始化数据
+      this.popSettingsData.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: row
+      }
+      this.popSettingsData.dialogFormVisible = true
+      this.popSettingsData.btnShowStatus.showInsert = true
+      this.popSettingsData.transfer.position_id = val
+      getStaffTransferListApi(this.popSettingsData.transfer).then(response => {
+        this.popSettingsData.transfer.staff_all = response.data.staff_all
+        // 添加新的属性
+        this.popSettingsData.transfer.staff_all.map((item, index) => {
+          item.disabled = true
+        })
         this.popSettingsData.transfer.staff_positions = response.data.staff_positions
         this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
       }).finally(() => {
