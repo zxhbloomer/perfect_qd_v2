@@ -8,7 +8,7 @@
       class="floatRight"
     >
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="企业全称" />
+        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="企业名称" />
       </el-form-item>
       <el-form-item label="">
         <delete-type-normal v-model="dataJson.searchForm.is_del" />
@@ -37,7 +37,7 @@
           <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
         </el-form-item>
         <el-form-item v-show="false" label="">
-          <el-input v-show="false" v-model.trim="dataJson.searchForm.name" clearable placeholder="企业全称" />
+          <el-input v-show="false" v-model.trim="dataJson.searchForm.name" clearable placeholder="企业名称" />
         </el-form-item>
         <el-form-item label="">
           <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="法定代表人" />
@@ -82,7 +82,7 @@
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
@@ -140,7 +140,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="企业全称：" prop="name">
+                <el-form-item label="企业名称：" prop="name">
                   <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
                 </el-form-item>
               </el-col>
@@ -433,7 +433,7 @@ export default {
         // 基本信息栏目check
         rulesOne: {
           code: [{ required: true, message: '请输入社会信用代码', trigger: 'change' }],
-          name: [{ required: true, message: '请输入企业全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入企业名称', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入企业简称', trigger: 'change' }],
           juridical_name: [{ required: true, message: '请输入法定代表人', trigger: 'change' }],
           register_capital: [{ required: true, message: '请输入注册资本（万）', trigger: 'change' }],

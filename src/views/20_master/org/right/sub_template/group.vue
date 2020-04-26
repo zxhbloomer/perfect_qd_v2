@@ -31,7 +31,7 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
@@ -87,7 +87,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="集团全称：" prop="name">
+            <el-form-item label="集团名称：" prop="name">
               <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
             </el-form-item>
           </el-col>
@@ -263,7 +263,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入集团全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入集团名称', trigger: 'change' }],
           code: [{ required: true, message: '请输入集团编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
         }

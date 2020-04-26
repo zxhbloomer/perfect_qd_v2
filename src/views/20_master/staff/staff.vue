@@ -58,7 +58,7 @@
 
       <el-table-column header-align="center" label="岗位信息" min-width="150">
         <template v-slot="column_lists">
-          <el-tag v-for="item in column_lists.row.positions" :key="item.position_id" class="position_tag" @click.stop="handlePositionClick(item.position_id)">
+          <el-tag v-for="item in column_lists.row.positions" :key="item.position_id" class="position_tag" @click.stop="handlePositionClick(item.position_name)">
             {{ item.position_name }}
           </el-tag>
         </template>
@@ -1333,7 +1333,7 @@ export default {
     },
     handlePositionClick(val) {
       // 通知路由，打开岗位页面
-      this.$router.push({ name: this.PROGRAMS.P_POSITION, params: { position_id: val }})
+      this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
     }
   }
 }

@@ -11,7 +11,7 @@
         <el-input v-model.trim="dataJson.searchForm.code" clearable placeholder="集团编号" />
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="集团全称" />
+        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="集团名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -87,7 +87,7 @@
       </el-table-column>
 
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="name" label="集团全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="60" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
@@ -144,7 +144,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="集团全称：" prop="name">
+            <el-form-item label="集团名称：" prop="name">
               <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
             </el-form-item>
           </el-col>
@@ -318,7 +318,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入集团全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入集团名称', trigger: 'change' }],
           // code: [{ required: true, message: '请输入集团编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
         }

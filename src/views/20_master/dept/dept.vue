@@ -11,7 +11,7 @@
         <el-input v-model.trim="dataJson.searchForm.code" clearable placeholder="部门编号" />
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="部门全称" />
+        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="部门名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -76,7 +76,7 @@
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="code" label="部门编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="部门全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="部门名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="部门简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="handler_id_name" label="部门主管" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="sub_handler_id_name" label="部门副主管" />
@@ -137,7 +137,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="部门全称：" prop="name">
+            <el-form-item label="部门名称：" prop="name">
               <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
@@ -380,7 +380,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入部门全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入部门名称', trigger: 'change' }],
           // code: [{ required: true, message: '请输入部门编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入部门简称', trigger: 'change' }]
         },

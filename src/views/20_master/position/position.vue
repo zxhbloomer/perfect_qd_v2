@@ -11,7 +11,7 @@
         <el-input v-model.trim="dataJson.searchForm.code" clearable placeholder="岗位编号" />
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="岗位全称" />
+        <el-input v-model.trim="dataJson.searchForm.name" clearable placeholder="岗位名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" plain icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -76,7 +76,7 @@
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
@@ -133,7 +133,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="岗位全称：" prop="name">
+            <el-form-item label="岗位名称：" prop="name">
               <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
             </el-form-item>
           </el-col>
@@ -310,7 +310,7 @@ export default {
         dialogFormVisible: false,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入岗位全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入岗位名称', trigger: 'change' }],
           // code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入岗位简称', trigger: 'change' }]
         }
@@ -395,8 +395,8 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.position_id !== undefined) {
-      this.dataJson.searchForm.id = this.$route.params.position_id
+    if (this.$route.query.name !== undefined) {
+      this.dataJson.searchForm.name = this.$route.query.name
     }
     this.initShow()
   },

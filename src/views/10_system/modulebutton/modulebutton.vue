@@ -286,7 +286,7 @@ export default {
         rules: {
           module_code: [{ required: true, message: '请选择模块编号', trigger: 'change' }],
           code: [{ required: true, message: '请输入按钮', trigger: 'change' }],
-          perms: [{ required: true, message: '请输入集团全称', trigger: 'change' }]
+          perms: [{ required: true, message: '请输入集团名称', trigger: 'change' }]
         },
         // 弹出的查询框参数设置
         searchDialogDataTwo: {

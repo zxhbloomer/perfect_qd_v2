@@ -40,7 +40,7 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业全称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
@@ -206,7 +206,7 @@ export default {
         // 基本信息栏目check
         rulesOne: {
           code: [{ required: true, message: '请输入社会信用代码', trigger: 'change' }],
-          name: [{ required: true, message: '请输入企业全称', trigger: 'change' }],
+          name: [{ required: true, message: '请输入企业名称', trigger: 'change' }],
           simple_name: [{ required: true, message: '请输入企业简称', trigger: 'change' }],
           juridical_name: [{ required: true, message: '请输入法定代表人', trigger: 'change' }],
           register_capital: [{ required: true, message: '请输入注册资本（万）', trigger: 'change' }],
