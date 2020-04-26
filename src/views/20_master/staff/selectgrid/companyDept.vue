@@ -46,7 +46,7 @@
               cancel-button-text="取消"
               icon="el-icon-info"
               icon-color="red"
-              title="点击确定后跳转到组织机构页面进行编辑？请注意保存当前数据。"
+              title="点击确定后跳转到组织机构页面，请注意保存当前数据。"
               @onConfirm="handleForward"
             >
               <el-button slot="reference" type="primary" icon="el-icon-edit" style="padding:7px 7px; height:27px" />

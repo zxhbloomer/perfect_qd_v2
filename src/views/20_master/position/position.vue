@@ -76,8 +76,24 @@
       <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
+
+      <el-table-column show-overflow-tooltip min-width="80" prop="" label="人员">
+        <template slot-scope="scope">
+          <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
+            设置
+          </el-link>
+          <span>
+            （
+            <el-link type="primary" @click="handleView(scope.row.id, scope.row)">
+              {{ scope.row.staff_count }}
+            </el-link>
+            ）
+          </span>
+        </template>
+      </el-table-column>
+
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
         <template slot-scope="scope">

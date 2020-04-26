@@ -37,6 +37,8 @@ import constants_program from './common/constants/constants_program'
 import constants_emits from './common/constants/constants_emits'
 import EventProxy from 'vue-event-proxy'
 import global from './common/global/global'
+import ElInputTag from '@/components/inputtag'
+Vue.use(ElInputTag)
 // 引入组件和样式
 import RouterTab from '@/components/RouterTab/install'
 

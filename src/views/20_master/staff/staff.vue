@@ -413,17 +413,24 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="岗位信息：">
-                  <el-card class="box-card">
-                    <div slot="header" class="clearfix">
-                      <span>该员工岗位清单</span>
-                      <el-button style="float: right; padding: 3px 0" type="text">调整</el-button>
+                  <template>
+                    <div class="el-input-tag input-tag-wrapper ">
+                      <el-popconfirm
+                        v-for="item in dataJson.tempJson.positions"
+                        :key="item.position_id"
+                        confirm-button-text="确定"
+                        cancel-button-text="取消"
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="点击确定后跳转到岗位页面，请注意保存当前数据。"
+                        @onConfirm="handlePositionClick(item.position_name)"
+                      >
+                        <el-tag slot="reference" class="position_tag">
+                          {{ item.position_name }}
+                        </el-tag>
+                      </el-popconfirm>
                     </div>
-                    <el-scrollbar style="height:150px" :wrap-style="[{'overflow-x':'hidden'}]">
-                      <div v-for="item in dataJson.tempJson.positions" :key="item.position_id" class="text item">
-                        {{ item.position_name }}
-                      </div>
-                    </el-scrollbar>
-                  </el-card>
+                  </template>
                 </el-form-item>
               </el-col>
               <el-col :span="12" />
@@ -461,6 +468,22 @@
 </template>
 
 <style scoped>
+
+  .input-tag-wrapper {
+    position: relative;
+    font-size: 14px;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    outline: none;
+    padding: 0 10px 0 5px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    width: 100%;
+  }
 
   .el-card /deep/ .el-card__header {
     padding: 10px 10px;
@@ -1360,6 +1383,7 @@ export default {
       }
     },
     handlePositionClick(val) {
+      this.popSettingsData.dialogFormVisible = false
       // 通知路由，打开岗位页面
       this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
     }
