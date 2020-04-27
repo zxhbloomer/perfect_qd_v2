@@ -32,7 +32,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip min-width="130" prop="" label="人员">
+      <el-table-column show-overflow-tooltip min-width="130" prop="" label="岗位员工">
         <template slot-scope="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
             设置
@@ -94,10 +94,10 @@
               v-model="popSettingsData.transfer.staff_positions"
               filterable
               :filter-method="transferFilterMethod"
-              filter-placeholder="请输入城市拼音"
+              filter-placeholder="请输入员工姓名"
               :data="popSettingsData.transfer.staff_all"
-              :titles="['未选择人员', '已选择人员']"
-              :button-texts="['人员反选', '选择人员']"
+              :titles="['未选择员工', '已选择员工']"
+              :button-texts="['员工反选', '选择员工']"
               :render-content="renderTransfer"
             />
           </el-col>
@@ -605,7 +605,7 @@ export default {
     // 重置按钮
     doReset() {
       this.popSettingsData.btnResetStatus = true
-      this.handleEditStaffMember(this.popSettingsData.transfer.position_id)
+      this.handleEditStaffMember(this.popSettingsData.transfer.position_id, this.popSettingsData.transfer.current_row)
     },
     // 插入逻辑：岗位成员维护，点击确定按钮
     doInsert() {
@@ -645,7 +645,6 @@ export default {
         this.$router.push({ name: this.PROGRAMS.P_STAFF, params: { name: val }})
         this.popSettingsData.dialogFormVisible = false
       }).catch(action => {
-
       })
     },
     // 穿梭框增加按钮
