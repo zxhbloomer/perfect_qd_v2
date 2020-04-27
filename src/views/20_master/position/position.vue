@@ -79,10 +79,10 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
 
-      <el-table-column show-overflow-tooltip min-width="80" prop="" label="岗位员工">
+      <el-table-column show-overflow-tooltip min-width="80" prop="" label="操作">
         <template slot-scope="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
-            设置
+            添加员工
           </el-link>
           <span>
             （

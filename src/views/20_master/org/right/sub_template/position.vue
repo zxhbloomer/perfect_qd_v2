@@ -32,10 +32,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip min-width="130" prop="" label="岗位员工">
+      <el-table-column show-overflow-tooltip min-width="130" prop="" label="操作">
         <template slot-scope="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
-            设置
+            添加员工
           </el-link>
           <span>
             （
