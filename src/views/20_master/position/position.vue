@@ -86,7 +86,7 @@
           </el-link>
           <span>
             （
-            <el-link type="primary" @click="handlePositionView(scope.row.id, scope.row)">
+            <el-link type="primary" @click="handleViewStaffMember(scope.row.id, scope.row)">
               {{ scope.row.staff_count }}
             </el-link>
             ）
@@ -121,6 +121,7 @@
       :id="popSettingsData.dialog.setPositionData.props.id"
       :data="popSettingsData.dialog.setPositionData.props.data"
       :visible="popSettingsData.dialog.setPositionData.visible"
+      :model="popSettingsData.dialog.setPositionData.props.model"
       @closeMeOk="handleSetPositionCloseOk"
       @closeMeCancel="handleSetPositionCloseCancel"
     />
@@ -152,6 +153,7 @@ import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/Sele
 import { isNotEmpty } from '@/utils/index.js'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
+import constants_para from '@/common/constants/constants_para'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
@@ -244,7 +246,8 @@ export default {
             visible: false,
             props: {
               id: undefined,
-              data: {}
+              data: {},
+              model: ''
             }
           }
         }
@@ -769,9 +772,16 @@ export default {
       }
     },
     // ------------------岗位设置员工弹出框--------------------
+    handleViewStaffMember(val, row) {
+      this.popSettingsData.dialog.setPositionData.props.id = val
+      this.popSettingsData.dialog.setPositionData.props.data = row
+      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_VIEW
+      this.popSettingsData.dialog.setPositionData.visible = true
+    },
     handleEditStaffMember(val, row) {
       this.popSettingsData.dialog.setPositionData.props.id = val
       this.popSettingsData.dialog.setPositionData.props.data = row
+      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_EDIT
       this.popSettingsData.dialog.setPositionData.visible = true
     },
     handleSetPositionCloseOk(val) {

@@ -69,7 +69,6 @@ export default {
   directives: { elDragDialog },
   mixins: [],
   props: {
-    // 页面是否显示参数
     visible: {
       type: Boolean,
       default: false
@@ -129,14 +128,6 @@ export default {
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    },
     listenVisible() {
       return this.visible
     },

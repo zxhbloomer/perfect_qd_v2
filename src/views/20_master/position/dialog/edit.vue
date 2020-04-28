@@ -1,6 +1,7 @@
 <template>
   <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
   <el-dialog
+    v-if="listenVisible"
     v-el-drag-dialog
     :title="settings.textMap[settings.dialogStatus]"
     :visible="settings.dialogFormVisible"
@@ -89,6 +90,7 @@
 
 <script>
 
+import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {
@@ -97,7 +99,22 @@ export default {
   directives: { elDragDialog },
   mixins: [],
   props: {
-
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    id: {
+      type: Number,
+      default: null
+    },
+    data: {
+      type: Object,
+      default: null
+    },
+    model: {
+      type: String,
+      default: constants_para.MODEL_VIEW
+    }
   },
   data() {
     return {
@@ -177,6 +194,24 @@ export default {
     }
   },
   computed: {
+    // 是否为更新模式
+    isUpdateModel() {
+      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
+        return false
+      } else {
+        return true
+      }
+    },
+    listenVisible() {
+      return this.visible
+    },
+    isViewModel() {
+      if (this.model === constants_para.MODEL_VIEW) {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   // 监听器
   watch: {
