@@ -1,0 +1,276 @@
+<template>
+  <el-dialog
+    v-if="listenVisible"
+    v-el-drag-dialog
+    :title="settings.position_title"
+    :visible="visible"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :show-close="false"
+    :append-to-body="true"
+    :modal-append-to-body="false"
+    width="740px"
+  >
+    <el-form
+      ref="dataSubmitForm"
+      :model="dataJson.tempJson"
+      label-position="rigth"
+      label-width="120px"
+      status-icon
+    >
+      <el-row>
+        <el-col :span="24" class="transferCenter">
+          <el-transfer
+            v-model="settings.transfer.staff_positions"
+            filterable
+            :filter-method="transferFilterMethod"
+            filter-placeholder="请输入员工姓名"
+            :data="settings.transfer.staff_all"
+            :titles="['未选择员工', '已选择员工']"
+            :button-texts="['员工反选', '选择员工']"
+            :render-content="renderTransfer"
+          />
+        </el-col>
+      </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-divider />
+      <div class="floatLeft">
+        <el-button type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+      </div>
+      <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
+      <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<style scoped>
+  .floatRight {
+    float: right;
+  }
+  .floatLeft {
+    float: left;
+  }
+  .el-form-item .el-select {
+    width: 100%;
+  }
+</style>
+
+<script>
+
+import { getStaffTransferListApi, setStaffTransferApi } from '@/api/20_master/org/org'
+import deepcopy from 'utils-copy'
+import elDragDialog from '@/directive/el-drag-dialog'
+
+export default {
+  // name: '', // 页面id，和router中的name需要一致，作为缓存
+  components: { },
+  directives: { elDragDialog },
+  mixins: [],
+  props: {
+    // 页面是否显示参数
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    id: {
+      type: Number,
+      default: null
+    },
+    data: {
+      type: Object,
+      default: null
+    }
+  },
+  data() {
+    return {
+      dataJson: { },
+      // 页面设置json
+      settings: {
+        // loading 状态
+        listLoading: true,
+        duration: 4000,
+
+        // 按钮状态
+        btnShowStatus: {
+          showInsert: false,
+          showUpdate: false,
+          showCopyInsert: false
+        },
+        // 按钮状态：是否可用
+        btnDisabledStatus: {
+          disabledReset: false,
+          disabledInsert: false,
+          disabledUpdate: false,
+          disabledCopyInsert: false
+        },
+        // 重置按钮点击后
+        btnResetStatus: false,
+        // 以下为pop的内容：数据弹出框
+        selection: [],
+        dialogStatus: '',
+        // 穿梭框
+        transfer: {
+          position_id: null,
+          // 所有staff
+          staff_all: [],
+          staff_positions: [],
+          old_staff_positions: [],
+          current_row: null
+        },
+        // 弹出框title，岗位名称
+        position_title: ''
+      }
+    }
+  },
+  computed: {
+    // 是否为更新模式
+    isUpdateModel() {
+      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
+        return false
+      } else {
+        return true
+      }
+    },
+    listenVisible() {
+      return this.visible
+    }
+  },
+  // 监听器
+  watch: {
+    // 穿梭框的数据变动，设置重置和确定
+    'settings.transfer.staff_positions': {
+      handler(newVal, oldVal) {
+        const listA = newVal
+        const listB = this.settings.transfer.old_staff_positions
+        // 如果新值，旧值为undefined 则return
+        if (listA === undefined || listB === undefined) {
+          this.settings.btnDisabledStatus.disabledReset = true
+          return
+        }
+        const result = listA.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b))
+        if (result) {
+          // 未改变值
+          this.settings.btnDisabledStatus.disabledReset = true
+          this.settings.btnDisabledStatus.disabledInsert = true
+        } else {
+          // 有改变值
+          this.settings.btnDisabledStatus.disabledReset = false
+          this.settings.btnDisabledStatus.disabledInsert = false
+        }
+      },
+      deep: true
+    }
+  },
+  created() {
+    this.init()
+  },
+  mounted() { },
+  methods: {
+    // 初始化
+    init() {
+      this.settings.position_title = '维护岗位【' + this.data.name + '】成员'
+      // 初始化数据
+      this.settings.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: this.data
+      }
+      this.settings.btnShowStatus.showInsert = true
+      this.settings.transfer.position_id = this.id
+      getStaffTransferListApi(this.settings.transfer).then(response => {
+        this.settings.transfer.staff_all = response.data.staff_all
+        this.settings.transfer.staff_positions = response.data.staff_positions
+        this.settings.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+      this.settings.btnDisabledStatus.disabledReset = true
+    },
+    // 查看岗位成员
+    handleView(val, row) {
+      this.settings.position_title = '查看岗位【' + row.name + '】成员'
+      // 初始化数据
+      this.settings.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: row
+      }
+      this.settings.btnShowStatus.showInsert = true
+      this.settings.transfer.position_id = val
+      getStaffTransferListApi(this.settings.transfer).then(response => {
+        this.settings.transfer.staff_all = response.data.staff_all
+        // 添加新的属性
+        this.settings.transfer.staff_all.map((item, index) => {
+          item.disabled = true
+        })
+        this.settings.transfer.staff_positions = response.data.staff_positions
+        this.settings.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+      this.settings.btnDisabledStatus.disabledReset = true
+    },
+    // 穿梭框的过滤方法
+    transferFilterMethod(query, item) {
+      return item.label.indexOf(query) > -1
+    },
+    handleCancel() {
+      this.$emit('closeMeCancel')
+    },
+    // 重置按钮
+    doReset() {
+      this.settings.btnResetStatus = true
+      this.init()
+    },
+    // 插入逻辑：岗位成员维护，点击确定按钮
+    doInsert() {
+      setStaffTransferApi(this.settings.transfer).then((_data) => {
+        this.settings.listLoading = true
+        this.settings.transfer.current_row.staff_count = _data.data.staff_positions_count
+        this.$notify({
+          title: '更新成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        this.$emit('closeMeOk', _data)
+      }, (_error) => {
+        this.$notify({
+          title: '更新错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+    },
+    // 点击跳转到组织机构页面，并关闭本页面
+    handleForward(val) {
+      this.$confirm('查看该员工详情，需要关闭当前页面，请注意保存！', '确认信息', {
+      }).then(() => {
+        // 通知路由，打开组织机构页面
+        this.$router.push({ name: this.PROGRAMS.P_STAFF, params: { name: val }})
+        this.handleCancel()
+      }).catch(action => {
+      })
+    },
+    // 穿梭框增加按钮
+    renderTransfer(h, option) {
+      return (
+        <span>
+          { option.label }
+          <el-button type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' on-click={() => this.handleForward(option.label)} />
+        </span>
+      )
+    }
+  }
+}
+</script>
