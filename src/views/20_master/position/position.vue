@@ -116,14 +116,24 @@
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
+    <edit-dialog
+      v-if="popSettingsData.dialog.one.visible"
+      :id="popSettingsData.dialog.one.props.id"
+      :data="popSettingsData.dialog.one.props.data"
+      :visible="popSettingsData.dialog.one.visible"
+      :dialog-status="popSettingsData.dialog.one.props.dialogStatus"
+      @closeMeOk="handleCloseDialogOneOk"
+      @closeMeCancel="handleCloseDialogOneCancel"
+    />
+
     <set-position-dialog
-      v-if="popSettingsData.dialog.setPositionData.visible"
-      :id="popSettingsData.dialog.setPositionData.props.id"
-      :data="popSettingsData.dialog.setPositionData.props.data"
-      :visible="popSettingsData.dialog.setPositionData.visible"
-      :model="popSettingsData.dialog.setPositionData.props.model"
-      @closeMeOk="handleSetPositionCloseOk"
-      @closeMeCancel="handleSetPositionCloseCancel"
+      v-if="popSettingsData.dialog.two.visible"
+      :id="popSettingsData.dialog.two.props.id"
+      :data="popSettingsData.dialog.two.props.data"
+      :visible="popSettingsData.dialog.two.visible"
+      :model="popSettingsData.dialog.two.props.model"
+      @closeMeOk="handleCloseDialogTwoOk"
+      @closeMeCancel="handleCloseDialogTwoCancel"
     />
 
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
@@ -145,20 +155,20 @@
 
 <script>
 import constants_program from '@/common/constants/constants_program'
-import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/position/position'
+import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/position/position'
 import resizeMixin from './positionResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
-import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import { isNotEmpty } from '@/utils/index.js'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
+import editDialog from '@/views/20_master/position/dialog/edit'
 import constants_para from '@/common/constants/constants_para'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, SelectDict, setPositionDialog },
-  directives: { elDragDialog },
+  components: { Pagination, DeleteTypeNormal, SelectDict, setPositionDialog, editDialog },
+  directives: { },
   mixins: [resizeMixin],
   props: {
     id: {
@@ -238,11 +248,16 @@ export default {
       popSettingsData: {
         dialog: {
           // master弹出编辑页面
-          positionMaster: {
-            visible: false
+          one: {
+            visible: false,
+            props: {
+              id: undefined,
+              data: {},
+              dialogStatus: ''
+            }
           },
           // 设置数据页面
-          setPositionData: {
+          two: {
             visible: false,
             props: {
               id: undefined,
@@ -276,14 +291,6 @@ export default {
         return false
       } else {
         return true
-      }
-    },
-    // 是否为查看模式
-    isViewModel() {
-      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
-        return true
-      } else {
-        return false
       }
     }
   },
@@ -340,9 +347,6 @@ export default {
         this.meDialogSetting.dialogStatus = false
       }
     },
-    // 下拉选项控件事件
-    handleSelectChange(val) {
-    },
     // 获取行索引
     getRowIndex(row) {
       const _index = this.dataJson.listData.lastIndexOf(row)
@@ -369,101 +373,12 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-    },
-    // 删除操作
-    handleDel(row) {
-      let _message = ''
-      const _value = row.is_del
-      const selectionJson = []
-      selectionJson.push({ 'id': row.id })
-      if (_value === true) {
-        _message = '是否要删除选择的数据？'
-      } else {
-        _message = '是否要复原该条数据？'
-      }
-      // 选择全部的时候
-      this.$confirm(_message, '确认信息', {
-        distinguishCancelAndClose: true,
-        confirmButtonText: '确认',
-        cancelButtonText: '取消'
-      }).then(() => {
-        // loading
-        this.settings.listLoading = true
-        deleteApi(selectionJson).then((_data) => {
-          this.$notify({
-            title: '更新成功',
-            message: _data.message,
-            type: 'success',
-            duration: this.settings.duration
-          })
-        }, (_error) => {
-          this.$notify({
-            title: '更新错误',
-            message: _error.message,
-            type: 'error',
-            duration: this.settings.duration
-          })
-          row.is_del = !row.is_del
-        }).finally(() => {
-          this.popSettingsData.dialogFormVisible = false
-          this.settings.listLoading = false
-        })
-      }).catch(action => {
-        row.is_del = !row.is_del
-      })
-    },
+
     // 点击按钮 新增
     handleInsert() {
       // 新增
-      this.popSettingsData.dialogStatus = 'insert'
-      // 数据初始化
-      this.initTempJsonOriginal()
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = true
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 初始化弹出页面
-      this.doReset()
-      this.popSettingsData.dialogFormVisible = true
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
-      })
-    },
-    // 点击按钮 更新
-    handleUpdate() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      // 修改
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = true
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refUpdateFocus'].focus()
-      })
+      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettingsData.dialog.one.visible = true
     },
     // 查看
     handleView() {
@@ -472,9 +387,7 @@ export default {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      // 修改
-      this.popSettingsData.dialogStatus = 'view'
-      this.popSettingsData.dialogFormVisible = true
+      this.popSettingsData.positionMaster.visible = true
     },
     // 导出按钮
     handleExport() {
@@ -533,26 +446,9 @@ export default {
     },
     // 点击按钮 复制新增
     handleCopyInsert() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.dataJson.tempJson.id = undefined
-      this.dataJson.tempJson.code = ''
-      this.dataJson.tempJson.template_id = undefined
-      this.dataJson.tempJson.u_id = ''
-      this.dataJson.tempJson.u_time = ''
       // 修改
       this.popSettingsData.dialogStatus = 'copyInsert'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = true
-      // 复制新增时focus
-      this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
-      })
+      this.popSettingsData.dialog.one.visible = true
     },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
@@ -596,41 +492,46 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 更新逻辑
-    doUpdate() {
-      this.$refs['dataSubmitForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          updateApi(tempData).then((_data) => {
-            this.dataJson.tempJson = Object.assign({}, _data.data)
-            // 设置到table中绑定的json数据源
-            this.dataJson.listData.splice(this.dataJson.rowIndex, 1, this.dataJson.tempJson)
-            // 设置到currentjson中
-            this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
-            this.$notify({
-              title: '更新成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-            // 关闭自动弹出编辑窗口
-            this.handleEditMeDialogOk()
-          }, (_error) => {
-            this.$notify({
-              title: '更新错误',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-            // 关闭自动弹出编辑窗口
-            this.handleEditMeDialogOk()
-          }).finally(() => {
-            this.settings.listLoading = false
+    // 删除操作
+    handleDel(row) {
+      let _message = ''
+      const _value = row.is_del
+      const selectionJson = []
+      selectionJson.push({ 'id': row.id })
+      if (_value === true) {
+        _message = '是否要删除选择的数据？'
+      } else {
+        _message = '是否要复原该条数据？'
+      }
+      // 选择全部的时候
+      this.$confirm(_message, '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确认',
+        cancelButtonText: '取消'
+      }).then(() => {
+        // loading
+        this.settings.listLoading = true
+        deleteApi(selectionJson).then((_data) => {
+          this.$notify({
+            title: '更新成功',
+            message: _data.message,
+            type: 'success',
+            duration: this.settings.duration
           })
-        }
+        }, (_error) => {
+          this.$notify({
+            title: '更新错误',
+            message: _error.message,
+            type: 'error',
+            duration: this.settings.duration
+          })
+          row.is_del = !row.is_del
+        }).finally(() => {
+          this.popSettingsData.dialogFormVisible = false
+          this.settings.listLoading = false
+        })
+      }).catch(action => {
+        row.is_del = !row.is_del
       })
     },
     // 重置查询区域
@@ -651,62 +552,7 @@ export default {
         dataModel: this.dataModel
       }
     },
-    // 重置按钮
-    doReset() {
-      this.popSettingsData.btnResetStatus = true
-      switch (this.popSettingsData.dialogStatus) {
-        case 'update':
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
-          })
-          break
-        default:
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
-          })
-          break
-      }
 
-      // 去除validate信息
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-    },
-    // 插入逻辑
-    doInsert() {
-      this.$refs['dataSubmitForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          insertApi(tempData).then((_data) => {
-            this.dataJson.listData.push(_data.data)
-            this.$notify({
-              title: '插入成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-          }, (_error) => {
-            this.$notify({
-              title: '插入错误',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
     // 关闭弹出窗口
     handlCloseDialog() {
       this.popSettingsImport.dialogFormVisible = false
@@ -753,45 +599,45 @@ export default {
         this.$emit('editMeDialogOkClick', this.dataJson.tempJson)
       }
     },
-    handleEditMeDialogCancel() {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.$emit('editMeDialogCancelClick')
-      }
-    },
     handleCancel() {
-      this.popSettingsData.dialogFormVisible = false
-      // 关闭自动弹出编辑窗口
-      this.handleEditMeDialogCancel()
+      this.popSettingsData.dialog.one.visible = false
     },
-    // Placeholder设置
-    isPlaceholderShow(val) {
-      if (this.isViewModel) {
-        return ''
-      } else {
-        return val
-      }
+    // ------------------岗位编辑弹出框--------------------
+    handleCloseDialogOneOk(val) {
+      this.popSettingsData.dialog.one.visible = false
+    },
+    handleCloseDialogOneCancel() {
+      this.popSettingsData.dialog.one.visible = false
     },
     // ------------------岗位设置员工弹出框--------------------
     handleViewStaffMember(val, row) {
-      this.popSettingsData.dialog.setPositionData.props.id = val
-      this.popSettingsData.dialog.setPositionData.props.data = row
-      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_VIEW
-      this.popSettingsData.dialog.setPositionData.visible = true
+      this.popSettingsData.dialog.two.props.id = val
+      this.popSettingsData.dialog.two.props.data = row
+      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_VIEW
+      this.popSettingsData.dialog.two.visible = true
     },
     handleEditStaffMember(val, row) {
-      this.popSettingsData.dialog.setPositionData.props.id = val
-      this.popSettingsData.dialog.setPositionData.props.data = row
-      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_EDIT
-      this.popSettingsData.dialog.setPositionData.visible = true
+      this.popSettingsData.dialog.two.props.id = val
+      this.popSettingsData.dialog.two.props.data = row
+      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_EDIT
+      this.popSettingsData.dialog.two.visible = true
     },
-    handleSetPositionCloseOk(val) {
-      this.popSettingsData.dialog.setPositionData.visible = false
-      // 通知兄弟组件
-      this.$off(this.EMITS.EMIT_ORG_POSITION_UPDATED)
-      this.$emit(this.EMITS.EMIT_ORG_POSITION_UPDATED, val)
+    handleCloseDialogTwoOk(val) {
+      this.popSettingsData.dialog.two.visible = false
     },
-    handleSetPositionCloseCancel() {
-      this.popSettingsData.dialog.setPositionData.visible = false
+    handleCloseDialogTwoCancel() {
+      this.popSettingsData.dialog.two.visible = false
+    },
+    // 点击按钮 更新
+    handleUpdate() {
+      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 新增
+      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettingsData.dialog.one.visible = true
     }
   }
 }

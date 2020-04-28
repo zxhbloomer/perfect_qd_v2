@@ -4,8 +4,8 @@
     v-el-drag-dialog
     :title="settings.position_title"
     :visible="visible"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    :close-on-click-modal="PARAMETERS.DIALOG_CLOSE_BY_CLICK"
+    :close-on-press-escape="PARAMETERS.DIALOG_CLOSE_BY_ESC"
     :show-close="false"
     :append-to-body="true"
     :modal-append-to-body="false"

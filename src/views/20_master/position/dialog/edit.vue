@@ -3,15 +3,20 @@
   <el-dialog
     v-if="listenVisible"
     v-el-drag-dialog
-    :title="settings.textMap[settings.dialogStatus]"
-    :visible="settings.dialogFormVisible"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    v-loading="settings.listLoading"
+    element-loading-text="拼命加载中，请稍后..."
+    element-loading-background="rgba(255, 255, 255, 0.7)"
+    :title="PARAMETERS.STATUS_TEXT_MAP[dialogStatus]"
+    :visible="visible"
+    :close-on-click-modal="PARAMETERS.DIALOG_CLOSE_BY_CLICK"
+    :close-on-press-escape="PARAMETERS.DIALOG_CLOSE_BY_ESC"
     :show-close="false"
     :append-to-body="true"
     :modal-append-to-body="false"
     width="700px"
   >
+    11{{ settings.listLoading }}11
+    22{{ settings.btnDisabledStatus.disabledUpdate }}22
     <el-form
       ref="dataSubmitForm"
       :rules="settings.rules"
@@ -50,7 +55,7 @@
       <el-form-item label="描述：" prop="descr">
         <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
       </el-form-item>
-      <el-row v-show="settings.dialogStatus === 'update' || isViewModel">
+      <el-row v-show="dialogStatus === PARAMETERS.STATUS_UPDATE || isViewModel">
         <el-col :span="12">
           <el-form-item label="更新人：" prop="u_name">
             <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -92,6 +97,8 @@
 
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
+import { updateApi, insertApi } from '@/api/20_master/position/position'
+import deepcopy from 'utils-copy'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
@@ -111,9 +118,9 @@ export default {
       type: Object,
       default: null
     },
-    model: {
+    dialogStatus: {
       type: String,
-      default: constants_para.MODEL_VIEW
+      default: constants_para.STATUS_VIEW
     }
   },
   data() {
@@ -128,7 +135,7 @@ export default {
           dbversion: 0
         },
         // 单条数据 json
-        tempJson: null,
+        tempJson: deepcopy(this.data),
         inputSettings: {
           maxLength: {
             name: 20,
@@ -139,32 +146,26 @@ export default {
         }
       },
       settings: {
-        // 弹出窗口状态名称
-        textMap: {
-          view: '查看',
-          update: '修改',
-          insert: '新增',
-          copyInsert: '复制新增'
-        },
-        // 按钮状态
+        // loading 状态
+        listLoading: true,
+        // 按钮是否显示，默认不显示，false：不显示，true：显示
         btnShowStatus: {
           showInsert: false,
           showUpdate: false,
           showCopyInsert: false
         },
-        // 按钮状态：是否可用
+        // 按钮状态：是否可用，false:可用，true不可用
         btnDisabledStatus: {
-          disabledReset: false,
-          disabledInsert: false,
-          disabledUpdate: false,
-          disabledCopyInsert: false
+          disabledReset: true,
+          disabledInsert: true,
+          disabledUpdate: true,
+          disabledCopyInsert: true
         },
         // 重置按钮点击后
         btnResetStatus: false,
         // 以下为pop的内容：数据弹出框
         selection: [],
         dialogStatus: '',
-        dialogFormVisible: false,
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入岗位名称', trigger: 'change' }],
@@ -225,7 +226,7 @@ export default {
           this.settings.btnDisabledStatus.disabledUpdate = true
           this.settings.btnDisabledStatus.disabledCopyInsert = true
           this.settings.btnResetStatus = false
-        } else if (this.settings.dialogFormVisible) {
+        } else if (this.visible) {
           // 有修改按钮高亮
           this.settings.btnDisabledStatus.disabledReset = false
           this.settings.btnDisabledStatus.disabledInsert = false
@@ -234,17 +235,6 @@ export default {
         }
       },
       deep: true
-    },
-    // 弹出窗口初始化，按钮不可用
-    'settings.dialogFormVisible': {
-      handler(newVal, oldVal) {
-        if (this.settings.dialogFormVisible) {
-          this.settings.btnDisabledStatus.disabledReset = true
-          this.settings.btnDisabledStatus.disabledInsert = true
-          this.settings.btnDisabledStatus.disabledUpdate = true
-          this.settings.btnDisabledStatus.disabledCopyInsert = true
-        }
-      }
     }
   },
   created() {
@@ -252,6 +242,135 @@ export default {
   },
   mounted() { },
   methods: {
+    // 初始化处理
+    init() {
+      this.initButton()
+      switch (this.dialogStatus) {
+        case this.PARAMETERS.STATUS_INSERT:
+          break
+        case this.PARAMETERS.STATUS_UPDATE:
+          this.initInsertModel()
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          break
+        case this.PARAMETERS.STATUS_VIEW:
+          break
+      }
+      this.settings.listLoading = false
+    },
+    initButton() {
+      // 初始化按钮状态
+      this.settings.btnShowStatus = this.$options.data.call(this).settings.btnShowStatus
+      this.settings.btnDisabledStatus = this.$options.data.call(this).settings.btnDisabledStatus
+    },
+    // 新增时的初始化
+    initInsertModel() {
+      // 设置按钮
+      this.settings.btnShowStatus.showUpdate = true
+      // 控件focus
+      this.$nextTick(() => {
+        this.$refs['refUpdateFocus'].focus()
+      })
+    },
+    // Placeholder设置
+    isPlaceholderShow(val) {
+      if (this.isViewModel) {
+        return ''
+      } else {
+        return val
+      }
+    },
+    // 取消按钮
+    handleCancel() {
+      this.$emit('closeMeCancel')
+    },
+    // 重置按钮
+    doReset() {
+      this.popSettingsData.btnResetStatus = true
+      switch (this.popSettingsData.dialogStatus) {
+        case 'update':
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refFocus'].focus()
+          })
+          break
+        default:
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refFocus'].focus()
+          })
+          break
+      }
+
+      // 去除validate信息
+      this.$nextTick(() => {
+        this.$refs['dataSubmitForm'].clearValidate()
+      })
+    },
+    // 插入逻辑
+    doInsert() {
+      this.$refs['dataSubmitForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.dataJson.tempJson)
+          this.settings.listLoading = true
+          insertApi(tempData).then((_data) => {
+            this.dataJson.listData.push(_data.data)
+            this.$notify({
+              title: '插入成功',
+              message: _data.message,
+              type: 'success',
+              duration: this.settings.duration
+            })
+            this.$emit('closeMeOk', _data)
+          }, (_error) => {
+            this.$notify({
+              title: '插入错误',
+              message: _error.message,
+              type: 'error',
+              duration: this.settings.duration
+            })
+          }).finally(() => {
+            this.settings.listLoading = false
+          })
+        }
+      })
+    },
+    // 更新逻辑
+    doUpdate() {
+      this.$refs['dataSubmitForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.dataJson.tempJson)
+          this.settings.listLoading = true
+          updateApi(tempData).then((_data) => {
+            this.dataJson.tempJson = Object.assign({}, _data.data)
+            // 设置到table中绑定的json数据源
+            this.dataJson.listData.splice(this.dataJson.rowIndex, 1, this.dataJson.tempJson)
+            // 设置到currentjson中
+            this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
+            this.$notify({
+              title: '更新成功',
+              message: _data.message,
+              type: 'success',
+              duration: this.settings.duration
+            })
+            this.$emit('closeMeOk', _data)
+          }, (_error) => {
+            this.$notify({
+              title: '更新错误',
+              message: _error.message,
+              type: 'error',
+              duration: this.settings.duration
+            })
+          }).finally(() => {
+            this.settings.listLoading = false
+          })
+        }
+      })
+    }
   }
 }
 </script>
