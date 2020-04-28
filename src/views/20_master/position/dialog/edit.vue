@@ -15,8 +15,6 @@
     :modal-append-to-body="false"
     width="700px"
   >
-    11{{ settings.listLoading }}11
-    22{{ settings.btnDisabledStatus.disabledUpdate }}22
     <el-form
       ref="dataSubmitForm"
       :rules="settings.rules"
