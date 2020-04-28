@@ -36,10 +36,10 @@
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <div class="floatLeft">
-        <el-button type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
       </div>
       <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
-      <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+      <el-button v-show="settings.btnShowStatus.showInsert && !isViewModel" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -59,6 +59,7 @@
 <script>
 
 import { getStaffTransferListApi, setStaffTransferApi } from '@/api/20_master/org/org'
+import constants_para from '@/common/constants/constants_para'
 import deepcopy from 'utils-copy'
 import elDragDialog from '@/directive/el-drag-dialog'
 
@@ -80,6 +81,10 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    model: {
+      type: String,
+      default: constants_para.MODEL_VIEW
     }
   },
   data() {
@@ -134,6 +139,13 @@ export default {
     },
     listenVisible() {
       return this.visible
+    },
+    isViewModel() {
+      if (this.model === constants_para.MODEL_VIEW) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   // 监听器
@@ -167,8 +179,15 @@ export default {
   },
   mounted() { },
   methods: {
-    // 初始化
     init() {
+      if (this.isViewModel) {
+        this.initView()
+      } else {
+        this.initEdit()
+      }
+    },
+    // 初始化
+    initEdit() {
       this.settings.position_title = '维护岗位【' + this.data.name + '】成员'
       // 初始化数据
       this.settings.transfer = {
@@ -191,8 +210,8 @@ export default {
       this.settings.btnDisabledStatus.disabledReset = true
     },
     // 查看岗位成员
-    handleView(val, row) {
-      this.settings.position_title = '查看岗位【' + row.name + '】成员'
+    initView() {
+      this.settings.position_title = '查看岗位【' + this.data.name + '】成员'
       // 初始化数据
       this.settings.transfer = {
         position_id: null,
@@ -200,10 +219,10 @@ export default {
         staff_all: [],
         staff_positions: [],
         old_staff_positions: [],
-        current_row: row
+        current_row: this.data
       }
       this.settings.btnShowStatus.showInsert = true
-      this.settings.transfer.position_id = val
+      this.settings.transfer.position_id = this.id
       getStaffTransferListApi(this.settings.transfer).then(response => {
         this.settings.transfer.staff_all = response.data.staff_all
         // 添加新的属性

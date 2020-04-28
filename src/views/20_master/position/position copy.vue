@@ -116,15 +116,123 @@
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
-    <set-position-dialog
-      v-if="popSettingsData.dialog.setPositionData.visible"
-      :id="popSettingsData.dialog.setPositionData.props.id"
-      :data="popSettingsData.dialog.setPositionData.props.data"
-      :visible="popSettingsData.dialog.setPositionData.visible"
-      @closeMeOk="handleSetPositionCloseOk"
-      @closeMeCancel="handleSetPositionCloseCancel"
-    />
+    <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
+    <el-dialog
+      v-el-drag-dialog
+      :title="popSettingsData.textMap[popSettingsData.dialogStatus]"
+      :visible="popSettingsData.dialogFormVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
+      width="700px"
+    >
+      <el-form
+        ref="dataSubmitForm"
+        :rules="popSettingsData.rules"
+        :model="dataJson.tempJson"
+        label-position="rigth"
+        label-width="120px"
+        status-icon
+      >
+        <el-alert
+          title="基本信息"
+          type="info"
+          :closable="false"
+        />
+        <br>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="岗位编号：" prop="code">
+              <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="岗位名称：" prop="name">
+              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="岗位简称：" prop="simple_name">
+              <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-form-item label="描述：" prop="descr">
+          <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+        </el-form-item>
+        <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
+          <el-col :span="12">
+            <el-form-item label="更新人：" prop="u_name">
+              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="更新时间：" prop="u_time">
+              <el-input v-model.trim="dataJson.tempJson.u_time" disabled />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-divider />
+        <div class="floatLeft">
+          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        </div>
+        <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      v-el-drag-dialog
+      :title="popSettingsData.position_title"
+      :visible="popSettingsData.dialogPositionVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :append-to-body="true"
+      :modal-append-to-body="false"
+      width="740px"
+    >
+      <el-form
+        ref="dataSubmitForm"
+        :model="dataJson.tempJson"
+        label-position="rigth"
+        label-width="120px"
+        status-icon
+      >
+        <el-row>
+          <el-col :span="24" class="transferCenter">
+            <el-transfer
+              v-model="popSettingsData.transfer.staff_positions"
+              filterable
+              :filter-method="transferFilterMethod"
+              filter-placeholder="请输入员工姓名"
+              :data="popSettingsData.transfer.staff_all"
+              :titles="['未选择员工', '已选择员工']"
+              :button-texts="['员工反选', '选择员工']"
+              :render-content="renderTransfer"
+            />
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-divider />
+        <div class="floatLeft">
+          <el-button type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doPositionReset()">重置</el-button>
+        </div>
+        <el-button plain :disabled="settings.listLoading" @click="handlePositionCancel()">取消</el-button>
+        <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doPositionInsert()">确定</el-button>
+      </div>
+    </el-dialog>
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
 
   </div>
@@ -145,17 +253,18 @@
 <script>
 import constants_program from '@/common/constants/constants_program'
 import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/position/position'
+import { getStaffTransferListApi, setStaffTransferApi } from '@/api/20_master/org/org'
 import resizeMixin from './positionResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import { isNotEmpty } from '@/utils/index.js'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
-import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
+import deepcopy from 'utils-copy'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, SelectDict, setPositionDialog },
+  components: { Pagination, DeleteTypeNormal, SelectDict },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   props: {
@@ -234,20 +343,51 @@ export default {
         duration: 4000
       },
       popSettingsData: {
-        dialog: {
-          // master弹出编辑页面
-          positionMaster: {
-            visible: false
-          },
-          // 设置数据页面
-          setPositionData: {
-            visible: false,
-            props: {
-              id: undefined,
-              data: {}
-            }
-          }
-        }
+        // 弹出窗口状态名称
+        textMap: {
+          view: '查看',
+          update: '修改',
+          insert: '新增',
+          copyInsert: '复制新增'
+        },
+        // 按钮状态
+        btnShowStatus: {
+          showInsert: false,
+          showUpdate: false,
+          showCopyInsert: false
+        },
+        // 按钮状态：是否可用
+        btnDisabledStatus: {
+          disabledReset: false,
+          disabledInsert: false,
+          disabledUpdate: false,
+          disabledCopyInsert: false
+        },
+        // 重置按钮点击后
+        btnResetStatus: false,
+        // 以下为pop的内容：数据弹出框
+        selection: [],
+        dialogStatus: '',
+        dialogFormVisible: false,
+        // pop的check内容
+        rules: {
+          name: [{ required: true, message: '请输入岗位名称', trigger: 'change' }],
+          // code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
+          simple_name: [{ required: true, message: '请输入岗位简称', trigger: 'change' }]
+        },
+        // --------岗位设置弹出框---------
+        dialogPositionVisible: false,
+        // 穿梭框
+        transfer: {
+          position_id: null,
+          // 所有staff
+          staff_all: [],
+          staff_positions: [],
+          old_staff_positions: [],
+          current_row: null
+        },
+        // 弹出框title，岗位名称
+        position_title: ''
       },
       // 导入窗口的状态
       popSettingsImport: {
@@ -286,6 +426,37 @@ export default {
   },
   // 监听器
   watch: {
+    // 监听页面上面是否有修改，有修改按钮高亮
+    'dataJson.tempJson': {
+      handler(newVal, oldVal) {
+        if (this.popSettingsData.btnResetStatus === true) {
+          // 点击了重置按钮
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          this.popSettingsData.btnDisabledStatus.disabledInsert = true
+          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
+          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
+          this.popSettingsData.btnResetStatus = false
+        } else if (this.popSettingsData.dialogFormVisible) {
+          // 有修改按钮高亮
+          this.popSettingsData.btnDisabledStatus.disabledReset = false
+          this.popSettingsData.btnDisabledStatus.disabledInsert = false
+          this.popSettingsData.btnDisabledStatus.disabledUpdate = false
+          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = false
+        }
+      },
+      deep: true
+    },
+    // 弹出窗口初始化，按钮不可用
+    'popSettingsData.dialogFormVisible': {
+      handler(newVal, oldVal) {
+        if (this.popSettingsData.dialogFormVisible) {
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          this.popSettingsData.btnDisabledStatus.disabledInsert = true
+          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
+          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
+        }
+      }
+    },
     // 选中的数据，使得导出按钮可用，否则就不可使用
     'dataJson.multipleSelection': {
       handler(newVal, oldVal) {
@@ -295,6 +466,29 @@ export default {
           this.settings.btnShowStatus.showExport = false
         }
       }
+    },
+    // 穿梭框的数据变动，设置重置和确定
+    'popSettingsData.transfer.staff_positions': {
+      handler(newVal, oldVal) {
+        const listA = newVal
+        const listB = this.popSettingsData.transfer.old_staff_positions
+        // 如果新值，旧值为undefined 则return
+        if (listA === undefined || listB === undefined) {
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          return
+        }
+        const result = listA.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b))
+        if (result) {
+          // 未改变值
+          this.popSettingsData.btnDisabledStatus.disabledReset = true
+          this.popSettingsData.btnDisabledStatus.disabledInsert = true
+        } else {
+          // 有改变值
+          this.popSettingsData.btnDisabledStatus.disabledReset = false
+          this.popSettingsData.btnDisabledStatus.disabledInsert = false
+        }
+      },
+      deep: true
     }
   },
   created() {
@@ -768,20 +962,118 @@ export default {
         return val
       }
     },
-    // ------------------岗位设置员工弹出框--------------------
+    // 编辑岗位成员
     handleEditStaffMember(val, row) {
-      this.popSettingsData.dialog.setPositionData.props.id = val
-      this.popSettingsData.dialog.setPositionData.props.data = row
-      this.popSettingsData.dialog.setPositionData.visible = true
+      this.popSettingsData.position_title = '维护岗位【' + row.name + '】成员'
+      // 初始化数据
+      this.popSettingsData.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: row
+      }
+      this.popSettingsData.dialogPositionVisible = true
+      this.popSettingsData.btnShowStatus.showInsert = true
+      this.popSettingsData.transfer.position_id = val
+      getStaffTransferListApi(this.popSettingsData.transfer).then(response => {
+        this.popSettingsData.transfer.staff_all = response.data.staff_all
+        this.popSettingsData.transfer.staff_positions = response.data.staff_positions
+        this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+      this.popSettingsData.btnDisabledStatus.disabledReset = true
     },
-    handleSetPositionCloseOk(val) {
-      this.popSettingsData.dialog.setPositionData.visible = false
-      // 通知兄弟组件
+    // 查看岗位成员
+    handlePositionView(val, row) {
+      this.popSettingsData.position_title = '查看岗位【' + row.name + '】成员'
+      // 初始化数据
+      this.popSettingsData.transfer = {
+        position_id: null,
+        // 所有staff
+        staff_all: [],
+        staff_positions: [],
+        old_staff_positions: [],
+        current_row: row
+      }
+      this.popSettingsData.dialogPositionVisible = true
+      this.popSettingsData.btnShowStatus.showInsert = true
+      this.popSettingsData.transfer.position_id = val
+      getStaffTransferListApi(this.popSettingsData.transfer).then(response => {
+        this.popSettingsData.transfer.staff_all = response.data.staff_all
+        // 添加新的属性
+        this.popSettingsData.transfer.staff_all.map((item, index) => {
+          item.disabled = true
+        })
+        this.popSettingsData.transfer.staff_positions = response.data.staff_positions
+        this.popSettingsData.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+      this.popSettingsData.btnDisabledStatus.disabledReset = true
+    },
+    // 穿梭框的过滤方法
+    transferFilterMethod(query, item) {
+      return item.label.indexOf(query) > -1
+    },
+    handlePositionCancel() {
+      this.popSettingsData.dialogPositionVisible = false
+    },
+    // 重置按钮
+    doPositionReset() {
+      this.popSettingsData.btnResetStatus = true
+      this.handleEditStaffMember(this.popSettingsData.transfer.position_id, this.popSettingsData.transfer.current_row)
+    },
+    // 插入逻辑：岗位成员维护，点击确定按钮
+    doPositionInsert() {
+      setStaffTransferApi(this.popSettingsData.transfer).then((_data) => {
+        this.settings.listLoading = true
+        this.popSettingsData.transfer.current_row.staff_count = _data.data.staff_positions_count
+        this.$notify({
+          title: '更新成功',
+          message: _data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+        this.emitEvent(_data)
+        this.popSettingsData.dialogPositionVisible = false
+      }, (_error) => {
+        this.$notify({
+          title: '更新错误',
+          message: _error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+        // this.popSettingsData.dialogFormVisible = false
+      }).finally(() => {
+        this.settings.listLoading = false
+      })
+    },
+    // 通知员工页签，更新数据
+    emitEvent(data) {
       this.$off(this.EMITS.EMIT_ORG_POSITION_UPDATED)
-      this.$emit(this.EMITS.EMIT_ORG_POSITION_UPDATED, val)
+      this.$emit(this.EMITS.EMIT_ORG_POSITION_UPDATED, data)
     },
-    handleSetPositionCloseCancel() {
-      this.popSettingsData.dialog.setPositionData.visible = false
+    // 点击跳转到组织机构页面，并关闭本页面
+    handleForward(val) {
+      this.$confirm('查看该员工详情，需要关闭当前页面，请注意保存！', '确认信息', {
+      }).then(() => {
+        // 通知路由，打开组织机构页面
+        this.$router.push({ name: this.PROGRAMS.P_STAFF, params: { name: val }})
+        this.popSettingsData.dialogPositionVisible = false
+      }).catch(action => {
+      })
+    },
+    // 穿梭框增加按钮
+    renderTransfer(h, option) {
+      return (
+        <span>
+          { option.label }
+          <el-button type='primary' icon='el-icon-edit' plain style='padding:7px 7px; float: right' on-click={() => this.handleForward(option.label)} />
+        </span>
+      )
     }
   }
 }

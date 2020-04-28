@@ -39,7 +39,7 @@
           </el-link>
           <span>
             （
-            <el-link type="primary" @click="handleView(scope.row.id, scope.row)">
+            <el-link type="primary" @click="handleViewStaffMember(scope.row.id, scope.row)">
               {{ scope.row.staff_count }}
             </el-link>
             ）
@@ -83,6 +83,7 @@
       :id="popSettingsData.dialog.setPositionData.props.id"
       :data="popSettingsData.dialog.setPositionData.props.data"
       :visible="popSettingsData.dialog.setPositionData.visible"
+      :model="popSettingsData.dialog.setPositionData.props.model"
       @closeMeOk="handleSetPositionCloseOk"
       @closeMeCancel="handleSetPositionCloseCancel"
     />
@@ -111,6 +112,7 @@ import { getPositionListApi } from '@/api/20_master/org/org'
 import Pagination from '@/components/Pagination'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
+import constants_para from '@/common/constants/constants_para'
 
 export default {
   // name: 'P00000177', // 页面id，和router中的name需要一致，作为缓存
@@ -193,7 +195,8 @@ export default {
             visible: false,
             props: {
               id: undefined,
-              data: {}
+              data: {},
+              model: ''
             }
           }
         }
@@ -201,14 +204,6 @@ export default {
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    }
   },
   // 监听器
   watch: {
@@ -383,9 +378,16 @@ export default {
       this.settings.searchDialogData.dialogVisible = false
     },
     // ------------------岗位设置员工弹出框--------------------
+    handleViewStaffMember(val, row) {
+      this.popSettingsData.dialog.setPositionData.props.id = val
+      this.popSettingsData.dialog.setPositionData.props.data = row
+      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_VIEW
+      this.popSettingsData.dialog.setPositionData.visible = true
+    },
     handleEditStaffMember(val, row) {
       this.popSettingsData.dialog.setPositionData.props.id = val
       this.popSettingsData.dialog.setPositionData.props.data = row
+      this.popSettingsData.dialog.setPositionData.props.model = constants_para.MODEL_EDIT
       this.popSettingsData.dialog.setPositionData.visible = true
     },
     handleSetPositionCloseOk(val) {

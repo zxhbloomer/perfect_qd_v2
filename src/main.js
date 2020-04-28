@@ -32,6 +32,7 @@ import * as filters from './filters' // global filters
 
 // add by zxh
 import commonFunction from './common/commonFunction'
+import constants_para from './common/constants/constants_para'
 import constants_type from './common/constants/constants_dict'
 import constants_program from './common/constants/constants_program'
 import constants_emits from './common/constants/constants_emits'
@@ -48,7 +49,9 @@ Vue.use(commonFunction)
 Vue.prototype.CONSTANTS = constants_type
 Vue.prototype.PROGRAMS = constants_program
 Vue.prototype.EMITS = constants_emits
+Vue.prototype.PARAMETERS = constants_para
 Vue.prototype.GLOBAL = global
+
 Vue.use(EventProxy)
 
 Vue.use(Element, {
