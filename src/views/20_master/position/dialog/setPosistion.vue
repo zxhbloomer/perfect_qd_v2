@@ -245,7 +245,7 @@ export default {
         this.settings.listLoading = true
         this.settings.transfer.current_row.staff_count = _data.data.staff_positions_count
         this.$notify({
-          title: '更新成功',
+          title: '更新处理成功',
           message: _data.message,
           type: 'success',
           duration: this.settings.duration
@@ -253,7 +253,7 @@ export default {
         this.$emit('closeMeOk', _data)
       }, (_error) => {
         this.$notify({
-          title: '更新错误',
+          title: '更新处理失败',
           message: _error.message,
           type: 'error',
           duration: this.settings.duration

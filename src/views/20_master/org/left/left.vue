@@ -615,7 +615,7 @@ export default {
       // 删除当前节点和子节点
       deleteApi(this.dataJson.tempJson).then((_data) => {
         this.$notify({
-          title: '插入成功',
+          title: '新增处理成功',
           message: _data.message,
           type: 'success',
           duration: this.settings.duration
@@ -627,7 +627,7 @@ export default {
         this.settings.listLoading = false
       }, (_error) => {
         this.$notify({
-          title: '插入错误',
+          title: '新增处理失败',
           message: _error.message,
           type: 'error',
           duration: this.settings.duration
@@ -650,7 +650,7 @@ export default {
           parent_id: this.dataJson.currentJson.id
         }).then((_data) => {
           this.$notify({
-            title: '插入成功',
+            title: '新增处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -660,7 +660,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '插入错误',
+            title: '新增处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -680,7 +680,7 @@ export default {
           son_count: this.dataJson.currentJson.son_count
         }).then((_data) => {
           this.$notify({
-            title: '更新成功',
+            title: '更新处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -690,7 +690,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '更新错误',
+            title: '更新处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -717,7 +717,7 @@ export default {
           parent_id: this.dataJson.currentJson.id
         }).then((_data) => {
           this.$notify({
-            title: '插入成功',
+            title: '新增处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -727,7 +727,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '插入错误',
+            title: '新增处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -747,7 +747,7 @@ export default {
           son_count: this.dataJson.currentJson.son_count
         }).then((_data) => {
           this.$notify({
-            title: '更新成功',
+            title: '更新处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -757,7 +757,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '更新错误',
+            title: '更新处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -784,7 +784,7 @@ export default {
           parent_id: this.dataJson.currentJson.id
         }).then((_data) => {
           this.$notify({
-            title: '插入成功',
+            title: '新增处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -794,7 +794,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '插入错误',
+            title: '新增处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -814,7 +814,7 @@ export default {
           son_count: this.dataJson.currentJson.son_count
         }).then((_data) => {
           this.$notify({
-            title: '更新成功',
+            title: '更新处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -824,7 +824,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '更新错误',
+            title: '更新处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -851,7 +851,7 @@ export default {
           parent_id: this.dataJson.currentJson.id
         }).then((_data) => {
           this.$notify({
-            title: '插入成功',
+            title: '新增处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -861,7 +861,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '插入错误',
+            title: '新增处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -881,7 +881,7 @@ export default {
           son_count: this.dataJson.currentJson.son_count
         }).then((_data) => {
           this.$notify({
-            title: '更新成功',
+            title: '更新处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
@@ -891,7 +891,7 @@ export default {
           this.popSettingsData.dialogFormVisible = false
         }, (_error) => {
           this.$notify({
-            title: '更新错误',
+            title: '更新处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -974,7 +974,7 @@ export default {
       this.$emit(this.EMITS.EMIT_LOADING)
       dragsaveApi(this.dataJson.treeData).then((_data) => {
         this.$notify({
-          title: '更新成功',
+          title: '更新处理成功',
           message: _data.message,
           type: 'success',
           duration: this.settings.duration
@@ -987,7 +987,7 @@ export default {
         this.$emit(this.EMITS.EMIT_LOADING_OK)
       }, (_error) => {
         this.$notify({
-          title: '更新错误',
+          title: '更新处理失败',
           message: _error.message,
           type: 'error',
           duration: this.settings.duration

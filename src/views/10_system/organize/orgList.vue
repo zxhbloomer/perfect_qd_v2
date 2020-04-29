@@ -229,7 +229,7 @@ export default {
             this.dialogFormVisible = false
             this.$notify({
               title: '成功',
-              message: '更新成功',
+              message: '更新处理成功',
               type: 'success',
               duration: 2000
             })

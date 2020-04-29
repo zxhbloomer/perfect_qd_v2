@@ -531,7 +531,7 @@ export default {
             // 设置到currentjson中
             this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
             this.$notify({
-              title: '更新成功',
+              title: '更新处理成功',
               message: _data.message,
               type: 'success',
               duration: this.settings.duration
@@ -540,7 +540,7 @@ export default {
             this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
-              title: '更新错误',
+              title: '更新处理失败',
               message: _error.message,
               type: 'error',
               duration: this.settings.duration
@@ -605,7 +605,7 @@ export default {
           insertApi(tempData).then((_data) => {
             this.dataJson.listData.push(_data.data)
             this.$notify({
-              title: '插入成功',
+              title: '新增处理成功',
               message: _data.message,
               type: 'success',
               duration: this.settings.duration
@@ -614,7 +614,7 @@ export default {
             this.settings.listLoading = false
           }, (_error) => {
             this.$notify({
-              title: '插入错误',
+              title: '新增处理失败',
               message: _error.message,
               type: 'error',
               duration: this.settings.duration

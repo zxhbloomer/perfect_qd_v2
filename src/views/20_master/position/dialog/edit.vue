@@ -29,6 +29,7 @@
         :closable="false"
       />
       <br>
+
       <el-row>
         <el-col :span="12">
           <el-form-item label="岗位编号：" prop="code">
@@ -96,7 +97,7 @@
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
 import { updateApi, insertApi } from '@/api/20_master/position/position'
-import deepcopy from 'utils-copy'
+import deepCopy from 'utils-copy'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
@@ -133,7 +134,7 @@ export default {
           dbversion: 0
         },
         // 单条数据 json
-        tempJson: deepcopy(this.data),
+        tempJson: deepCopy(this.data),
         inputSettings: {
           maxLength: {
             name: 20,
@@ -163,7 +164,7 @@ export default {
         btnResetStatus: false,
         // 以下为pop的内容：数据弹出框
         selection: [],
-        dialogStatus: '',
+        dialogStatus: this.dialogStatus,
         // pop的check内容
         rules: {
           name: [{ required: true, message: '请输入岗位名称', trigger: 'change' }],
@@ -195,7 +196,7 @@ export default {
   computed: {
     // 是否为更新模式
     isUpdateModel() {
-      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
+      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_INSERT || this.settings.dialogStatus === this.PARAMETERS.STATUS_COPY_INSERT) {
         return false
       } else {
         return true
@@ -245,16 +246,29 @@ export default {
       this.initButton()
       switch (this.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
-          break
-        case this.PARAMETERS.STATUS_UPDATE:
           this.initInsertModel()
           break
+        case this.PARAMETERS.STATUS_UPDATE:
+          this.initUpdateModel()
+          break
         case this.PARAMETERS.STATUS_COPY_INSERT:
+          this.initInsertModel()
           break
         case this.PARAMETERS.STATUS_VIEW:
           break
       }
       this.settings.listLoading = false
+    },
+    initTempJsonOriginal() {
+      // 单条数据 json的，初始化原始数据
+      this.dataJson.tempJsonOriginal =
+      {
+        id: undefined,
+        name: '',
+        code: '',
+        descr: '',
+        dbversion: 0
+      }
     },
     initButton() {
       // 初始化按钮状态
@@ -263,12 +277,36 @@ export default {
     },
     // 新增时的初始化
     initInsertModel() {
+      // 数据初始化
+      this.initTempJsonOriginal()
+      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+      // 设置按钮
+      this.settings.btnShowStatus.showInsert = true
+      // 控件focus
+      this.$nextTick(() => {
+        this.$refs['refFocus'].focus()
+      })
+    },
+    // 复制新增时的初始化
+    initCopyInsertModel() {
+      // 设置按钮
+      this.settings.btnShowStatus.showCopyInsert = true
+      // 控件focus
+      this.$nextTick(() => {
+        this.$refs['refFocus'].focus()
+      })
+    },
+    // 修改时的初始化
+    initUpdateModel() {
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
       this.$nextTick(() => {
         this.$refs['refUpdateFocus'].focus()
       })
+    },
+    // 查看时的初始化
+    initViewModel() {
     },
     // Placeholder设置
     isPlaceholderShow(val) {
@@ -318,7 +356,7 @@ export default {
           insertApi(tempData).then((_data) => {
             this.dataJson.listData.push(_data.data)
             this.$notify({
-              title: '插入成功',
+              title: '新增处理成功',
               message: _data.message,
               type: 'success',
               duration: this.settings.duration
@@ -326,7 +364,7 @@ export default {
             this.$emit('closeMeOk', _data)
           }, (_error) => {
             this.$notify({
-              title: '插入错误',
+              title: '新增处理失败',
               message: _error.message,
               type: 'error',
               duration: this.settings.duration
@@ -345,24 +383,9 @@ export default {
           this.settings.listLoading = true
           updateApi(tempData).then((_data) => {
             this.dataJson.tempJson = Object.assign({}, _data.data)
-            // 设置到table中绑定的json数据源
-            this.dataJson.listData.splice(this.dataJson.rowIndex, 1, this.dataJson.tempJson)
-            // 设置到currentjson中
-            this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
-            this.$notify({
-              title: '更新成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.$emit('closeMeOk', _data)
+            this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {
-            this.$notify({
-              title: '更新错误',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
+            this.$emit('closeMeOk', { return_flag: false, error: _error })
           }).finally(() => {
             this.settings.listLoading = false
           })

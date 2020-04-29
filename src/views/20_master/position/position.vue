@@ -164,6 +164,7 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
 import editDialog from '@/views/20_master/position/dialog/edit'
 import constants_para from '@/common/constants/constants_para'
+import deepCopy from 'utils-copy'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
@@ -206,25 +207,8 @@ export default {
         },
         // table使用的json
         listData: null,
-        // 单条数据 json的，初始化原始数据
-        tempJsonOriginal: {
-          id: undefined,
-          name: '',
-          code: '',
-          descr: '',
-          dbversion: 0
-        },
         // 单条数据 json
         currentJson: null,
-        tempJson: null,
-        inputSettings: {
-          maxLength: {
-            name: 20,
-            code: 20,
-            descr: 200,
-            simple_name: 20
-          }
-        },
         // 当前表格中的索引，第几条
         rowIndex: 0,
         // 当前选中的行（checkbox）
@@ -285,14 +269,6 @@ export default {
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    }
   },
   // 监听器
   watch: {
@@ -317,25 +293,12 @@ export default {
     // 描绘完成
   },
   methods: {
-    initTempJsonOriginal() {
-      // 单条数据 json的，初始化原始数据
-      this.dataJson.tempJsonOriginal =
-      {
-        id: undefined,
-        name: '',
-        code: '',
-        descr: '',
-        dbversion: 0
-      }
-    },
     initShow() {
       if (this.meDialogSetting.dialogStatus) {
         this.dataJson.searchForm.id = this.id
       }
       // 初始化查询
       this.getDataList()
-      // 数据初始化
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
     // 弹出框设置初始化
     initDialogStatus() {
@@ -354,15 +317,13 @@ export default {
     },
     // 行点击
     handleRowClick(row) {
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
     },
     // 行双点击，仅在dialog中有效
     handleRowDbClick(row) {
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = this.getRowIndex(row)
+      var _data = deepCopy(row)
       if (this.meDialogSetting.dialogStatus) {
-        this.$emit('rowDbClick', this.dataJson.tempJson)
+        this.$emit('rowDbClick', _data)
       }
     },
     handleSearch() {
@@ -382,8 +343,8 @@ export default {
     },
     // 查看
     handleView() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
+      var _data = Object.assign({}, this.dataJson.currentJson)
+      if (_data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
@@ -453,7 +414,6 @@ export default {
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
-      this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
 
       if (this.dataJson.currentJson.id !== undefined) {
         // this.settings.btnShowStatus.doInsert = true
@@ -513,14 +473,14 @@ export default {
         this.settings.listLoading = true
         deleteApi(selectionJson).then((_data) => {
           this.$notify({
-            title: '更新成功',
+            title: '更新处理成功',
             message: _data.message,
             type: 'success',
             duration: this.settings.duration
           })
         }, (_error) => {
           this.$notify({
-            title: '更新错误',
+            title: '更新处理失败',
             message: _error.message,
             type: 'error',
             duration: this.settings.duration
@@ -593,21 +553,76 @@ export default {
         this.handleUpdate()
       }
     },
-    // 关闭自动编辑窗口
-    handleEditMeDialogOk() {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.$emit('editMeDialogOkClick', this.dataJson.tempJson)
-      }
-    },
     handleCancel() {
       this.popSettingsData.dialog.one.visible = false
     },
     // ------------------岗位编辑弹出框--------------------
     handleCloseDialogOneOk(val) {
       this.popSettingsData.dialog.one.visible = false
+      switch (this.popSettingsData.dialog.one.props.dialogStatus) {
+        case this.PARAMETERS.STATUS_INSERT:
+          this.doInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_UPDATE:
+          this.doUpdateModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          this.doCopyInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_VIEW:
+          break
+      }
     },
     handleCloseDialogOneCancel() {
       this.popSettingsData.dialog.one.visible = false
+    },
+    // 处理插入回调
+    doInsertModelCallBack(val) {
+      if (val.return_flag) {
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理更新回调
+    doUpdateModelCallBack(val) {
+      if (val.return_flag) {
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '更新处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '更新处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理复制新增回调
+    doCopyInsertModelCallBack() {
+      this.doInsertModelCallBack()
     },
     // ------------------岗位设置员工弹出框--------------------
     handleViewStaffMember(val, row) {
