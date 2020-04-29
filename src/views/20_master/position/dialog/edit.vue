@@ -12,8 +12,9 @@
     :close-on-press-escape="PARAMETERS.DIALOG_CLOSE_BY_ESC"
     :show-close="false"
     :append-to-body="true"
-    :modal-append-to-body="false"
+    :modal-append-to-body="true"
     width="700px"
+    destroy-on-close
   >
     <el-form
       ref="dataSubmitForm"
