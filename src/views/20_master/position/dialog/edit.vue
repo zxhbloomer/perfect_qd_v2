@@ -23,6 +23,7 @@
       label-width="120px"
       status-icon
     >
+      {{ isViewModel }}
       <el-alert
         title="基本信息"
         type="info"
@@ -70,7 +71,7 @@
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <div class="floatLeft">
-        <el-button type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
       </div>
       <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
       <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
@@ -206,7 +207,7 @@ export default {
       return this.visible
     },
     isViewModel() {
-      if (this.model === constants_para.MODEL_VIEW) {
+      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_VIEW) {
         return true
       } else {
         return false
@@ -252,9 +253,10 @@ export default {
           this.initUpdateModel()
           break
         case this.PARAMETERS.STATUS_COPY_INSERT:
-          this.initInsertModel()
+          this.initCopyInsertModel()
           break
         case this.PARAMETERS.STATUS_VIEW:
+          this.initViewModel()
           break
       }
       this.settings.listLoading = false
@@ -354,21 +356,9 @@ export default {
           const tempData = Object.assign({}, this.dataJson.tempJson)
           this.settings.listLoading = true
           insertApi(tempData).then((_data) => {
-            this.dataJson.listData.push(_data.data)
-            this.$notify({
-              title: '新增处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.$emit('closeMeOk', _data)
+            this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {
-            this.$notify({
-              title: '新增处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
+            this.$emit('closeMeOk', { return_flag: false, error: _error })
           }).finally(() => {
             this.settings.listLoading = false
           })
@@ -382,6 +372,23 @@ export default {
           const tempData = Object.assign({}, this.dataJson.tempJson)
           this.settings.listLoading = true
           updateApi(tempData).then((_data) => {
+            this.dataJson.tempJson = Object.assign({}, _data.data)
+            this.$emit('closeMeOk', { return_flag: true, data: _data })
+          }, (_error) => {
+            this.$emit('closeMeOk', { return_flag: false, error: _error })
+          }).finally(() => {
+            this.settings.listLoading = false
+          })
+        }
+      })
+    },
+    // 复制新增逻辑
+    doCopyInsert() {
+      this.$refs['dataSubmitForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.dataJson.tempJson)
+          this.settings.listLoading = true
+          insertApi(tempData).then((_data) => {
             this.dataJson.tempJson = Object.assign({}, _data.data)
             this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {

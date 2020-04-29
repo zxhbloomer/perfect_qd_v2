@@ -758,7 +758,7 @@ export default {
           insertApi(tempData).then((_data) => {
             this.dataJson.listData.push(_data.data)
             this.$notify({
-              title: '复制新增成功',
+              title: '复制新增处理成功',
               message: _data.message,
               type: 'success',
               duration: this.settings.duration
@@ -766,7 +766,7 @@ export default {
             this.popSettingsData.dialogFormVisible = false
           }, (_error) => {
             this.$notify({
-              title: '复制新增错误',
+              title: '复制新增处理失败',
               message: _error.message,
               type: 'error',
               duration: this.settings.duration

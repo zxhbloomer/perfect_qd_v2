@@ -159,7 +159,6 @@ import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/2
 import resizeMixin from './positionResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
-import { isNotEmpty } from '@/utils/index.js'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
 import editDialog from '@/views/20_master/position/dialog/edit'
@@ -334,22 +333,6 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-
-    // 点击按钮 新增
-    handleInsert() {
-      // 新增
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
-      this.popSettingsData.dialog.one.visible = true
-    },
-    // 查看
-    handleView() {
-      var _data = Object.assign({}, this.dataJson.currentJson)
-      if (_data.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      this.popSettingsData.positionMaster.visible = true
-    },
     // 导出按钮
     handleExport() {
       // 没有选择任何数据的情况
@@ -405,12 +388,6 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 点击按钮 复制新增
-    handleCopyInsert() {
-      // 修改
-      this.popSettingsData.dialogStatus = 'copyInsert'
-      this.popSettingsData.dialog.one.visible = true
-    },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
@@ -446,8 +423,6 @@ export default {
         this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
-        // 自动打开编辑页面
-        this.handleEditMeDialog(this.dataJson.listData[0])
       }).finally(() => {
         this.settings.listLoading = false
       })
@@ -545,20 +520,12 @@ export default {
       )
     },
     // --------------弹出查询框：--------------
-    // -------------------不同的页签，标签进行的验证------------------
-    // 自动弹出编辑窗口
-    handleEditMeDialog(_data) {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.handleCurrentChange(_data)
-        this.handleUpdate()
-      }
-    },
+
     handleCancel() {
       this.popSettingsData.dialog.one.visible = false
     },
     // ------------------岗位编辑弹出框--------------------
     handleCloseDialogOneOk(val) {
-      this.popSettingsData.dialog.one.visible = false
       switch (this.popSettingsData.dialog.one.props.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
           this.doInsertModelCallBack(val)
@@ -579,10 +546,10 @@ export default {
     // 处理插入回调
     doInsertModelCallBack(val) {
       if (val.return_flag) {
+        this.popSettingsData.dialog.one.visible = false
+
         // 设置到table中绑定的json数据源
-        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
-        // 设置到currentjson中
-        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.dataJson.listData.push(val.data.data)
         this.$notify({
           title: '新增处理成功',
           message: val.data.message,
@@ -598,9 +565,35 @@ export default {
         })
       }
     },
+    // 处理复制新增回调
+    doCopyInsertModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettingsData.dialog.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '复制新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '复制新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
     // 处理更新回调
     doUpdateModelCallBack(val) {
       if (val.return_flag) {
+        this.popSettingsData.dialog.one.visible = false
+
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
         // 设置到currentjson中
@@ -619,10 +612,6 @@ export default {
           duration: this.settings.duration
         })
       }
-    },
-    // 处理复制新增回调
-    doCopyInsertModelCallBack() {
-      this.doInsertModelCallBack()
     },
     // ------------------岗位设置员工弹出框--------------------
     handleViewStaffMember(val, row) {
@@ -643,6 +632,19 @@ export default {
     handleCloseDialogTwoCancel() {
       this.popSettingsData.dialog.two.visible = false
     },
+    // 点击按钮 新增
+    handleInsert() {
+      // 新增
+      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettingsData.dialog.one.visible = true
+    },
+    // 点击按钮 复制新增
+    handleCopyInsert() {
+      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      // 修改
+      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
+      this.popSettingsData.dialog.one.visible = true
+    },
     // 点击按钮 更新
     handleUpdate() {
       this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
@@ -653,7 +655,18 @@ export default {
       // 新增
       this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
       this.popSettingsData.dialog.one.visible = true
+    },
+    // 查看
+    handleView() {
+      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettingsData.dialog.one.visible = true
     }
+
   }
 }
 </script>
