@@ -36,7 +36,7 @@
         <el-form-item label="">
           <delete-type-normal v-model="dataJson.searchForm.is_del" />
         </el-form-item>
-        <el-form-item v-show="meDialogSetting.dialogStatus" label="">
+        <el-form-item v-show="meDialogStatus" label="">
           <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
         </el-form-item>
         <el-divider />
@@ -73,7 +73,7 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
+      <el-table-column v-if="!meDialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
@@ -105,7 +105,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
-              :disabled="meDialogSetting.dialogStatus"
+              :disabled="meDialogStatus"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -171,9 +171,10 @@ export default {
   directives: { },
   mixins: [resizeMixin],
   props: {
-    id: {
-      type: Number,
-      default: null
+    // 自己作为弹出框时的参数
+    meDialogStatus: {
+      type: Boolean,
+      default: false
     },
     dataModel: {
       type: String,
@@ -249,21 +250,6 @@ export default {
             }
           }
         }
-      },
-      // 导入窗口的状态
-      popSettingsImport: {
-        // 弹出窗口会否显示
-        dialogFormVisible: false,
-        // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
-        // 错误数据文件
-        errorFileUrl: ''
-      },
-      meDialogSetting: {
-        program: this.$store.getters.program,
-        selectedDataJson: this.$store.getters.selectedDataJson,
-        dialogStatus: false,
-        model: this.model
       }
     }
   },
@@ -293,21 +279,11 @@ export default {
   },
   methods: {
     initShow() {
-      if (this.meDialogSetting.dialogStatus) {
-        this.dataJson.searchForm.id = this.id
-      }
       // 初始化查询
       this.getDataList()
     },
-    // 弹出框设置初始化
+    // 自己作为弹出框设置初始化
     initDialogStatus() {
-      if (this.$store.getters.program !== undefined &&
-          this.$store.getters.program !== null &&
-          this.$store.getters.program.status === 'open') {
-        this.meDialogSetting.dialogStatus = true
-      } else {
-        this.meDialogSetting.dialogStatus = false
-      }
     },
     // 获取行索引
     getRowIndex(row) {
@@ -321,7 +297,7 @@ export default {
     // 行双点击，仅在dialog中有效
     handleRowDbClick(row) {
       var _data = deepCopy(row)
-      if (this.meDialogSetting.dialogStatus) {
+      if (this.meDialogStatus) {
         this.$emit('rowDbClick', _data)
       }
     },
