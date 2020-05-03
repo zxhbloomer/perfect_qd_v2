@@ -24,7 +24,6 @@
       label-width="120px"
       status-icon
     >
-      {{ isViewModel }}
       <el-alert
         title="基本信息"
         type="info"
@@ -186,12 +185,6 @@ export default {
         },
         // 弹出框title，岗位名称
         position_title: ''
-      },
-      meDialogSetting: {
-        program: this.$store.getters.program,
-        selectedDataJson: this.$store.getters.selectedDataJson,
-        dialogStatus: false,
-        model: this.model
       }
     }
   },

@@ -642,7 +642,6 @@ export default {
       this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
       this.popSettingsData.dialog.one.visible = true
     }
-
   }
 }
 </script>

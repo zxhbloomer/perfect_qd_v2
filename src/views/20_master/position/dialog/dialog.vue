@@ -19,8 +19,6 @@
       :data-model="dataModel"
       :me-dialog-status="visible"
       @rowDbClick="handleRowDbClick"
-      @editMeDialogOkClick="handleEditMeDialogOkClick"
-      @editMeDialogCancelClick="handleEditMeDialogCancelClick"
     />
     <div slot="footer" class="dialog-footer">
       <el-divider />
@@ -114,16 +112,7 @@ export default {
     // 取消
     handleDoCancel() {
       // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
-      this.$emit('closeMeCancel')
-    },
-    handleEditMeDialogOkClick() {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
-      this.$emit('closeMeOk')
-    },
-    handleEditMeDialogCancelClick() {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeCancel')
     }
   }
