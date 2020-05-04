@@ -86,8 +86,8 @@
       :data="popSettingsData.dialog.two.props.data"
       :visible="popSettingsData.dialog.two.visible"
       :model="popSettingsData.dialog.two.props.model"
-      @closeMeOk="handleSetPositionCloseOk"
-      @closeMeCancel="handleSetPositionCloseCancel"
+      @closeMeOk="handleCloseDialogTwoOk"
+      @closeMeCancel="handleCloseDialogTwoOk"
     />
 
   </div>
@@ -451,40 +451,6 @@ export default {
     },
     handleCloseDialogTwoCancel() {
       this.popSettingsData.dialog.two.visible = false
-    },
-    // 点击按钮 新增
-    handleInsert() {
-      // 新增
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
-      this.popSettingsData.dialog.one.visible = true
-    },
-    // 点击按钮 复制新增
-    handleCopyInsert() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      // 复制新增
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
-      this.popSettingsData.dialog.one.visible = true
-    },
-    // 点击按钮 更新
-    handleUpdate() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      // 更新
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
-      this.popSettingsData.dialog.one.visible = true
-    },
-    // 查看
-    handleView() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
-      this.popSettingsData.dialog.one.visible = true
     }
   }
 }

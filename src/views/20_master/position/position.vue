@@ -132,8 +132,8 @@
       :data="popSettingsData.dialog.two.props.data"
       :visible="popSettingsData.dialog.two.visible"
       :model="popSettingsData.dialog.two.props.model"
-      @closeMeOk="handleSetPositionCloseOk"
-      @closeMeCancel="handleSetPositionCloseCancel"
+      @closeMeOk="handleCloseDialogTwoOk"
+      @closeMeCancel="handleCloseDialogTwoCancel"
     />
 
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
