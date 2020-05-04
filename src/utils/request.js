@@ -174,19 +174,23 @@ service.interceptors.response.use(
             })
             break
           case 401:
+            var blockingKey = 'ERROR_401'
             showMsg = '您的登录已经超时，请点击确定重新登录！'
-            MessageBox.confirm(showMsg, '登录已过期', {
-              showCancelButton: true,
-              confirmButtonText: '确定',
-              type: 'error'
-            }).then(() => {
-              // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-              router.push(`/login?redirect=${router.currentRoute.fullPath}`, function() {
-                alert(11111)
-              }, function() {
-                alert(22222)
+            if (sessionStorage.getItem(blockingKey) !== 'true') {
+              sessionStorage.setItem(blockingKey, 'true')
+              MessageBox.confirm(showMsg, '登录已过期', {
+                showCancelButton: true,
+                confirmButtonText: '确定',
+                type: 'error'
+              }).then(() => {
+                // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+                router.push(`/login?redirect=${router.currentRoute.fullPath}`)
+              }).catch(() => {
+              }).finally(() => {
+                sessionStorage.removeItem(blockingKey)
               })
-            })
+            }
+
             break
           default:
             if (showMsg !== '') {
