@@ -181,7 +181,11 @@ service.interceptors.response.use(
               type: 'error'
             }).then(() => {
               // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-              router.push(`/login?redirect=${router.currentRoute.fullPath}`)
+              router.push(`/login?redirect=${router.currentRoute.fullPath}`, function() {
+                alert(11111)
+              }, function() {
+                alert(22222)
+              })
             })
             break
           default:
