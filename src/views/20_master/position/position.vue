@@ -132,8 +132,8 @@
       :data="popSettingsData.dialog.two.props.data"
       :visible="popSettingsData.dialog.two.visible"
       :model="popSettingsData.dialog.two.props.model"
-      @closeMeOk="handleCloseDialogTwoOk"
-      @closeMeCancel="handleCloseDialogTwoCancel"
+      @closeMeOk="handleSetPositionCloseOk"
+      @closeMeCancel="handleSetPositionCloseCancel"
     />
 
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
@@ -500,7 +500,7 @@ export default {
     handleCancel() {
       this.popSettingsData.dialog.one.visible = false
     },
-    // ------------------岗位编辑弹出框--------------------
+    // ------------------岗位编辑弹出框 start--------------------
     handleCloseDialogOneOk(val) {
       switch (this.popSettingsData.dialog.one.props.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
@@ -545,7 +545,6 @@ export default {
     doCopyInsertModelCallBack(val) {
       if (val.return_flag) {
         this.popSettingsData.dialog.one.visible = false
-
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
         // 设置到currentjson中
@@ -589,7 +588,8 @@ export default {
         })
       }
     },
-    // ------------------岗位设置员工弹出框--------------------
+    // ------------------岗位编辑弹出框 end--------------------
+    // ------------------岗位设置员工弹出框 start--------------------
     handleViewStaffMember(val, row) {
       this.popSettingsData.dialog.two.props.id = val
       this.popSettingsData.dialog.two.props.data = row
@@ -608,6 +608,7 @@ export default {
     handleCloseDialogTwoCancel() {
       this.popSettingsData.dialog.two.visible = false
     },
+    // ------------------岗位设置员工弹出框 end--------------------
     // 点击按钮 新增
     handleInsert() {
       // 新增
@@ -617,7 +618,7 @@ export default {
     // 点击按钮 复制新增
     handleCopyInsert() {
       this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      // 修改
+      // 复制新增
       this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
       this.popSettingsData.dialog.one.visible = true
     },
@@ -628,7 +629,7 @@ export default {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      // 新增
+      // 更新
       this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
       this.popSettingsData.dialog.one.visible = true
     },

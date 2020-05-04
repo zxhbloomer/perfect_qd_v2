@@ -808,9 +808,9 @@ export default {
       )
     },
     // 删除操作
-    handleEnabled(row) {
+    handleEnable(row) {
       let _message = ''
-      const _value = row.is_del
+      const _value = row.is_enable
       const selectionJson = []
       selectionJson.push({ 'id': row.id })
       if (_value === true) {
@@ -840,13 +840,13 @@ export default {
             type: 'error',
             duration: this.settings.duration
           })
-          row.is_del = !row.is_del
+          row.is_enable = !row.is_enable
         }).finally(() => {
           this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         })
       }).catch(action => {
-        row.is_del = !row.is_del
+        row.is_enable = !row.is_enable
       })
     }
   }
