@@ -117,21 +117,21 @@
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
     <edit-dialog
-      v-if="popSettingsData.dialog.one.visible"
-      :id="popSettingsData.dialog.one.props.id"
-      :data="popSettingsData.dialog.one.props.data"
-      :visible="popSettingsData.dialog.one.visible"
-      :dialog-status="popSettingsData.dialog.one.props.dialogStatus"
+      v-if="popSettings.one.visible"
+      :id="popSettings.one.props.id"
+      :data="popSettings.one.props.data"
+      :visible="popSettings.one.visible"
+      :dialog-status="popSettings.one.props.dialogStatus"
       @closeMeOk="handleCloseDialogOneOk"
       @closeMeCancel="handleCloseDialogOneCancel"
     />
 
     <set-position-dialog
-      v-if="popSettingsData.dialog.two.visible"
-      :id="popSettingsData.dialog.two.props.id"
-      :data="popSettingsData.dialog.two.props.data"
-      :visible="popSettingsData.dialog.two.visible"
-      :model="popSettingsData.dialog.two.props.model"
+      v-if="popSettings.two.visible"
+      :id="popSettings.two.props.id"
+      :data="popSettings.two.props.data"
+      :visible="popSettings.two.visible"
+      :model="popSettings.two.props.model"
       @closeMeOk="handleCloseDialogTwoOk"
       @closeMeCancel="handleCloseDialogTwoCancel"
     />
@@ -163,7 +163,6 @@ import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDict
 import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
 import editDialog from '@/views/20_master/position/dialog/edit'
 import constants_para from '@/common/constants/constants_para'
-import deepCopy from 'utils-copy'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
@@ -229,25 +228,23 @@ export default {
         tableHeight: this.setUIheight(),
         duration: 4000
       },
-      popSettingsData: {
-        dialog: {
-          // master弹出编辑页面
-          one: {
-            visible: false,
-            props: {
-              id: undefined,
-              data: {},
-              dialogStatus: ''
-            }
-          },
-          // 设置数据页面
-          two: {
-            visible: false,
-            props: {
-              id: undefined,
-              data: {},
-              model: ''
-            }
+      popSettings: {
+        // master弹出编辑页面
+        one: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            dialogStatus: ''
+          }
+        },
+        // 设置数据页面
+        two: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            model: ''
           }
         }
       }
@@ -296,7 +293,7 @@ export default {
     },
     // 行双点击，仅在dialog中有效
     handleRowDbClick(row) {
-      var _data = deepCopy(row)
+      var _data = Object.assign({}, row)
       if (this.meDialogStatus) {
         this.$emit('rowDbClick', _data)
       }
@@ -438,7 +435,6 @@ export default {
           })
           row.is_del = !row.is_del
         }).finally(() => {
-          this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         })
       }).catch(action => {
@@ -462,12 +458,6 @@ export default {
         id: this.id,
         dataModel: this.dataModel
       }
-    },
-
-    // 关闭弹出窗口
-    handlCloseDialog() {
-      this.popSettingsImport.dialogFormVisible = false
-      this.popSettingsData.dialogFormVisible = false
     },
     // 获取row-key
     getRowKeys(row) {
@@ -498,11 +488,11 @@ export default {
     // --------------弹出查询框：--------------
 
     handleCancel() {
-      this.popSettingsData.dialog.one.visible = false
+      this.popSettings.one.visible = false
     },
-    // ------------------岗位编辑弹出框 start--------------------
+    // ------------------编辑弹出框 start--------------------
     handleCloseDialogOneOk(val) {
-      switch (this.popSettingsData.dialog.one.props.dialogStatus) {
+      switch (this.popSettings.one.props.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
           this.doInsertModelCallBack(val)
           break
@@ -517,12 +507,12 @@ export default {
       }
     },
     handleCloseDialogOneCancel() {
-      this.popSettingsData.dialog.one.visible = false
+      this.popSettings.one.visible = false
     },
     // 处理插入回调
     doInsertModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
 
         // 设置到table中绑定的json数据源
         this.dataJson.listData.push(val.data.data)
@@ -544,7 +534,7 @@ export default {
     // 处理复制新增回调
     doCopyInsertModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
         // 设置到currentjson中
@@ -567,7 +557,7 @@ export default {
     // 处理更新回调
     doUpdateModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
 
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
@@ -588,60 +578,60 @@ export default {
         })
       }
     },
-    // ------------------岗位编辑弹出框 end--------------------
+    // ------------------编辑弹出框 end--------------------
     // ------------------岗位设置员工弹出框 start--------------------
     handleViewStaffMember(val, row) {
-      this.popSettingsData.dialog.two.props.id = val
-      this.popSettingsData.dialog.two.props.data = row
-      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_VIEW
-      this.popSettingsData.dialog.two.visible = true
+      this.popSettings.two.props.id = val
+      this.popSettings.two.props.data = row
+      this.popSettings.two.props.model = constants_para.MODEL_VIEW
+      this.popSettings.two.visible = true
     },
     handleEditStaffMember(val, row) {
-      this.popSettingsData.dialog.two.props.id = val
-      this.popSettingsData.dialog.two.props.data = row
-      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_EDIT
-      this.popSettingsData.dialog.two.visible = true
+      this.popSettings.two.props.id = val
+      this.popSettings.two.props.data = row
+      this.popSettings.two.props.model = constants_para.MODEL_EDIT
+      this.popSettings.two.visible = true
     },
     handleCloseDialogTwoOk(val) {
-      this.popSettingsData.dialog.two.visible = false
+      this.popSettings.two.visible = false
     },
     handleCloseDialogTwoCancel() {
-      this.popSettingsData.dialog.two.visible = false
+      this.popSettings.two.visible = false
     },
     // ------------------岗位设置员工弹出框 end--------------------
     // 点击按钮 新增
     handleInsert() {
       // 新增
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
-      this.popSettingsData.dialog.one.visible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettings.one.visible = true
     },
     // 点击按钮 复制新增
     handleCopyInsert() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
       // 复制新增
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
-      this.popSettingsData.dialog.one.visible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
+      this.popSettings.one.visible = true
     },
     // 点击按钮 更新
     handleUpdate() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
       // 更新
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
-      this.popSettingsData.dialog.one.visible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
     },
     // 查看
     handleView() {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, this.dataJson.currentJson)
-      if (this.popSettingsData.dialog.one.props.data.id === undefined) {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
-      this.popSettingsData.dialog.one.visible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettings.one.visible = true
     }
   }
 }

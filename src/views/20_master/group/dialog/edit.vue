@@ -30,32 +30,29 @@
         :closable="false"
       />
       <br>
-
       <el-row>
         <el-col :span="12">
-          <el-form-item label="岗位编号：" prop="code">
+          <el-form-item label="集团编号：" prop="code">
             <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="岗位名称：" prop="name">
-            <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+          <el-form-item label="集团名称：" prop="name">
+            <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
           </el-form-item>
         </el-col>
       </el-row>
-
       <el-row>
         <el-col :span="12">
-          <el-form-item label="岗位简称：" prop="simple_name">
-            <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+          <el-form-item label="集团简称：" prop="simple_name">
+            <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
           </el-form-item>
         </el-col>
       </el-row>
-
       <el-form-item label="描述：" prop="descr">
-        <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+        <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
       </el-form-item>
-      <el-row v-show="dialogStatus === PARAMETERS.STATUS_UPDATE || isViewModel">
+      <el-row v-show="settings.dialogStatus === 'update' || isViewModel">
         <el-col :span="12">
           <el-form-item label="更新人：" prop="u_name">
             <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -75,7 +72,7 @@
       </div>
       <el-button plain :disabled="settings.loading" @click="handleCancel()">取消</el-button>
       <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-      <el-button v-show="settings.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+      <el-button v-show="settings.btnShowStatus.showUpdate && !isViewModel" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
       <el-button v-show="settings.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
     </div>
   </el-dialog>
@@ -97,7 +94,7 @@
 
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
-import { updateApi, insertApi } from '@/api/20_master/position/position'
+import { updateApi, insertApi } from '@/api/20_master/group/group'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
@@ -167,9 +164,8 @@ export default {
         dialogStatus: this.dialogStatus,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入岗位名称', trigger: 'change' }],
-          // code: [{ required: true, message: '请输入岗位编号', trigger: 'change' }],
-          simple_name: [{ required: true, message: '请输入岗位简称', trigger: 'change' }]
+          name: [{ required: true, message: '请输入集团名称', trigger: 'change' }],
+          simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
         }
       }
     }
@@ -224,7 +220,6 @@ export default {
   methods: {
     // 初始化处理
     init() {
-      debugger
       this.initButton()
       switch (this.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
@@ -240,6 +235,7 @@ export default {
           this.initViewModel()
           break
       }
+      // this.setWatches()
       this.settings.loading = false
     },
     initTempJsonOriginal() {
@@ -264,12 +260,14 @@ export default {
     },
     // 复制新增时的初始化
     initCopyInsertModel() {
+      this.dataJson.tempJson.code = ''
       this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
+      this.settings.btnResetStatus = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        this.$refs['refUpdateFocus'].focus()
       })
     },
     // 修改时的初始化
@@ -301,12 +299,21 @@ export default {
     doReset() {
       this.settings.btnResetStatus = true
       switch (this.settings.dialogStatus) {
-        case 'update':
+        case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
             this.$refs['refFocus'].focus()
+          })
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          this.dataJson.tempJson.code = ''
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refUpdateFocus'].focus()
           })
           break
         default:
@@ -377,4 +384,3 @@ export default {
   }
 }
 </script>
-

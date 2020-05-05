@@ -25,6 +25,8 @@ const STATUS_TEXT_MAP = {
 const DIALOG_CLOSE_BY_CLICK = false
 /** 设置弹窗：点击esc按钮可以关闭 */
 const DIALOG_CLOSE_BY_ESC = false
+/** 设置弹窗：显示关闭按钮X */
+const DIALOG_SHOW_CLOSE = false
 
 export default {
   /** 查看类型 */
@@ -46,5 +48,7 @@ export default {
   /** 设置弹窗：点击窗口外部可以关闭 */
   DIALOG_CLOSE_BY_CLICK,
   /** 设置弹窗：点击esc按钮可以关闭 */
-  DIALOG_CLOSE_BY_ESC
+  DIALOG_CLOSE_BY_ESC,
+  /** 设置弹窗：显示关闭按钮X */
+  DIALOG_SHOW_CLOSE
 }

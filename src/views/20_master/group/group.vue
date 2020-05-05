@@ -36,7 +36,7 @@
         <el-form-item label="">
           <delete-type-normal v-model="dataJson.searchForm.is_del" />
         </el-form-item>
-        <el-form-item v-show="meDialogSetting.dialogStatus" label="">
+        <el-form-item v-show="meDialogStatus" label="">
           <select-dict v-model="dataJson.searchForm.dataModel" :para="CONSTANTS.DICT_ORG_USED_TYPE" init-placeholder="请选择" />
         </el-form-item>
         <el-divider />
@@ -73,7 +73,7 @@
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="!meDialogSetting.dialogStatus" type="selection" width="45" prop="id" />
+      <el-table-column v-if="!meDialogStatus" type="selection" width="45" prop="id" />
       <!-- <el-table-column type="index" width="45" label="No" /> -->
       <el-table-column
         label="No"
@@ -100,7 +100,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
-              :disabled="meDialogSetting.dialogStatus"
+              :disabled="meDialogStatus"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -111,78 +111,16 @@
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
-    <!-- pop窗口 数据编辑:新增、修改、步骤窗体-->
-    <el-dialog
-      v-el-drag-dialog
-      :title="popSettingsData.textMap[popSettingsData.dialogStatus]"
-      :visible="popSettingsData.dialogFormVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :show-close="false"
-      :append-to-body="true"
-      :modal-append-to-body="false"
-      width="700px"
-    >
-      <el-form
-        ref="dataSubmitForm"
-        :rules="popSettingsData.rules"
-        :model="dataJson.tempJson"
-        label-position="rigth"
-        label-width="120px"
-        status-icon
-      >
-        <el-alert
-          title="基本信息"
-          type="info"
-          :closable="false"
-        />
-        <br>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="集团编号：" prop="code">
-              <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="集团名称：" prop="name">
-              <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="集团简称：" prop="simple_name">
-              <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="描述：" prop="descr">
-          <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
-        </el-form-item>
-        <el-row v-show="popSettingsData.dialogStatus === 'update' || isViewModel">
-          <el-col :span="12">
-            <el-form-item label="更新人：" prop="u_name">
-              <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="更新时间：" prop="u_time">
-              <el-input v-model.trim="dataJson.tempJson.u_time" disabled />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-divider />
-        <div class="floatLeft">
-          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
-        </div>
-        <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showUpdate && !isViewModel" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
-      </div>
-    </el-dialog>
+    <edit-dialog
+      v-if="popSettings.one.visible"
+      :id="popSettings.one.props.id"
+      :data="popSettings.one.props.data"
+      :visible="popSettings.one.visible"
+      :dialog-status="popSettings.one.props.dialogStatus"
+      @closeMeOk="handleCloseDialogOneOk"
+      @closeMeCancel="handleCloseDialogOneCancel"
+    />
+
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
   </div>
 </template>
@@ -201,23 +139,25 @@
 
 <script>
 import constants_program from '@/common/constants/constants_program'
-import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/group/group'
+import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/group/group'
 import resizeMixin from './groupResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
-import { isNotEmpty } from '@/utils/index.js'
+import editDialog from './dialog/edit'
+import deepCopy from 'utils-copy'
 
 export default {
   name: constants_program.P_GROUP, // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, SelectDict },
+  components: { Pagination, DeleteTypeNormal, SelectDict, editDialog },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   props: {
-    id: {
-      type: Number,
-      default: null
+    // 自己作为弹出框时的参数
+    meDialogStatus: {
+      type: Boolean,
+      default: false
     },
     dataModel: {
       type: String,
@@ -250,25 +190,8 @@ export default {
         },
         // table使用的json
         listData: null,
-        // 单条数据 json的，初始化原始数据
-        tempJsonOriginal: {
-          id: undefined,
-          name: '',
-          code: '',
-          descr: '',
-          dbversion: 0
-        },
         // 单条数据 json
         currentJson: null,
-        tempJson: null,
-        inputSettings: {
-          maxLength: {
-            name: 20,
-            code: 20,
-            descr: 200,
-            simple_name: 20
-          }
-        },
         // 当前表格中的索引，第几条
         rowIndex: 0,
         // 当前选中的行（checkbox）
@@ -289,40 +212,6 @@ export default {
         tableHeight: this.setUIheight(),
         duration: 4000
       },
-      popSettingsData: {
-        // 弹出窗口状态名称
-        textMap: {
-          view: '查看',
-          update: '修改',
-          insert: '新增',
-          copyInsert: '复制新增'
-        },
-        // 按钮状态
-        btnShowStatus: {
-          showInsert: false,
-          showUpdate: false,
-          showCopyInsert: false
-        },
-        // 按钮状态：是否可用
-        btnDisabledStatus: {
-          disabledReset: false,
-          disabledInsert: false,
-          disabledUpdate: false,
-          disabledCopyInsert: false
-        },
-        // 重置按钮点击后
-        btnResetStatus: false,
-        // 以下为pop的内容：数据弹出框
-        selection: [],
-        dialogStatus: '',
-        dialogFormVisible: false,
-        // pop的check内容
-        rules: {
-          name: [{ required: true, message: '请输入集团名称', trigger: 'change' }],
-          // code: [{ required: true, message: '请输入集团编号', trigger: 'change' }],
-          simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
-        }
-      },
       // 导入窗口的状态
       popSettingsImport: {
         // 弹出窗口会否显示
@@ -332,66 +221,23 @@ export default {
         // 错误数据文件
         errorFileUrl: ''
       },
-      meDialogSetting: {
-        program: this.$store.getters.program,
-        selectedDataJson: this.$store.getters.selectedDataJson,
-        dialogStatus: false,
-        model: this.model
+      popSettings: {
+        // master弹出编辑页面
+        one: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            dialogStatus: ''
+          }
+        }
       }
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    },
-    // 是否为查看模式
-    isViewModel() {
-      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
-        return true
-      } else {
-        return false
-      }
-    }
-
   },
   // 监听器
   watch: {
-    // 监听页面上面是否有修改，有修改按钮高亮
-    'dataJson.tempJson': {
-      handler(newVal, oldVal) {
-        if (this.popSettingsData.btnResetStatus === true) {
-          // 点击了重置按钮
-          this.popSettingsData.btnDisabledStatus.disabledReset = true
-          this.popSettingsData.btnDisabledStatus.disabledInsert = true
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-          this.popSettingsData.btnResetStatus = false
-        } else if (this.popSettingsData.dialogFormVisible) {
-          // 有修改按钮高亮
-          this.popSettingsData.btnDisabledStatus.disabledReset = false
-          this.popSettingsData.btnDisabledStatus.disabledInsert = false
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = false
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = false
-        }
-      },
-      deep: true
-    },
-    // 弹出窗口初始化，按钮不可用
-    'popSettingsData.dialogFormVisible': {
-      handler(newVal, oldVal) {
-        if (this.popSettingsData.dialogFormVisible) {
-          this.popSettingsData.btnDisabledStatus.disabledReset = true
-          this.popSettingsData.btnDisabledStatus.disabledInsert = true
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-        }
-      }
-    },
     // 选中的数据，使得导出按钮可用，否则就不可使用
     'dataJson.multipleSelection': {
       handler(newVal, oldVal) {
@@ -410,35 +256,12 @@ export default {
     // 描绘完成
   },
   methods: {
-    initTempJsonOriginal() {
-      // 单条数据 json的，初始化原始数据
-      this.dataJson.tempJsonOriginal =
-      {
-        id: undefined,
-        name: '',
-        code: '',
-        descr: '',
-        dbversion: 0
-      }
-    },
     initShow() {
-      if (this.meDialogSetting.dialogStatus) {
-        this.dataJson.searchForm.id = this.id
-      }
       // 初始化查询
       this.getDataList()
-      // 数据初始化
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
     // 弹出框设置初始化
     initDialogStatus() {
-      if (this.$store.getters.program !== undefined &&
-          this.$store.getters.program !== null &&
-          this.$store.getters.program.status === 'open') {
-        this.meDialogSetting.dialogStatus = true
-      } else {
-        this.meDialogSetting.dialogStatus = false
-      }
     },
     // 下拉选项控件事件
     handleSelectChange(val) {
@@ -457,8 +280,9 @@ export default {
     handleRowDbClick(row) {
       this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
-      if (this.meDialogSetting.dialogStatus) {
-        this.$emit('rowDbClick', this.dataJson.tempJson)
+      var _data = deepCopy(row)
+      if (this.meDialogStatus) {
+        this.$emit('rowDbClick', _data)
       }
     },
     handleSearch() {
@@ -468,16 +292,6 @@ export default {
       // 清空选择
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
-    },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
     },
     // 删除操作
     handleDel(row) {
@@ -514,66 +328,12 @@ export default {
           })
           row.is_del = !row.is_del
         }).finally(() => {
-          this.popSettingsData.dialogFormVisible = false
+          this.popSettings.dialogFormVisible = false
           this.settings.listLoading = false
         })
       }).catch(action => {
         row.is_del = !row.is_del
       })
-    },
-    // 点击按钮 新增
-    handleInsert() {
-      // 新增
-      this.popSettingsData.dialogStatus = 'insert'
-      // 数据初始化
-      this.initTempJsonOriginal()
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = true
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 初始化弹出页面
-      this.doReset()
-      this.popSettingsData.dialogFormVisible = true
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
-      })
-    },
-    // 点击按钮 更新
-    handleUpdate() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      // 修改
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = true
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refUpdateFocus'].focus()
-      })
-    },
-    // 查看
-    handleView() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
-        this.showErrorMsg('请选择一条数据')
-        return
-      }
-      this.popSettingsData.dialogStatus = 'view'
-      this.popSettingsData.dialogFormVisible = true
     },
     // 导出按钮
     handleExport() {
@@ -629,29 +389,6 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 点击按钮 复制新增
-    handleCopyInsert() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.dataJson.tempJson.code = ''
-      this.dataJson.tempJson.id = undefined
-      this.dataJson.tempJson.template_id = undefined
-      this.dataJson.tempJson.u_id = ''
-      this.dataJson.tempJson.u_time = ''
-      // 修改
-      this.popSettingsData.dialogStatus = 'copyInsert'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = true
-      // 复制新增时focus
-      this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
-      })
-    },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
@@ -668,24 +405,6 @@ export default {
       }
       // 设置dialog的返回
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', Object.assign({}, row))
-    },
-    // 自动弹出编辑窗口
-    handleEditMeDialog(_data) {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.handleCurrentChange(_data)
-        this.handleUpdate()
-      }
-    },
-    // 关闭自动编辑窗口
-    handleEditMeDialogOk() {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.$emit('editMeDialogOkClick', this.dataJson.tempJson)
-      }
-    },
-    handleEditMeDialogCancel() {
-      if (this.meDialogSetting.dialogStatus && isNotEmpty(this.id)) {
-        this.$emit('editMeDialogCancelClick')
-      }
     },
     handleSortChange(column) {
       // 服务器端排序
@@ -706,162 +425,15 @@ export default {
         this.dataJson.listData = response.data.records
         this.dataJson.paging = response.data
         this.dataJson.paging.records = {}
-        // 自动打开编辑页面
-        this.handleEditMeDialog(this.dataJson.listData[0])
       }).finally(() => {
         this.settings.listLoading = false
       })
     },
-    // 更新逻辑
-    doUpdate() {
-      this.$refs['dataSubmitForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          updateApi(tempData).then((_data) => {
-            this.dataJson.tempJson = Object.assign({}, _data.data)
-            // 设置到table中绑定的json数据源
-            this.dataJson.listData.splice(this.dataJson.rowIndex, 1, this.dataJson.tempJson)
-            // 设置到currentjson中
-            this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
-            this.$notify({
-              title: '更新处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-            // 关闭自动弹出编辑窗口
-            this.handleEditMeDialogOk()
-          }, (_error) => {
-            this.$notify({
-              title: '更新处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-            // 关闭自动弹出编辑窗口
-            this.handleEditMeDialogOk()
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
-    // 复制新增逻辑
-    doCopyInsert() {
-      this.$refs['dataSubmitForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          insertApi(tempData).then((_data) => {
-            this.dataJson.listData.push(_data.data)
-            this.$notify({
-              title: '复制新增处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-          }, (_error) => {
-            this.$notify({
-              title: '复制新增处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: '-u_time' // 排序
-        },
-        // 查询条件
-        code: '',
-        name: '',
-        simple_name: '',
-        is_del: '0',
-        id: this.id,
-        dataModel: this.dataModel
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
-    // 重置按钮
-    doReset() {
-      this.popSettingsData.btnResetStatus = true
-      switch (this.popSettingsData.dialogStatus) {
-        case 'update':
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refUpdateFocus'].focus()
-          })
-          break
-        default:
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          // 设置控件焦点focus
-          this.$nextTick(() => {
-            this.$refs['refInsertFocus'].focus()
-          })
-          break
-      }
 
-      // 去除validate信息
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-    },
-    // 插入逻辑
-    doInsert() {
-      this.$refs['dataSubmitForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          insertApi(tempData).then((_data) => {
-            this.dataJson.listData.push(_data.data)
-            this.$notify({
-              title: '新增处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-          }, (_error) => {
-            this.$notify({
-              title: '新增处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
-    handleCancel() {
-      this.popSettingsData.dialogFormVisible = false
-      // 关闭自动弹出编辑窗口
-      this.handleEditMeDialogCancel()
-    },
-    // 关闭弹出窗口
-    handlCloseDialog() {
-      this.popSettingsImport.dialogFormVisible = false
-      this.popSettingsData.dialogFormVisible = false
-    },
     // 获取row-key
     getRowKeys(row) {
       return row.id
@@ -888,14 +460,131 @@ export default {
         </span>
       )
     },
-    // Placeholder设置
-    isPlaceholderShow(val) {
-      if (this.isViewModel) {
-        return ''
+
+    // 点击按钮 新增
+    handleInsert() {
+      // 新增
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettings.one.visible = true
+    },
+
+    // 点击按钮 复制新增
+    handleCopyInsert() {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      // 复制新增
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
+      this.popSettings.one.visible = true
+    },
+    // 点击按钮 更新
+    handleUpdate() {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
+    },
+    // 查看
+    handleView() {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettings.one.visible = true
+    },
+    // ------------------编辑弹出框 start--------------------
+    handleCloseDialogOneOk(val) {
+      switch (this.popSettings.one.props.dialogStatus) {
+        case this.PARAMETERS.STATUS_INSERT:
+          this.doInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_UPDATE:
+          this.doUpdateModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          this.doCopyInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_VIEW:
+          break
+      }
+    },
+    handleCloseDialogOneCancel() {
+      this.popSettings.one.visible = false
+    },
+    // 处理插入回调
+    doInsertModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.push(val.data.data)
+        this.$notify({
+          title: '新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
       } else {
-        return val
+        this.$notify({
+          title: '新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理复制新增回调
+    doCopyInsertModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '复制新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '复制新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理更新回调
+    doUpdateModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '更新处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '更新处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
       }
     }
+    // ------------------编辑弹出框 end--------------------
   }
 }
 </script>
