@@ -224,7 +224,6 @@ export default {
   methods: {
     // 初始化处理
     init() {
-      debugger
       this.initButton()
       switch (this.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
@@ -264,12 +263,13 @@ export default {
     },
     // 复制新增时的初始化
     initCopyInsertModel() {
+      this.dataJson.tempJson.code = ''
       this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        this.$refs['refUpdateFocus'].focus()
       })
     },
     // 修改时的初始化
@@ -301,12 +301,21 @@ export default {
     doReset() {
       this.settings.btnResetStatus = true
       switch (this.settings.dialogStatus) {
-        case 'update':
+        case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
           this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
             this.$refs['refFocus'].focus()
+          })
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          // 数据初始化
+          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          this.dataJson.tempJson.code = ''
+          // 设置控件焦点focus
+          this.$nextTick(() => {
+            this.$refs['refUpdateFocus'].focus()
           })
           break
         default:

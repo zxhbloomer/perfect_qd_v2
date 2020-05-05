@@ -235,7 +235,6 @@ export default {
           this.initViewModel()
           break
       }
-      // this.setWatches()
       this.settings.loading = false
     },
     initTempJsonOriginal() {
