@@ -80,7 +80,11 @@
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="100" prop="meta_title" label="页面名称" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="meta_icon" label="菜单icon" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="50" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="160" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="180" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
     <!-- pop窗口 数据编辑:新增、修改 -->

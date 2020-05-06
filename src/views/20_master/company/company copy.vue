@@ -103,7 +103,11 @@
         </template>
       </el-table-column>
       <el-table-column sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="180" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 

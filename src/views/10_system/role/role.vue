@@ -126,7 +126,11 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="180" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="120" fixed="right">
         <template slot-scope="scope">
           <el-button-group>

@@ -99,16 +99,27 @@ exports.install = function(Vue, options) {
    * date.toLocaleString('zh-CN', { dateStyle: 'long' })  // "2019年12月6日"
    * date.toLocaleString('zh-CN', { hour12: false }) // "2019/12/6 11:35:00"
    */
-  Vue.prototype.formatDate = function(data, type = 1, decimalDigits = 2) {
+  Vue.prototype.formatDate = function(data, type = 1) {
     let rtn
+    const _date = new Date(Date.parse(data))
     switch (type) {
       case 1:
-        rtn = data.toLocaleString('zh-CN', { style: 'percent', hour12: false })
+        rtn = _date.toLocaleString('zh-CN', { dateStyle: 'long' })
         break
-
+      case 2:
+        rtn = _date.toLocaleString('zh-CN', { dateStyle: 'short' })
+        break
       default:
+        rtn = _date.toLocaleString('zh-CN', { dateStyle: 'long' })
         break
     }
     return rtn
+  }
+  Vue.prototype.formatTime = function(data) {
+    const _date = new Date(Date.parse(data))
+    return _date.toLocaleTimeString('en-US', { hour12: false })
+  }
+  Vue.prototype.formatDateTime = function(data, type = 1) {
+    return this.formatDate(data, type) + ' ' + this.formatTime(data)
   }
 }

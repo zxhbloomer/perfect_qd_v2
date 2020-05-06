@@ -81,19 +81,23 @@
     >
       <el-table-column v-if="!meDialogStatus" header-align="center" type="selection" width="45" prop="id" />
       <el-table-column header-align="center" type="index" width="45" label="No" />
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称" />
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
-      <el-table-column header-align="center" align="right" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="register_capital" label="注册资本（万）">
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
+      <el-table-column header-align="center" align="right" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="register_capital" label="注册资本（万）">
         <template v-slot="scope">
           {{ formatCurrency(scope.row.register_capital,'true',4) }}
         </template>
       </el-table-column>
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="type_name" label="企业类型" />
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="setup_date" label="成立日期" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="type_name" label="企业类型" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="setup_date" label="成立日期">
+        <template v-slot="scope">
+          {{ formatDate(scope.row.setup_date) }}
+        </template>
+      </el-table-column>
       <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column header-align="center" min-width="50" :sort-orders="settings.sortOrders" label="删除">
+      <el-table-column header-align="center" min-width="80" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
             删除
@@ -126,8 +130,12 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="100" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_name" label="更新人" />
+      <el-table-column sortable="custom" min-width="180" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 

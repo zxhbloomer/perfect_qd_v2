@@ -34,7 +34,11 @@
           <span>）</span>
         </template>
       </el-table-column> -->
-      <el-table-column min-width="170" prop="u_time" label="更新时间" />
+      <el-table-column min-width="180" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
     </el-table>
 
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>

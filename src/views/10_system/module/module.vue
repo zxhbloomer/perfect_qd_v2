@@ -114,7 +114,11 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="120" prop="u_time" label="更新时间" />
+      <el-table-column sortable="custom" min-width="180" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+        <template v-slot="scope">
+          {{ formatDateTime(scope.row.u_time) }}
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip min-width="120" prop="templateName" label="使用资源名称" />
       <el-table-column show-overflow-tooltip min-width="120" prop="templateDescr" label="资源描述" />
     </el-table>
