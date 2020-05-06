@@ -97,7 +97,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="联系人：" prop="link_man">
-                  <el-input v-model.trim="settings.searchDialogDataOne.selectedDataJson.link_man" disabled>
+                  <el-input v-model.trim="popSettings.one.selectedDataJson.link_man" disabled>
                     <el-button slot="append" ref="selectOne" icon="el-icon-search" :disabled="isViewModel" @click="handleModuleDialogClick">
                       选择
                     </el-button>
@@ -106,20 +106,20 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="电话：" prop="phone">
-                  <el-input v-model.trim="settings.searchDialogDataOne.selectedDataJson.phone" disabled />
+                  <el-input v-model.trim="popSettings.one.selectedDataJson.phone" disabled />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="邮编：" prop="postal_code">
-                  <el-input v-model.trim="settings.searchDialogDataOne.selectedDataJson.postal_code" disabled />
+                  <el-input v-model.trim="popSettings.one.selectedDataJson.postal_code" disabled />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="默认地址：" prop="is_default">
                   <el-switch
-                    v-model="settings.searchDialogDataOne.selectedDataJson.is_default"
+                    v-model="popSettings.one.selectedDataJson.is_default"
                   />
                 </el-form-item>
               </el-col>
@@ -128,18 +128,18 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="省市区：" prop="cascader_text">
-                  <el-input v-model.trim="settings.searchDialogDataOne.selectedDataJson.cascader_text" disabled />
+                  <el-input v-model.trim="popSettings.one.selectedDataJson.cascader_text" disabled />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="标签：" prop="tag">
-                  <radio-dict v-model="settings.searchDialogDataOne.selectedDataJson.tag" :para="CONSTANTS.DICT_SYS_ADDRESS_TAG_TYPE" disabled />
+                  <radio-dict v-model="popSettings.one.selectedDataJson.tag" :para="CONSTANTS.DICT_SYS_ADDRESS_TAG_TYPE" disabled />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-form-item label="详细地址：" prop="detail_address">
-              <el-input v-model.trim="settings.searchDialogDataOne.selectedDataJson.detail_address" disabled />
+              <el-input v-model.trim="popSettings.one.selectedDataJson.detail_address" disabled />
             </el-form-item>
 
             <el-row v-show="settings.dialogStatus === 'update' || isViewModel">
@@ -172,7 +172,7 @@
     </el-dialog>
 
     <address-dialog
-      :visible="popSettings.two.visible"
+      :visible="popSettings.one.visible"
       @closeMeOk="handleAddressCloseOk"
       @closeMeCancel="handleAddressCloseCancel"
     />
@@ -259,17 +259,16 @@ export default {
         },
         // 按钮状态：是否可用
         btnDisabledStatus: {
-          disabledReset: false,
-          disabledInsert: false,
-          disabledUpdate: false,
-          disabledCopyInsert: false
+          disabledReset: true,
+          disabledInsert: true,
+          disabledUpdate: true,
+          disabledCopyInsert: true
         },
         // 重置按钮点击后
         btnResetStatus: false,
         // 以下为pop的内容：数据弹出框
         selection: [],
-        dialogStatus: '',
-        dialogFormVisible: false,
+        dialogStatus: this.dialogStatus,
         // pop的check内容
         rules: {},
         // 基本信息栏目check
@@ -299,18 +298,11 @@ export default {
           countTwo: 0,
           countThree: 0,
           countFour: 0
-        },
-        // 弹出的查询框参数设置
-        searchDialogDataOne: {
-          // 弹出框显示参数
-          dialogVisible: false,
-          // 点击确定以后返回的值
-          selectedDataJson: {}
         }
       },
       popSettings: {
         // 地址簿弹出框
-        two: {
+        one: {
           visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
@@ -383,6 +375,10 @@ export default {
           this.initViewModel()
           break
       }
+      // 设置验证条件
+      this.setRules()
+      // 初始化模块选择
+      this.initAddressSelectButton()
       this.settings.loading = false
     },
     initTempJsonOriginal() {
@@ -400,6 +396,7 @@ export default {
       this.initTempJsonOriginal()
       // 设置按钮
       this.settings.btnShowStatus.showInsert = true
+      this.settings.btnResetStatus = true
       // 控件focus
       this.$nextTick(() => {
         this.$refs['refFocus'].focus()
@@ -424,6 +421,7 @@ export default {
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
+      this.settings.btnResetStatus = true
       // 控件focus
       this.$nextTick(() => {
         this.$refs['refUpdateFocus'].focus()
@@ -485,9 +483,10 @@ export default {
     },
     // 插入逻辑
     doInsert() {
+      // 开始综合验证
+      this.doValidateByTabs()
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
-          // const tempData = Object.assign({}, this.dataJson.tempJson)
           const tempData = deepCopy(this.dataJson.tempJson)
           this.settings.loading = true
           insertApi(tempData).then((_data) => {
@@ -502,13 +501,13 @@ export default {
     },
     // 更新逻辑
     doUpdate() {
+      // 开始综合验证
+      this.doValidateByTabs()
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
-          // const tempData = Object.assign({}, this.dataJson.tempJson)
           const tempData = deepCopy(this.dataJson.tempJson)
           this.settings.loading = true
           updateApi(tempData).then((_data) => {
-            // this.dataJson.tempJson = Object.assign({}, _data.data)
             this.dataJson.tempJson = deepCopy(_data.data)
             this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {
@@ -545,17 +544,16 @@ export default {
     },
     handleModuleDialogClick() {
       // 选择按钮
-      this.popSettings.two.visible = true
+      this.popSettings.one.visible = true
     },
     // 关闭对话框：确定
     handleAddressCloseOk(val) {
-      this.popSettings.two.selectedDataJson = val
-      this.popSettings.two.visible = false
-      this.initAddressSelectButton()
+      this.popSettings.one.selectedDataJson = val
+      this.popSettings.one.visible = false
     },
     // 关闭对话框：取消
     handleAddressCloseCancel() {
-      this.popSettings.two.visible = false
+      this.popSettings.one.visible = false
     },
     // -------------------不同的页签，标签进行的验证------------------
     // 所有的数据开始validate
@@ -563,11 +561,14 @@ export default {
       this.settings.rules = { ...this.settings.rulesOne }
       this.$refs['dataSubmitForm'].rules = this.settings.rules
     },
+    // 设置验证rules
+    setRules() {
+      this.settings.rules = this.settings.rulesOne
+      // this.$refs['dataSubmitForm'].rules = this.settings.rules
+    },
     // 开始综合验证
     doValidateByTabs() {
-      // 第一个tabs
-      this.settings.rules = this.settings.rulesOne
-      this.$refs['dataSubmitForm'].rules = this.settings.rules
+      this.setRules()
       this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
         if (valid === false) {
           this.settings.badge.countOne = Object.keys(validateItems).length

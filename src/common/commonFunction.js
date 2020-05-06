@@ -66,8 +66,49 @@ exports.install = function(Vue, options) {
   Vue.prototype.showLoading = function(msg) {
     Loading.service({ fullscreen: true, text: msg, lock: true, background: 'rgba(255, 255, 255, 0.7)' })
   }
+
   /** loading关闭 */
   Vue.prototype.closeLoading = function() {
     Loading.service().close()
+  }
+
+  /** format currency：货币格式化----https://www.icode9.com/content-4-187747.html */
+  Vue.prototype.formatCurrency = function(data, decimal = false, decimalDigits = 2, currency = 'CNY') {
+    return data.toLocaleString('zh-CN', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: decimal ? decimalDigits : 0
+    })
+  }
+
+  /** 数字格式化 */
+  Vue.prototype.formatNumber = function(data, decimal = false, decimalDigits = 2) {
+    return data.toLocaleString('zh-CN', {
+      style: 'decimal',
+      minimumFractionDigits: decimalDigits ? 2 : 0
+    })
+  }
+  /** 百分比格式化 */
+  Vue.prototype.formatPercent = function(data, decimal = false, decimalDigits = 2) {
+    return data.toLocaleString('zh-CN', {
+      style: 'percent',
+      minimumFractionDigits: decimalDigits ? 2 : 0
+    })
+  }
+  /** 日期格式化----https://github.com/tolking/blog/blob/cd9e1dd3024f19529434a6e1f59a2192d5020119/blog/posts/toLocaleString.md
+   * date.toLocaleString('zh-CN', { dateStyle: 'long' })  // "2019年12月6日"
+   * date.toLocaleString('zh-CN', { hour12: false }) // "2019/12/6 11:35:00"
+   */
+  Vue.prototype.formatDate = function(data, type = 1, decimalDigits = 2) {
+    let rtn
+    switch (type) {
+      case 1:
+        rtn = data.toLocaleString('zh-CN', { style: 'percent', hour12: false })
+        break
+
+      default:
+        break
+    }
+    return rtn
   }
 }

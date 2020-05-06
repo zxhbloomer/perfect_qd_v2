@@ -262,7 +262,6 @@ export default {
     // 复制新增时的初始化
     initCopyInsertModel() {
       this.dataJson.tempJson.code = ''
-      // this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
@@ -274,7 +273,6 @@ export default {
     },
     // 修改时的初始化
     initUpdateModel() {
-      // this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
