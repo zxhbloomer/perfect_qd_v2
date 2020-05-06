@@ -72,21 +72,21 @@
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
 
     <edit-dialog
-      v-if="popSettingsData.dialog.one.visible"
-      :id="popSettingsData.dialog.one.props.id"
-      :data="popSettingsData.dialog.one.props.data"
-      :visible="popSettingsData.dialog.one.visible"
-      :dialog-status="popSettingsData.dialog.one.props.dialogStatus"
+      v-if="popSettings.one.visible"
+      :id="popSettings.one.props.id"
+      :data="popSettings.one.props.data"
+      :visible="popSettings.one.visible"
+      :dialog-status="popSettings.one.props.dialogStatus"
       @closeMeOk="handleCloseDialogOneOk"
       @closeMeCancel="handleCloseDialogOneCancel"
     />
 
     <set-position-dialog
-      v-if="popSettingsData.dialog.two.visible"
-      :id="popSettingsData.dialog.two.props.id"
-      :data="popSettingsData.dialog.two.props.data"
-      :visible="popSettingsData.dialog.two.visible"
-      :model="popSettingsData.dialog.two.props.model"
+      v-if="popSettings.two.visible"
+      :id="popSettings.two.props.id"
+      :data="popSettings.two.props.data"
+      :visible="popSettings.two.visible"
+      :model="popSettings.two.props.model"
       @closeMeOk="handleCloseDialogTwoOk"
       @closeMeCancel="handleCloseDialogTwoOk"
     />
@@ -170,25 +170,23 @@ export default {
         listLoading: true,
         duration: 4000
       },
-      popSettingsData: {
-        dialog: {
+      popSettings: {
         // master弹出编辑页面
-          one: {
-            visible: false,
-            props: {
-              id: undefined,
-              data: {},
-              dialogStatus: ''
-            }
-          },
-          // 设置数据页面
-          two: {
-            visible: false,
-            props: {
-              id: undefined,
-              data: {},
-              model: ''
-            }
+        one: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            dialogStatus: ''
+          }
+        },
+        // 设置数据页面
+        two: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            model: ''
           }
         }
       }
@@ -249,15 +247,6 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-    },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
@@ -303,11 +292,6 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 关闭弹出窗口
-    handlCloseDialog() {
-      this.popSettingsImport.dialogFormVisible = false
-      this.popSettingsData.dialogFormVisible = false
-    },
     // 获取row-key
     getRowKeys(row) {
       return row.id
@@ -336,17 +320,17 @@ export default {
     },
     // ------------------岗位master弹出框--------------------
     handleEdit(val) {
-      this.popSettingsData.dialog.one.props.data = Object.assign({}, val)
+      this.popSettings.one.props.data = Object.assign({}, val)
       // 更新
-      this.popSettingsData.dialog.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
-      this.popSettingsData.dialog.one.visible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
     },
     handleCloseDialogOneOk(val) {
       // 通知兄弟组件
       this.$off(this.EMITS.EMIT_ORG_LEFT)
       this.$emit(this.EMITS.EMIT_ORG_LEFT)
 
-      switch (this.popSettingsData.dialog.one.props.dialogStatus) {
+      switch (this.popSettings.one.props.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
           this.doInsertModelCallBack(val)
           break
@@ -361,12 +345,12 @@ export default {
       }
     },
     handleCloseDialogOneCancel() {
-      this.popSettingsData.dialog.one.visible = false
+      this.popSettings.one.visible = false
     },
     // 处理插入回调
     doInsertModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
 
         // 设置到table中绑定的json数据源
         this.dataJson.listData.push(val.data.data)
@@ -388,7 +372,7 @@ export default {
     // 处理复制新增回调
     doCopyInsertModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
 
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
@@ -412,7 +396,7 @@ export default {
     // 处理更新回调
     doUpdateModelCallBack(val) {
       if (val.return_flag) {
-        this.popSettingsData.dialog.one.visible = false
+        this.popSettings.one.visible = false
 
         // 设置到table中绑定的json数据源
         this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
@@ -436,22 +420,22 @@ export default {
 
     // ------------------岗位设置员工弹出框--------------------
     handleViewStaffMember(val, row) {
-      this.popSettingsData.dialog.two.props.id = val
-      this.popSettingsData.dialog.two.props.data = row
-      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_VIEW
-      this.popSettingsData.dialog.two.visible = true
+      this.popSettings.two.props.id = val
+      this.popSettings.two.props.data = row
+      this.popSettings.two.props.model = constants_para.MODEL_VIEW
+      this.popSettings.two.visible = true
     },
     handleEditStaffMember(val, row) {
-      this.popSettingsData.dialog.two.props.id = val
-      this.popSettingsData.dialog.two.props.data = row
-      this.popSettingsData.dialog.two.props.model = constants_para.MODEL_EDIT
-      this.popSettingsData.dialog.two.visible = true
+      this.popSettings.two.props.id = val
+      this.popSettings.two.props.data = row
+      this.popSettings.two.props.model = constants_para.MODEL_EDIT
+      this.popSettings.two.visible = true
     },
     handleCloseDialogTwoOk(val) {
-      this.popSettingsData.dialog.two.visible = false
+      this.popSettings.two.visible = false
     },
     handleCloseDialogTwoCancel() {
-      this.popSettingsData.dialog.two.visible = false
+      this.popSettings.two.visible = false
     }
   }
 }
