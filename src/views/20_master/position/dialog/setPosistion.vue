@@ -60,7 +60,7 @@
 
 import { getStaffTransferListApi, setStaffTransferApi } from '@/api/20_master/org/org'
 import constants_para from '@/common/constants/constants_para'
-import deepcopy from 'utils-copy'
+import deepcopy from 'deep-copy'
 import elDragDialog from '@/directive/el-drag-dialog'
 
 export default {

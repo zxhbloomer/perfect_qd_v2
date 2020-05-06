@@ -95,6 +95,7 @@
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
 import { updateApi, insertApi } from '@/api/20_master/group/group'
+import deepCopy from 'deep-copy'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
@@ -131,7 +132,8 @@ export default {
           dbversion: 0
         },
         // 单条数据 json
-        tempJson: Object.assign({}, this.dialogStatus === this.PARAMETERS.STATUS_INSERT ? this.tempJsonOriginal : this.data),
+        // tempJson: Object.assign({}, this.dialogStatus === this.PARAMETERS.STATUS_INSERT ? this.tempJsonOriginal : this.data),
+        tempJson: deepCopy(this.dialogStatus === this.PARAMETERS.STATUS_INSERT ? this.tempJsonOriginal : this.data),
         inputSettings: {
           maxLength: {
             name: 20,
@@ -260,7 +262,8 @@ export default {
     // 复制新增时的初始化
     initCopyInsertModel() {
       this.dataJson.tempJson.code = ''
-      this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
+      // this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
+      this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
       this.settings.btnResetStatus = true
@@ -271,7 +274,8 @@ export default {
     },
     // 修改时的初始化
     initUpdateModel() {
-      this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
+      // this.dataJson.tempJsonOriginal = Object.assign({}, this.data)
+      this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
@@ -300,7 +304,8 @@ export default {
       switch (this.settings.dialogStatus) {
         case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
             this.$refs['refFocus'].focus()
@@ -308,7 +313,8 @@ export default {
           break
         case this.PARAMETERS.STATUS_COPY_INSERT:
           // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           this.dataJson.tempJson.code = ''
           // 设置控件焦点focus
           this.$nextTick(() => {
@@ -317,7 +323,8 @@ export default {
           break
         default:
           // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          // this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
+          this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
             this.$refs['refFocus'].focus()
@@ -334,7 +341,8 @@ export default {
     doInsert() {
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
+          // const tempData = Object.assign({}, this.dataJson.tempJson)
+          const tempData = deepCopy(this.dataJson.tempJson)
           this.settings.loading = true
           insertApi(tempData).then((_data) => {
             this.$emit('closeMeOk', { return_flag: true, data: _data })
@@ -350,10 +358,12 @@ export default {
     doUpdate() {
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
+          // const tempData = Object.assign({}, this.dataJson.tempJson)
+          const tempData = deepCopy(this.dataJson.tempJson)
           this.settings.loading = true
           updateApi(tempData).then((_data) => {
-            this.dataJson.tempJson = Object.assign({}, _data.data)
+            // this.dataJson.tempJson = Object.assign({}, _data.data)
+            this.dataJson.tempJson = deepCopy(_data.data)
             this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {
             this.$emit('closeMeOk', { return_flag: false, error: _error })
@@ -367,10 +377,12 @@ export default {
     doCopyInsert() {
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
+          // const tempData = Object.assign({}, this.dataJson.tempJson)
+          const tempData = deepCopy(this.dataJson.tempJson)
           this.settings.loading = true
           insertApi(tempData).then((_data) => {
-            this.dataJson.tempJson = Object.assign({}, _data.data)
+            // this.dataJson.tempJson = Object.assign({}, _data.data)
+            this.dataJson.tempJson = deepCopy(_data.data)
             this.$emit('closeMeOk', { return_flag: true, data: _data })
           }, (_error) => {
             this.$emit('closeMeOk', { return_flag: false, error: _error })

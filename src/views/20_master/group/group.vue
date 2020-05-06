@@ -146,7 +146,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import editDialog from '@/views/20_master/group/dialog/edit'
-import deepCopy from 'utils-copy'
+import deepCopy from 'deep-copy'
 
 export default {
   name: constants_program.P_GROUP, // 页面id，和router中的name需要一致，作为缓存

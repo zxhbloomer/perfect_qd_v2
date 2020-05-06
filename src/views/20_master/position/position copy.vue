@@ -260,7 +260,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import { isNotEmpty } from '@/utils/index.js'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
-import deepcopy from 'utils-copy'
+import deepcopy from 'deep-copy'
 
 export default {
   name: constants_program.P_POSITION, // 页面id，和router中的name需要一致，作为缓存
