@@ -24,18 +24,19 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
-        <template slot-scope="scope">
+        <template v-slot="scope">
+          <el-button-group style="float: right">
+            <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
+            <el-button type="primary" icon="el-icon-search" style="padding:4px 4px;" @click="handleView(scope.row)" />
+          </el-button-group>
           {{ scope.row.code }}
-          <el-link type="primary" @click="handleEdit(scope.row)">
-            编辑
-          </el-link>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
@@ -283,6 +284,12 @@ export default {
       this.popSettings.one.props.data = Object.assign({}, val)
       // 更新
       this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
+    },
+    handleView(val) {
+      this.popSettings.one.props.data = Object.assign({}, val)
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
       this.popSettings.one.visible = true
     },
     handleCloseDialogOneOk(val) {

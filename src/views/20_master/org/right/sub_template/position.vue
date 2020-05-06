@@ -24,16 +24,17 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="岗位编号">
-        <template slot-scope="scope">
+        <template v-slot="scope">
+          <el-button-group style="float: right">
+            <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
+            <el-button type="primary" icon="el-icon-search" style="padding:4px 4px;" @click="handleView(scope.row)" />
+          </el-button-group>
           {{ scope.row.code }}
-          <el-link type="primary" @click="handleEdit(scope.row)">
-            编辑
-          </el-link>
         </template>
       </el-table-column>
 
       <el-table-column show-overflow-tooltip min-width="130" prop="" label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
             添加员工
           </el-link>
