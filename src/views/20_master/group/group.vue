@@ -145,7 +145,7 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
-import editDialog from './dialog/edit'
+import editDialog from '@/views/20_master/group/dialog/edit'
 import deepCopy from 'utils-copy'
 
 export default {

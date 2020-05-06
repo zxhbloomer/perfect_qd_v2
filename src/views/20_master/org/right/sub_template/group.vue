@@ -128,12 +128,14 @@
       </div>
     </el-dialog>
 
-    <group-dialog
-      v-if="popSettingsData.searchDialogData.dialogVisible"
-      :id="popSettingsData.searchDialogData.id"
-      :visible="popSettingsData.searchDialogData.dialogVisible"
-      @closeMeOk="handleGroupCloseOk"
-      @closeMeCancel="handleGroupCloseCancel"
+    <edit-dialog
+      v-if="popSettings.one.visible"
+      :id="popSettings.one.props.id"
+      :data="popSettings.one.props.data"
+      :visible="popSettings.one.visible"
+      :dialog-status="popSettings.one.props.dialogStatus"
+      @closeMeOk="handleCloseDialogOneOk"
+      @closeMeCancel="handleCloseDialogOneCancel"
     />
 
   </div>
@@ -155,11 +157,11 @@
 import { getGroupsListApi } from '@/api/20_master/org/org'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
-import groupDialog from '@/views/20_master/group/dialog/dialog'
+import editDialog from '@/views/20_master/group/dialog/edit'
 
 export default {
   name: 'P00000174', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, groupDialog },
+  components: { Pagination, editDialog },
   directives: { elDragDialog },
   mixins: [],
   props: {
