@@ -146,7 +146,7 @@ export default {
       },
 
       popSettings: {
-        // master弹出编辑页面
+        // 弹出编辑页面
         one: {
           visible: false,
           props: {

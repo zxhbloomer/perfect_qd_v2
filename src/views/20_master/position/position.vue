@@ -250,7 +250,7 @@ export default {
         duration: 4000
       },
       popSettings: {
-        // master弹出编辑页面
+        // 弹出编辑页面
         one: {
           visible: false,
           props: {
@@ -464,21 +464,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: '-u_time' // 排序
-        },
-        // 查询条件
-        code: '',
-        name: '',
-        simple_name: '',
-        is_del: '0',
-        id: this.id,
-        dataModel: this.dataModel
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 获取row-key
     getRowKeys(row) {

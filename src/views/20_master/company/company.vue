@@ -182,7 +182,6 @@ import constants_program from '@/common/constants/constants_program'
 import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/company/company'
 import resizeMixin from './companyResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
-import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import deepCopy from 'deep-copy'
@@ -191,7 +190,7 @@ import editDialog from '@/views/20_master/company/dialog/edit'
 export default {
   name: constants_program.P_COMPANY, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal, SelectDict, editDialog },
-  directives: { elDragDialog },
+  directives: { },
   mixins: [resizeMixin],
   props: {
     // 自己作为弹出框时的参数
@@ -253,7 +252,7 @@ export default {
         duration: 4000
       },
       popSettings: {
-        // master弹出编辑页面
+        // 弹出编辑页面
         one: {
           visible: false,
           props: {
@@ -504,20 +503,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: '-u_time' // 排序
-        },
-        // 查询条件
-        code: '',
-        name: '',
-        simple_name: '',
-        is_del: '0',
-        dataModel: this.dataModel
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 获取row-key
     getRowKeys(row) {

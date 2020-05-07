@@ -163,7 +163,6 @@ import constants_program from '@/common/constants/constants_program'
 import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/group/group'
 import resizeMixin from './groupResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
-import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import editDialog from '@/views/20_master/group/dialog/edit'
@@ -172,7 +171,7 @@ import deepCopy from 'deep-copy'
 export default {
   name: constants_program.P_GROUP, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal, SelectDict, editDialog },
-  directives: { elDragDialog },
+  directives: { },
   mixins: [resizeMixin],
   props: {
     // 自己作为弹出框时的参数
@@ -243,7 +242,7 @@ export default {
         errorFileUrl: ''
       },
       popSettings: {
-        // master弹出编辑页面
+        // 弹出编辑页面
         one: {
           visible: false,
           props: {
