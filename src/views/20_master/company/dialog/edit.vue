@@ -229,6 +229,7 @@ export default {
   },
   data() {
     return {
+      // 监听器
       watch: {
         unwatch_tempJson: null,
         unwatch_address: null
@@ -344,35 +345,6 @@ export default {
     this.unWatch()
   },
   methods: {
-    setWatch() {
-      this.unWatch()
-      // 监听页面上面是否有修改，有修改按钮高亮
-      this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
-        this.settings.btnDisabledStatus.disabledReset = false
-        this.settings.btnDisabledStatus.disabledInsert = false
-        this.settings.btnDisabledStatus.disabledUpdate = false
-        this.settings.btnDisabledStatus.disabledCopyInsert = false
-      },
-      { deep: true }
-      )
-      // 监听地址簿的返回
-      this.watch.unwatch_address = this.$watch('popSettings.one.selectedDataJson', (newVal, oldVal) => {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.address_id = this.popSettings.one.selectedDataJson.id
-        } else {
-          this.popSettings.one.selectedDataJson.id = undefined
-        }
-      }
-      )
-    },
-    unWatch() {
-      if (this.watch.unwatch_tempJson) {
-        this.watch.unwatch_tempJson()
-      }
-      if (this.watch.unwatch_address) {
-        this.watch.unwatch_address()
-      }
-    },
     // 初始化处理
     init() {
       this.initButtonShowStatus()
@@ -470,6 +442,36 @@ export default {
     // 取消按钮
     handleCancel() {
       this.$emit('closeMeCancel')
+    },
+    // 设置监听器
+    setWatch() {
+      this.unWatch()
+      // 监听页面上面是否有修改，有修改按钮高亮
+      this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
+        this.settings.btnDisabledStatus.disabledReset = false
+        this.settings.btnDisabledStatus.disabledInsert = false
+        this.settings.btnDisabledStatus.disabledUpdate = false
+        this.settings.btnDisabledStatus.disabledCopyInsert = false
+      },
+      { deep: true }
+      )
+      // 监听地址簿的返回
+      this.watch.unwatch_address = this.$watch('popSettings.one.selectedDataJson', (newVal, oldVal) => {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.address_id = this.popSettings.one.selectedDataJson.id
+        } else {
+          this.popSettings.one.selectedDataJson.id = undefined
+        }
+      }
+      )
+    },
+    unWatch() {
+      if (this.watch.unwatch_tempJson) {
+        this.watch.unwatch_tempJson()
+      }
+      if (this.watch.unwatch_address) {
+        this.watch.unwatch_address()
+      }
     },
     // 重置按钮
     doReset() {

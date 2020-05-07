@@ -33,12 +33,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="集团编号：" prop="code">
-            <el-input ref="refFocus" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
+            <el-input ref="refFocusOne" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="集团名称：" prop="name">
-            <el-input ref="refUpdateFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
+            <el-input ref="refFocusTwo" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -122,6 +122,10 @@ export default {
   },
   data() {
     return {
+      // 监听器
+      watch: {
+        unwatch_tempJson: null
+      },
       dataJson: {
         // 单条数据 json的，初始化原始数据
         tempJsonOriginal: {
@@ -132,8 +136,7 @@ export default {
           dbversion: 0
         },
         // 单条数据 json
-        // tempJson: Object.assign({}, this.dialogStatus === this.PARAMETERS.STATUS_INSERT ? this.tempJsonOriginal : this.data),
-        tempJson: deepCopy(this.dialogStatus === this.PARAMETERS.STATUS_INSERT ? this.tempJsonOriginal : this.data),
+        tempJson: null,
         inputSettings: {
           maxLength: {
             name: 20,
@@ -159,8 +162,6 @@ export default {
           disabledUpdate: true,
           disabledCopyInsert: true
         },
-        // 重置按钮点击后
-        btnResetStatus: false,
         // 以下为pop的内容：数据弹出框
         selection: [],
         dialogStatus: this.dialogStatus,
@@ -194,35 +195,37 @@ export default {
   },
   // 监听器
   watch: {
-    // 监听页面上面是否有修改，有修改按钮高亮
-    'dataJson.tempJson': {
-      handler(newVal, oldVal) {
-        if (this.settings.btnResetStatus === true) {
-          // 点击了重置按钮
-          this.settings.btnDisabledStatus.disabledReset = true
-          this.settings.btnDisabledStatus.disabledInsert = true
-          this.settings.btnDisabledStatus.disabledUpdate = true
-          this.settings.btnDisabledStatus.disabledCopyInsert = true
-          this.settings.btnResetStatus = false
-        } else if (this.visible) {
-          // 有修改按钮高亮
-          this.settings.btnDisabledStatus.disabledReset = false
-          this.settings.btnDisabledStatus.disabledInsert = false
-          this.settings.btnDisabledStatus.disabledUpdate = false
-          this.settings.btnDisabledStatus.disabledCopyInsert = false
-        }
-      },
-      deep: true
-    }
   },
   created() {
     this.init()
   },
-  mounted() { },
+  mounted() {
+  },
+  destroyed() {
+    this.unWatch()
+  },
   methods: {
+    setWatch() {
+      this.unWatch()
+      // 监听页面上面是否有修改，有修改按钮高亮
+      this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
+        this.settings.btnDisabledStatus.disabledReset = false
+        this.settings.btnDisabledStatus.disabledInsert = false
+        this.settings.btnDisabledStatus.disabledUpdate = false
+        this.settings.btnDisabledStatus.disabledCopyInsert = false
+      },
+      { deep: true }
+      )
+    },
+    unWatch() {
+      if (this.watch.unwatch_tempJson) {
+        this.watch.unwatch_tempJson()
+      }
+    },
     // 初始化处理
     init() {
-      this.initButton()
+      this.initButtonShowStatus()
+      this.initButtonDisabledStatus()
       switch (this.dialogStatus) {
         case this.PARAMETERS.STATUS_INSERT:
           this.initInsertModel()
@@ -237,52 +240,63 @@ export default {
           this.initViewModel()
           break
       }
+      // 初始化watch
+      this.setWatch()
       this.settings.loading = false
     },
     initTempJsonOriginal() {
       // 单条数据 json的，初始化原始数据
       this.dataJson.tempJsonOriginal = this.$options.data.call(this).dataJson.tempJsonOriginal
     },
-    initButton() {
-      // 初始化按钮状态
+    initButtonShowStatus() {
+      // 初始化按钮状态：默认都隐藏
       this.settings.btnShowStatus = this.$options.data.call(this).settings.btnShowStatus
+    },
+    initButtonDisabledStatus() {
+      // 按钮状态初始化：默认不可用
       this.settings.btnDisabledStatus = this.$options.data.call(this).settings.btnDisabledStatus
     },
     // 新增时的初始化
     initInsertModel() {
       // 数据初始化
       this.initTempJsonOriginal()
+      this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
       // 设置按钮
       this.settings.btnShowStatus.showInsert = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
+        this.$refs['refFocusOne'].focus()
       })
     },
     // 复制新增时的初始化
     initCopyInsertModel() {
+      // 数据初始化
+      this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJson.code = ''
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
-      this.settings.btnResetStatus = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refUpdateFocus'].focus()
+        this.$refs['refFocusTwo'].focus()
       })
     },
     // 修改时的初始化
     initUpdateModel() {
+      // 数据初始化
+      this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refUpdateFocus'].focus()
+        this.$refs['refFocusTwo'].focus()
       })
     },
     // 查看时的初始化
     initViewModel() {
+      // 数据初始化
+      this.dataJson.tempJson = deepCopy(this.data)
     },
     // Placeholder设置
     isPlaceholderShow(val) {
@@ -298,7 +312,6 @@ export default {
     },
     // 重置按钮
     doReset() {
-      this.settings.btnResetStatus = true
       switch (this.settings.dialogStatus) {
         case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
@@ -306,7 +319,7 @@ export default {
           this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
+            this.$refs['refFocusOne'].focus()
           })
           break
         case this.PARAMETERS.STATUS_COPY_INSERT:
@@ -316,7 +329,7 @@ export default {
           this.dataJson.tempJson.code = ''
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refUpdateFocus'].focus()
+            this.$refs['refFocusTwo'].focus()
           })
           break
         default:
@@ -325,11 +338,14 @@ export default {
           this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocus'].focus()
+            this.$refs['refFocusOne'].focus()
           })
           break
       }
-
+      // 初始化按钮
+      this.initButtonDisabledStatus()
+      // 初始化watch
+      this.setWatch()
       // 去除validate信息
       this.$nextTick(() => {
         this.$refs['dataSubmitForm'].clearValidate()
