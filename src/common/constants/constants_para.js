@@ -20,6 +20,20 @@ const STATUS_TEXT_MAP = {
   insert: '新增',
   copyInsert: '复制新增'
 }
+/** 翻页条件 */
+const PAGE_CONDITION = {
+  current: 1,
+  size: 20,
+  sort: '-u_time' // 排序
+}
+/** 分页控件的json */
+const PAGE_JSON = {
+  current: 1,
+  size: 20,
+  total: 0
+}
+/** 分页控件的json */
+const SORT_PARA = ['ascending', 'descending']
 
 /** 设置弹窗：点击窗口外部可以关闭 */
 const DIALOG_CLOSE_BY_CLICK = false
@@ -50,5 +64,12 @@ export default {
   /** 设置弹窗：点击esc按钮可以关闭 */
   DIALOG_CLOSE_BY_ESC,
   /** 设置弹窗：显示关闭按钮X */
-  DIALOG_SHOW_CLOSE
+  DIALOG_SHOW_CLOSE,
+
+  /** 翻页条件 */
+  PAGE_CONDITION,
+  /** 分页控件的json */
+  PAGE_JSON,
+  /** 分页控件的json */
+  SORT_PARA
 }

@@ -205,23 +205,6 @@ export default {
     this.unWatch()
   },
   methods: {
-    setWatch() {
-      this.unWatch()
-      // 监听页面上面是否有修改，有修改按钮高亮
-      this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
-        this.settings.btnDisabledStatus.disabledReset = false
-        this.settings.btnDisabledStatus.disabledInsert = false
-        this.settings.btnDisabledStatus.disabledUpdate = false
-        this.settings.btnDisabledStatus.disabledCopyInsert = false
-      },
-      { deep: true }
-      )
-    },
-    unWatch() {
-      if (this.watch.unwatch_tempJson) {
-        this.watch.unwatch_tempJson()
-      }
-    },
     // 初始化处理
     init() {
       this.initButtonShowStatus()
@@ -297,6 +280,24 @@ export default {
     initViewModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
+    },
+    // 设置监听器
+    setWatch() {
+      this.unWatch()
+      // 监听页面上面是否有修改，有修改按钮高亮
+      this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
+        this.settings.btnDisabledStatus.disabledReset = false
+        this.settings.btnDisabledStatus.disabledInsert = false
+        this.settings.btnDisabledStatus.disabledUpdate = false
+        this.settings.btnDisabledStatus.disabledCopyInsert = false
+      },
+      { deep: true }
+      )
+    },
+    unWatch() {
+      if (this.watch.unwatch_tempJson) {
+        this.watch.unwatch_tempJson()
+      }
     },
     // Placeholder设置
     isPlaceholderShow(val) {

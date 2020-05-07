@@ -105,22 +105,14 @@ export default {
         // 查询使用的json
         searchForm: {
           // 翻页条件
-          pageCondition: {
-            current: 1,
-            size: 20,
-            sort: '-u_time' // 排序
-          },
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_CONDITION),
           // 查询条件
           name: '',
           code: '',
           is_del: '0' // 未删除
         },
         // 分页控件的json
-        paging: {
-          current: 1,
-          size: 20,
-          total: 0
-        },
+        paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // table使用的json
         listData: null,
         // 单条数据 json
@@ -133,7 +125,7 @@ export default {
       // 页面设置json
       settings: {
         // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
+        sortOrders: deepCopy(this.PARAMETERS.SORT_PARA),
         // 按钮状态
         btnShowStatus: {
           showUpdate: false,
@@ -192,8 +184,6 @@ export default {
     initShow() {
       // 初始化查询
       this.getDataList()
-      // 初始化级联数据
-      this.getCascaderDataList()
     },
     // 弹出框设置初始化
     initDialogStatus() {
@@ -227,70 +217,32 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-    },
     // 点击按钮 新增
     handleInsert() {
       // 新增
-      this.popSettingsData.dialogStatus = 'insert'
-      // 数据初始化
-      this.initTempJsonOriginal()
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = true
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 初始化弹出页面
-      this.doReset()
-      this.popSettingsData.dialogFormVisible = true
-
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
-      })
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettings.one.visible = true
     },
     // 点击按钮 更新
     handleUpdate() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      // 修改
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = true
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
-      })
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
     },
     // 查看
     handleView() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      if (this.dataJson.tempJson.id === undefined) {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      this.popSettingsData.dialogStatus = 'view'
-      this.popSettingsData.dialogFormVisible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettings.one.visible = true
     },
     // 导出按钮
     handleExport() {
@@ -350,25 +302,10 @@ export default {
     },
     // 点击按钮 复制新增
     handleCopyInsert() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.dataJson.tempJson.id = undefined
-      this.dataJson.tempJson.template_id = undefined
-      this.dataJson.tempJson.u_id = ''
-      this.dataJson.tempJson.u_time = ''
-      // 修改
-      this.popSettingsData.dialogStatus = 'copyInsert'
-      this.popSettingsData.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-      })
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = true
-      // 复制新增时focus
-      this.$nextTick(() => {
-        this.$refs['refInsertFocus'].focus()
-      })
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      // 复制新增
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
+      this.popSettings.one.visible = true
     },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
@@ -425,10 +362,6 @@ export default {
     // table选择框
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
-    },
-
-    handleRadioDictChange(val) {
-      this.dataJson.tempJson.tag = val
     },
     // 删除按钮
     handleRealyDelete() {

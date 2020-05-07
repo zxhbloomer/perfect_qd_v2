@@ -18,7 +18,7 @@
   >
     <el-form
       ref="dataSubmitForm"
-      :rules="popSettingsData.rules"
+      :rules="settings.rules"
       :model="dataJson.tempJson"
       label-position="rigth"
       label-width="120px"
@@ -33,7 +33,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="联系人：" prop="link_man">
-            <el-input ref="refInsertFocus" v-model.trim="dataJson.tempJson.link_man" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.link_man" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+            <el-input ref="refFocusOne" v-model.trim="dataJson.tempJson.link_man" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.link_man" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -76,7 +76,7 @@
       <el-form-item label="标签：" prop="tag">
         <radio-dict v-model="dataJson.tempJson.tag" :para="CONSTANTS.DICT_SYS_ADDRESS_TAG_TYPE" :disabled="isViewModel" @change="handleRadioDictChange" />
       </el-form-item>
-      <el-row v-show="popSettingsData.dialogStatus === 'update'">
+      <el-row v-show="settings.dialogStatus === 'update'">
         <el-col :span="12">
           <el-form-item label="更新人：" prop="u_name">
             <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -92,12 +92,12 @@
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <div class="floatLeft">
-        <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        <el-button v-show="!isViewModel" type="danger" :disabled="settings.loading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
       </div>
-      <el-button plain @click="popSettingsData.dialogFormVisible = false">取消</el-button>
-      <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-      <el-button v-show="popSettingsData.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
-      <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
+      <el-button plain :disabled="settings.loading" @click="handleCancel()">取消</el-button>
+      <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+      <el-button v-show="settings.btnShowStatus.showUpdate" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+      <el-button v-show="settings.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -125,8 +125,8 @@ import { updateApi, insertApi } from '@/api/20_master/address/address'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
-  components: { },
-  directives: { elDragDialog, RadioDict },
+  components: { RadioDict },
+  directives: { elDragDialog },
   mixins: [],
   props: {
     visible: {
@@ -157,7 +157,7 @@ export default {
           switch (level) {
             case 0:
               // 级联查询逻辑
-              that.settings.listLoading = true
+              that.settings.loading = true
               getProvincerListApi().then(response => {
                 const nodes = response.data.map(item => ({
                   value: item.code,
@@ -165,14 +165,14 @@ export default {
                   leaf: false
                 }))
                 resolve(nodes)
-                that.settings.listLoading = false
+                that.settings.loading = false
               }).finally(() => {
-                this.settings.listLoading = false
+                this.settings.loading = false
               })
               break
             case 1:
               // 级联查询逻辑
-              that.settings.listLoading = true
+              that.settings.loading = true
               getCityListApi({ province_code: value }).then(response => {
                 const nodes = response.data.map(item => ({
                   value: item.code,
@@ -180,14 +180,14 @@ export default {
                   leaf: false
                 }))
                 resolve(nodes)
-                that.settings.listLoading = false
+                that.settings.loading = false
               }).finally(() => {
-                this.settings.listLoading = false
+                this.settings.loading = false
               })
               break
             case 2:
               // 级联查询逻辑
-              that.settings.listLoading = true
+              that.settings.loading = true
               getAreaListApi({ city_code: value }).then(response => {
                 const nodes = response.data.map(item => ({
                   value: item.code,
@@ -195,9 +195,9 @@ export default {
                   leaf: true
                 }))
                 resolve(nodes)
-                that.settings.listLoading = false
+                that.settings.loading = false
               }).finally(() => {
-                this.settings.listLoading = false
+                this.settings.loading = false
               })
               break
             default:
@@ -330,6 +330,8 @@ export default {
           this.initViewModel()
           break
       }
+      // 初始化级联数据
+      this.getCascaderDataList()
       // 初始化watch
       this.setWatch()
       this.settings.loading = false
@@ -368,7 +370,7 @@ export default {
       this.settings.btnShowStatus.showCopyInsert = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocusTwo'].focus()
+        this.$refs['refFocusOne'].focus()
       })
     },
     // 修改时的初始化
@@ -380,7 +382,7 @@ export default {
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocusTwo'].focus()
+        this.$refs['refFocusOne'].focus()
       })
     },
     // 查看时的初始化
@@ -419,7 +421,7 @@ export default {
           this.dataJson.tempJson.code = ''
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocusTwo'].focus()
+            this.$refs['refFocusOne'].focus()
           })
           break
         default:
@@ -498,11 +500,11 @@ export default {
     },
     getCascaderDataList() {
       // 级联查询逻辑
-      this.settings.listLoading = true
+      this.settings.loading = true
       getAreasCascaderApi().then(response => {
         this.dataJson.cascader.data = response.data
       }).finally(() => {
-        this.settings.listLoading = false
+        this.settings.loading = false
       })
     },
     // 级联事件
@@ -511,6 +513,9 @@ export default {
       this.dataJson.tempJson.province_code = val[0]
       this.dataJson.tempJson.city_code = val[1]
       this.dataJson.tempJson.area_code = val[2]
+    },
+    handleRadioDictChange(val) {
+      this.dataJson.tempJson.tag = val
     }
   }
 }
