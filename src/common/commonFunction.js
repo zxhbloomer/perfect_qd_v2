@@ -104,10 +104,14 @@ exports.install = function(Vue, options) {
     const _date = new Date(Date.parse(data))
     switch (type) {
       case 1:
-        rtn = _date.toLocaleString('zh-CN', { dateStyle: 'long' })
+        var _year = _date.toLocaleString('zh-CN', { year: 'numeric' })
+        var _month = _date.toLocaleString('zh-CN', { month: '2-digit' })
+        var _day = _date.toLocaleString('zh-CN', { day: '2-digit' })
+        rtn = _year + _month + _day
         break
       case 2:
-        rtn = _date.toLocaleString('zh-CN', { dateStyle: 'short' })
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit' }
+        rtn = _date.toLocaleString('zh-CN', options)
         break
       default:
         rtn = _date.toLocaleString('zh-CN', { dateStyle: 'long' })
