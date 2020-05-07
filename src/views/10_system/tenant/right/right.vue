@@ -296,7 +296,7 @@
 import { getCascaderListApi, getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/10_system/tenant/tenant'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
-// import { parseTime } from '@/utils'
+import deepCopy from 'deep-copy'
 
 export default {
   name: 'P00000082', // 页面id，和router中的name需要一致，作为缓存
@@ -314,21 +314,13 @@ export default {
         // 查询使用的json
         searchForm: {
           // 翻页条件
-          pageCondition: {
-            current: 1,
-            size: 20,
-            sort: '-u_time' // 排序
-          },
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_CONDITION),
           // 查询条件
           name: '',
           datetimerange: ''
         },
         // 分页控件的json
-        paging: {
-          current: 1,
-          size: 20,
-          total: 0
-        },
+        paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // 级联选择器数据
         cascader: {
           data: null,
@@ -411,7 +403,7 @@ export default {
           ]
         },
         // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
+        sortOrders: deepCopy(this.PARAMETERS.SORT_PARA),
         // 按钮状态是否启用
         btnShowStatus: {
           showUpdate: false,
@@ -822,19 +814,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: '-u_time' // 排序
-        },
-        // 查询条件
-        name: '',
-        simpleName: '',
-        isdel: 'null',
-        isenable: ''
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 重置按钮
     doReset() {

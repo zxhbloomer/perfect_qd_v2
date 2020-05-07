@@ -90,6 +90,7 @@ import { getGroupsListApi } from '@/api/20_master/org/org'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import editDialog from '@/views/20_master/group/dialog/edit'
+import deepCopy from 'deep-copy'
 
 export default {
   // name: 'P00000174', // 页面id，和router中的name需要一致，作为缓存
@@ -109,18 +110,10 @@ export default {
         searchForm: {
           condition: null,
           // 翻页条件
-          pageCondition: {
-            current: 1,
-            size: 20,
-            sort: '-u_time' // 排序
-          }
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_CONDITION)
         },
         // 分页控件的json
-        paging: {
-          current: 1,
-          size: 20,
-          total: 0
-        },
+        paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // table使用的json
         listData: null,
         // 单条数据 json
@@ -133,7 +126,7 @@ export default {
       // 页面设置json
       settings: {
         // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
+        sortOrders: deepCopy(this.PARAMETERS.SORT_PARA),
         // 按钮状态
         btnShowStatus: {
           showUpdate: false,

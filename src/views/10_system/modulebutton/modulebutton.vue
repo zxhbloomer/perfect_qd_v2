@@ -190,6 +190,7 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import moduleDialog from '@/views/10_system/module/dialog/dialog'
 import SelectDictGroup from '@/layout/components/00_common/SelectComponent/SelectDictGroupComponent'
+import deepCopy from 'deep-copy'
 
 export default {
   name: constants_program.P_BUTTON, // 页面id，和router中的name需要一致，作为缓存
@@ -202,21 +203,14 @@ export default {
         // 查询使用的json
         searchForm: {
           // 翻页条件
-          pageCondition: {
-            current: 1,
-            size: 20
-          },
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_CONDITION),
           // 查询条件
           name: '',
           code: '',
           is_del: '0' // 未删除
         },
         // 分页控件的json
-        paging: {
-          current: 1,
-          size: 20,
-          total: 0
-        },
+        paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // table使用的json
         listData: null,
         // 单条数据 json的，初始化原始数据
@@ -696,18 +690,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20
-        },
-        // 查询条件
-        code: '',
-        name: '',
-        simple_name: '',
-        is_del: 'null'
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 重置按钮
     doReset() {

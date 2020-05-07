@@ -79,7 +79,7 @@ import companyTemplate from '@/views/20_master/org/right/sub_template/company'
 import deptTemplate from '@/views/20_master/org/right/sub_template/dept'
 import positionTemplate from '@/views/20_master/org/right/sub_template/position'
 import staffTemplate from '@/views/20_master/org/right/sub_template/staff'
-// import { parseTime } from '@/utils'
+import deepCopy from 'deep-copy'
 
 export default {
   name: 'P00000172', // 页面id，和router中的name需要一致，作为缓存
@@ -158,7 +158,7 @@ export default {
           countSix: 0
         },
         // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
+        sortOrders: deepCopy(this.PARAMETERS.SORT_PARA),
         // 按钮状态是否启用
         btnShowStatus: {
           showUpdate: false,

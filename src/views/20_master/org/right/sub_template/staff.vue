@@ -459,6 +459,7 @@ import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictCom
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
 import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
+import deepCopy from 'deep-copy'
 
 export default {
   name: constants_program.P_STAFF, // 页面id，和router中的name需要一致，作为缓存
@@ -482,11 +483,7 @@ export default {
         // 查询使用的json
         searchForm: {
           // 翻页条件
-          pageCondition: {
-            current: 1,
-            size: 20,
-            sort: '-u_time' // 排序
-          },
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_CONDITION),
           // 查询条件
           id: null,
           name: '',
@@ -517,7 +514,7 @@ export default {
       // 页面设置json
       settings: {
         // 表格排序规则
-        sortOrders: ['ascending', 'descending'],
+        sortOrders: deepCopy(this.PARAMETERS.SORT_PARA),
         // 按钮状态
         btnShowStatus: {
           showUpdate: false,
@@ -831,19 +828,7 @@ export default {
     },
     // 重置查询区域
     doResetSearch() {
-      this.dataJson.searchForm = {
-        // 翻页条件
-        pageCondition: {
-          current: 1,
-          size: 20,
-          sort: '-u_time' // 排序
-        },
-        // 查询条件
-        code: this.dataJson.searchForm.code,
-        name: '',
-        simple_name: '',
-        is_del: '0' // 未删除
-      }
+      this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
     },
     // 关闭弹出窗口
     handlCloseDialog() {
