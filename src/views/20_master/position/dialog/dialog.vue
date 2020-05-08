@@ -88,7 +88,6 @@ export default {
           // dialog打开后初始化
           this.$nextTick(() => {
             this.$refs.dialogRef.initDialogStatus()
-            // this.$refs.dialogRef.initShow()
           })
         }
       },
@@ -106,13 +105,10 @@ export default {
     },
     // 确定
     handleDoOk() {
-      // this.$emit('update:visible', false)
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 取消
     handleDoCancel() {
-      // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
       this.$emit('closeMeCancel')
     }
   }

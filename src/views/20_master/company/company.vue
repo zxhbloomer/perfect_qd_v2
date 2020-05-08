@@ -72,7 +72,6 @@
       highlight-current-row
       :default-sort="{prop: 'u_time', order: 'descending'}"
       style="width: 100%"
-
       @row-click="handleRowClick"
       @row-dblclick="handleRowDbClick"
       @current-change="handleCurrentChange"

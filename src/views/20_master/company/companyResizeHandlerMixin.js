@@ -37,7 +37,7 @@ export default {
         this.settings.tableHeight = rtnVal
         return rtnVal
       } catch (error) {
-        console.log(error)
+        console.log('mixin error')
       }
     }
   }
