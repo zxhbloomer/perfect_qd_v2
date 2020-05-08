@@ -34,9 +34,7 @@ export default {
           rtnVal = rtnVal - 200
         }
         // 此处使用的是页面上的值
-        if (this.settings !== undefined) {
-          this.settings.tableHeight = rtnVal
-        }
+        this.settings.tableHeight = rtnVal
         return rtnVal
       } catch (error) {
         console.log(error)
