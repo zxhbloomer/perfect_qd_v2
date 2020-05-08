@@ -35,7 +35,6 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import currentDialog from '@/views/20_master/dept/dept'
 
 export default {
-  name: 'COM000010',
   components: { currentDialog },
   directives: { elDragDialog },
   props: {
@@ -92,9 +91,6 @@ export default {
     listenVisible: {
       handler(newVal, oldVal) {
         if (newVal) {
-          // dialog打开后初始化
-          this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'open' })
-          this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
           this.$nextTick(() => {
             this.$refs.dialogRef.initDialogStatus()
             // this.$refs.dialogRef.initShow()
@@ -107,32 +103,17 @@ export default {
   },
   created() {
     // 设置当前打开的页面
-
   },
   methods: {
     handleRowDbClick(val) {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 确定
     handleDoOk() {
-      // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 取消
     handleDoCancel() {
-      // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
-      this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
-      this.$emit('closeMeCancel')
-    },
-    handleEditMeDialogOkClick() {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
-      this.$emit('closeMeOk')
-    },
-    handleEditMeDialogCancelClick() {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeCancel')
     }
   }

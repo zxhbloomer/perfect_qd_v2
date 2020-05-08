@@ -108,8 +108,6 @@ export default {
     },
     // 取消
     handleDoCancel() {
-      // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
       this.$emit('closeMeCancel')
     }
   }
