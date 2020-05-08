@@ -275,9 +275,6 @@ export default {
     // 弹出框设置初始化
     initDialogStatus() {
     },
-    // 下拉选项控件事件
-    handleSelectChange(val) {
-    },
     // 获取行索引
     getRowIndex(row) {
       const _index = this.dataJson.listData.lastIndexOf(row)
