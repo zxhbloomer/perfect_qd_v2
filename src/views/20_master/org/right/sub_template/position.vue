@@ -27,7 +27,6 @@
         <template v-slot="scope">
           <el-button-group style="float: right">
             <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
-            <el-button type="primary" icon="el-icon-search" style="padding:4px 4px;" @click="handleView(scope.row)" />
           </el-button-group>
           {{ scope.row.code }}
         </template>
@@ -48,10 +47,32 @@
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称">
+        <template slot-scope="scope">
+          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
+          <span> {{ scope.row.name }} </span>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
+      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
+        <template slot="header">
+          <span>
+            删除
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom"
+            >
+              <div slot="content">
+                删除状态提示：<br>
+                绿色：未删除  <br>
+                红色：已删除
+              </div>
+              <svg-icon icon-class="perfect-icon-question1_btn" style="margin-left: 5px" />
+            </el-tooltip>
+          </span>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
@@ -61,7 +82,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
-              disabled
+              :disabled="true"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -298,29 +319,17 @@ export default {
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
     },
-    renderHeaderIsDel: function(h, { column }) {
-      return (
-        <span>{column.label}
-          <el-tooltip
-            class='item'
-            effect='dark'
-            placement='bottom'
-          >
-            <div slot='content'>
-            删除状态提示：<br/>
-            绿色：未删除  <br/>
-            红色：已删除
-            </div>
-            <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
-          </el-tooltip>
-        </span>
-      )
-    },
     // ------------------岗位master弹出框--------------------
     handleEdit(val) {
       this.popSettings.one.props.data = Object.assign({}, val)
       // 更新
       this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
+    },
+    handleView(val) {
+      this.popSettings.one.props.data = Object.assign({}, val)
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
       this.popSettings.one.visible = true
     },
     handleCloseDialogOneOk(val) {
