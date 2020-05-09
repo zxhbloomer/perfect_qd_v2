@@ -18,9 +18,8 @@
       :id="id"
       ref="dialogRef"
       :data-model="dataModel"
+      :me-dialog-status="visible"
       @rowDbClick="handleRowDbClick"
-      @editMeDialogOkClick="handleEditMeDialogOkClick"
-      @editMeDialogCancelClick="handleEditMeDialogCancelClick"
     />
     <div slot="footer" class="dialog-footer">
       <el-divider />
