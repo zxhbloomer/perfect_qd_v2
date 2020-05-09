@@ -194,7 +194,11 @@ export default {
     return {
       // 监听器
       watch: {
-        unwatch_tempJson: null
+        unwatch_tempJson: null,
+        unwatch_staff_one: null,
+        unwatch_staff_two: null,
+        unwatch_staff_three: null,
+        unwatch_staff_four: null
       },
       dataJson: {
         // 单条数据 json的，初始化原始数据
@@ -285,42 +289,6 @@ export default {
   },
   // 监听器
   watch: {
-    'popSettings.one.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.handler_id = this.popSettings.one.selectedDataJson.id
-        } else {
-          this.popSettings.one.selectedDataJson.id = undefined
-        }
-      }
-    },
-    'popSettings.two.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.sub_handler_id = this.popSettings.two.selectedDataJson.id
-        } else {
-          this.popSettings.two.selectedDataJson.id = undefined
-        }
-      }
-    },
-    'popSettings.three.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.leader_id = this.popSettings.three.selectedDataJson.id
-        } else {
-          this.popSettings.three.selectedDataJson.id = undefined
-        }
-      }
-    },
-    'popSettings.four.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.response_leader_id = this.popSettings.four.selectedDataJson.id
-        } else {
-          this.popSettings.four.selectedDataJson.id = undefined
-        }
-      }
-    }
   },
   created() {
     this.init()
@@ -434,10 +402,58 @@ export default {
       },
       { deep: true }
       )
+      // 监听页面上员工staff是否有修改，one
+      this.watch.unwatch_staff_one = this.$watch('popSettings.one.selectedDataJson', (newVal, oldVal) => {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.handler_id = this.popSettings.one.selectedDataJson.id
+        } else {
+          this.popSettings.one.selectedDataJson.id = undefined
+        }
+      }
+      )
+      // 监听页面上员工staff是否有修改，two
+      this.watch.unwatch_staff_two = this.$watch('popSettings.two.selectedDataJson', (newVal, oldVal) => {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.handler_id = this.popSettings.two.selectedDataJson.id
+        } else {
+          this.popSettings.two.selectedDataJson.id = undefined
+        }
+      }
+      )
+      // 监听页面上员工staff是否有修改，three
+      this.watch.unwatch_staff_three = this.$watch('popSettings.three.selectedDataJson', (newVal, oldVal) => {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.handler_id = this.popSettings.three.selectedDataJson.id
+        } else {
+          this.popSettings.three.selectedDataJson.id = undefined
+        }
+      }
+      )
+      // 监听页面上员工staff是否有修改，four
+      this.watch.unwatch_staff_four = this.$watch('popSettings.four.selectedDataJson', (newVal, oldVal) => {
+        if (newVal !== {}) {
+          this.dataJson.tempJson.handler_id = this.popSettings.four.selectedDataJson.id
+        } else {
+          this.popSettings.four.selectedDataJson.id = undefined
+        }
+      }
+      )
     },
     unWatch() {
       if (this.watch.unwatch_tempJson) {
         this.watch.unwatch_tempJson()
+      }
+      if (this.watch.unwatch_staff_one) {
+        this.watch.unwatch_staff_one()
+      }
+      if (this.watch.unwatch_staff_two) {
+        this.watch.unwatch_staff_two()
+      }
+      if (this.watch.unwatch_staff_three) {
+        this.watch.unwatch_staff_three()
+      }
+      if (this.watch.unwatch_staff_four) {
+        this.watch.unwatch_staff_four()
       }
     },
     // Placeholder设置
