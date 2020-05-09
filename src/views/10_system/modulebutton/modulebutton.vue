@@ -802,7 +802,6 @@ export default {
     handleChange(val, label) {
       this.dataJson.tempJson.name = label.name
       this.dataJson.tempJson.code = val
-      debugger
     },
     // 排序上
     handleSortUp(scope, index) {

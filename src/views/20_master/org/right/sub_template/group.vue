@@ -35,8 +35,25 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
-        <template v-slot="scope">
+      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
+        <template slot="header">
+          <span>
+            删除
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom"
+            >
+              <div slot="content">
+                删除状态提示：<br>
+                绿色：未删除  <br>
+                红色：已删除
+              </div>
+              <svg-icon icon-class="perfect-icon-question1_btn" style="margin-left: 5px" />
+            </el-tooltip>
+          </span>
+        </template>
+        <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
@@ -45,7 +62,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
-              disabled
+              :disabled="true"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -137,7 +154,6 @@ export default {
         listLoading: true,
         duration: 4000
       },
-
       popSettings: {
         // 弹出编辑页面
         one: {
@@ -257,24 +273,6 @@ export default {
     // table选择框
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
-    },
-    renderHeaderIsDel: function(h, { column }) {
-      return (
-        <span>{column.label}
-          <el-tooltip
-            class='item'
-            effect='dark'
-            placement='bottom'
-          >
-            <div slot='content'>
-            删除状态提示：<br/>
-            绿色：未删除  <br/>
-            红色：已删除
-            </div>
-            <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
-          </el-tooltip>
-        </span>
-      )
     },
     // --------------弹出查询框：开始--------------
     handleEdit(val) {

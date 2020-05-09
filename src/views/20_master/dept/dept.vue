@@ -287,7 +287,6 @@ export default {
     handleRowDbClick(row) {
       this.dataJson.rowIndex = this.getRowIndex(row)
       var _data = deepCopy(row)
-      debugger
       if (this.meDialogStatus) {
         this.$emit('rowDbClick', _data)
       }

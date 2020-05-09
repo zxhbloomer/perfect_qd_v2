@@ -33,18 +33,36 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码">
-        <template slot-scope="scope">
+        <template v-slot="scope">
+          <el-button-group style="float: right">
+            <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
+            <el-button type="primary" icon="el-icon-search" style="padding:4px 4px;" @click="handleView(scope.row)" />
+          </el-button-group>
           {{ scope.row.code }}
-          <el-link type="primary" @click="handleEdit(scope.row.id)">
-            编辑
-          </el-link>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="juridical_name" label="法定代表人" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
+      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
+        <template slot="header">
+          <span>
+            删除
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom"
+            >
+              <div slot="content">
+                删除状态提示：<br>
+                绿色：未删除  <br>
+                红色：已删除
+              </div>
+              <svg-icon icon-class="perfect-icon-question1_btn" style="margin-left: 5px" />
+            </el-tooltip>
+          </span>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
@@ -54,7 +72,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
-              disabled
+              :disabled="true"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -68,13 +86,14 @@
       </el-table-column>
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
-
-    <company-dialog
-      v-if="popSettingsData.searchDialogData.dialogVisible"
-      :id="popSettingsData.searchDialogData.id"
-      :visible="popSettingsData.searchDialogData.dialogVisible"
-      @closeMeOk="handleCompanyCloseOk"
-      @closeMeCancel="handleCompanyCloseCancel"
+    <edit-dialog
+      v-if="popSettings.one.visible"
+      :id="popSettings.one.props.id"
+      :data="popSettings.one.props.data"
+      :visible="popSettings.one.visible"
+      :dialog-status="popSettings.one.props.dialogStatus"
+      @closeMeOk="handleCloseDialogOneOk"
+      @closeMeCancel="handleCloseDialogOneCancel"
     />
   </div>
 </template>
@@ -105,16 +124,13 @@
 
 <script>
 import { getCompanyListApi } from '@/api/20_master/org/org'
-import { getDataByIdApi } from '@/api/20_master/address/address'
-import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Pagination'
-import companyDialog from '@/views/20_master/company/dialog/dialog'
+import editDialog from '@/views/20_master/company/dialog/edit'
 import deepCopy from 'deep-copy'
 
 export default {
-  name: 'P00000175', // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, companyDialog },
-  directives: { elDragDialog },
+  components: { Pagination, editDialog },
+  directives: { },
   mixins: [],
   props: {
     height: {
@@ -135,25 +151,8 @@ export default {
         paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // table使用的json
         listData: null,
-        // 单条数据 json的，初始化原始数据
-        tempJsonOriginal: {
-          id: undefined,
-          name: '',
-          code: '',
-          descr: '',
-          dbversion: 0
-        },
         // 单条数据 json
         currentJson: null,
-        tempJson: null,
-        inputSettings: {
-          maxLength: {
-            name: 20,
-            code: 20,
-            descr: 200,
-            simple_name: 20
-          }
-        },
         // 当前表格中的索引，第几条
         rowIndex: 0,
         // 当前选中的行（checkbox）
@@ -173,70 +172,15 @@ export default {
         listLoading: true,
         duration: 4000
       },
-      popSettingsData: {
-        // 弹出窗口状态名称
-        textMap: {
-          update: '修改',
-          insert: '新增',
-          copyInsert: '复制新增'
-        },
-        // 按钮状态
-        btnShowStatus: {
-          showInsert: false,
-          showUpdate: false,
-          showCopyInsert: false
-        },
-        // 按钮状态：是否可用
-        btnDisabledStatus: {
-          disabledReset: false,
-          disabledInsert: false,
-          disabledUpdate: false,
-          disabledCopyInsert: false
-        },
-        // 重置按钮点击后
-        btnResetStatus: false,
-        // 以下为pop的内容：数据弹出框
-        selection: [],
-        dialogStatus: '',
-        dialogFormVisible: false,
-        // pop的check内容
-        rules: {},
-        // 基本信息栏目check
-        rulesOne: {
-          code: [{ required: true, message: '请输入社会信用代码', trigger: 'change' }],
-          name: [{ required: true, message: '请输入企业名称', trigger: 'change' }],
-          simple_name: [{ required: true, message: '请输入企业简称', trigger: 'change' }],
-          juridical_name: [{ required: true, message: '请输入法定代表人', trigger: 'change' }],
-          register_capital: [{ required: true, message: '请输入注册资本（万）', trigger: 'change' }],
-          type: [{ required: true, message: '请选择企业类型', trigger: 'change' }],
-          setup_date: [
-            { required: true, message: '请输入成立日期', trigger: 'change' },
-            { validator: this.validateSetup_date, trigger: 'change' }
-          ],
-          end_date: [
-            { required: true, message: '请输入营业有效期', trigger: 'change' },
-            { validator: this.validateEnd_date, trigger: 'change' }
-          ]
-        },
-        rules_disable: {
-          // 默认可用
-          end_date: false
-        },
-        // 错误数目
-        badge: {
-          countOne: 0,
-          countTwo: 0,
-          countThree: 0,
-          countFour: 0
-        },
-        // 弹出的查询框参数设置
-        searchDialogData: {
-          // 弹出框显示参数
-          dialogVisible: false,
-          // 点击确定以后返回的值
-          selectedDataJson: {},
-          // 传参
-          id: ''
+      popSettings: {
+        // 弹出编辑页面
+        one: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            dialogStatus: ''
+          }
         }
       },
       // 导入窗口的状态
@@ -251,48 +195,9 @@ export default {
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    }
   },
   // 监听器
   watch: {
-    // 监听页面上面是否有修改，有修改按钮高亮
-    'dataJson.tempJson': {
-      handler(newVal, oldVal) {
-        if (this.popSettingsData.btnResetStatus === true) {
-          // 点击了重置按钮
-          this.popSettingsData.btnDisabledStatus.disabledReset = true
-          this.popSettingsData.btnDisabledStatus.disabledInsert = true
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-          this.popSettingsData.btnResetStatus = false
-        } else if (this.popSettingsData.dialogFormVisible) {
-          // 有修改按钮高亮
-          this.popSettingsData.btnDisabledStatus.disabledReset = false
-          this.popSettingsData.btnDisabledStatus.disabledInsert = false
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = false
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = false
-        }
-      },
-      deep: true
-    },
-    // 弹出窗口初始化，按钮不可用
-    'popSettingsData.dialogFormVisible': {
-      handler(newVal, oldVal) {
-        if (this.popSettingsData.dialogFormVisible) {
-          this.popSettingsData.btnDisabledStatus.disabledReset = true
-          this.popSettingsData.btnDisabledStatus.disabledInsert = true
-          this.popSettingsData.btnDisabledStatus.disabledUpdate = true
-          this.popSettingsData.btnDisabledStatus.disabledCopyInsert = true
-        }
-      }
-    },
     // 选中的数据，使得导出按钮可用，否则就不可使用
     'dataJson.multipleSelection': {
       handler(newVal, oldVal) {
@@ -300,15 +205,6 @@ export default {
           this.settings.btnShowStatus.showExport = true
         } else {
           this.settings.btnShowStatus.showExport = false
-        }
-      }
-    },
-    'popSettingsData.searchDialogData.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.address_id = this.popSettingsData.searchDialogData.selectedDataJson.id
-        } else {
-          this.popSettingsData.searchDialogData.selectedDataJson.id = undefined
         }
       }
     }
@@ -324,23 +220,9 @@ export default {
     })
   },
   methods: {
-    initTempJsonOriginal() {
-      // 单条数据 json的，初始化原始数据
-      this.dataJson.tempJsonOriginal =
-      {
-        id: undefined,
-        name: '',
-        code: '',
-        descr: '',
-        dbversion: 0,
-        register_capital: 0
-      }
-    },
     initShow() {
       // 初始化查询
       this.getDataList()
-      // 数据初始化
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
     // 下拉选项控件事件
     handleSelectChange(val) {
@@ -352,12 +234,10 @@ export default {
     },
     // 行点击
     handleRowClick(row) {
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
     },
     // 行双点击，仅在dialog中有效
     handleRowDbClick(row) {
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
     },
     handleSearch() {
@@ -368,31 +248,17 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      // reset所有验证
-      this.doResetValidate()
-    },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
-      this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
 
       if (this.dataJson.currentJson.id !== undefined) {
-        // this.settings.btnShowStatus.doInsert = true
         this.settings.btnShowStatus.showUpdate = true
         this.settings.btnShowStatus.showCopyInsert = true
       } else {
-        // this.settings.btnShowStatus.doInsert = false
         this.settings.btnShowStatus.showUpdate = false
         this.settings.btnShowStatus.showCopyInsert = false
       }
-      // 设置dialog的返回
-      this.$store.dispatch('popUpSearchDialog/selectedDataJson', Object.assign({}, row))
     },
     handleSortChange(column) {
       // 服务器端排序
@@ -423,11 +289,6 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 关闭弹出窗口
-    handlCloseDialog() {
-      this.popSettingsImport.dialogFormVisible = false
-      this.popSettingsData.dialogFormVisible = false
-    },
     // 获取row-key
     getRowKeys(row) {
       return row.id
@@ -436,139 +297,110 @@ export default {
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
     },
-    renderHeaderIsDel: function(h, { column }) {
-      return (
-        <span>{column.label}
-          <el-tooltip
-            class='item'
-            effect='dark'
-            placement='bottom'
-          >
-            <div slot='content'>
-            删除状态提示：<br/>
-            绿色：未删除  <br/>
-            红色：已删除
-            </div>
-            <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
-          </el-tooltip>
-        </span>
-      )
-    },
-    // --------------弹出查询框：--------------
-    // 选择or重置按钮的初始化
-    initAddressSelectButton() {
-      this.$nextTick(() => {
-        this.$refs.selectOne.$el.parentElement.className = 'el-input-group__append el-input-group__append_select'
-      })
-    },
-    handleModuleDialogClick() {
-      // 选择按钮
-      this.popSettingsData.searchDialogData.dialogVisible = true
-    },
-    // 关闭对话框：确定
-    handleAddressCloseOk(val) {
-      this.popSettingsData.searchDialogData.selectedDataJson = val
-      this.popSettingsData.searchDialogData.dialogVisible = false
-      this.initAddressSelectButton()
-    },
-    // 关闭对话框：取消
-    handleAddressCloseCancel() {
-      this.popSettingsData.searchDialogData.dialogVisible = false
-    },
-    // -------------------不同的页签，标签进行的验证------------------
-    // 所有的数据开始validate
-    doValidateAllRules() {
-      this.popSettingsData.rules = { ...this.popSettingsData.rulesOne }
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
-    },
-    // 开始综合验证
-    doValidateByTabs() {
-      // 第一个tabs
-      this.popSettingsData.rules = this.popSettingsData.rulesOne
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
-      this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
-        if (valid === false) {
-          this.popSettingsData.badge.countOne = Object.keys(validateItems).length
-        }
-      })
-
-      // 第二个tabs
-
-      // 所有的数据进行验证
-      this.doValidateAllRules()
-    },
-    // reset所有验证
-    doResetValidate() {
-      this.popSettingsData.badge.countOne = 0
-      this.popSettingsData.badge.countTwo = 0
-      this.$nextTick(() => {
-        this.$refs['dataSubmitForm'].clearValidate()
-        this.doValidateAllRules()
-      })
-    },
-    // 营业有效期长期
-    handleLongTermChange(val) {
-      if (val) {
-        // 营业有效期 不可用
-        this.popSettingsData.rules_disable.end_date = true
-        this.dataJson.tempJson.end_date = '9999/01/01'
-      } else {
-        this.popSettingsData.rules_disable.end_date = false
-        this.dataJson.tempJson.end_date = ''
-      }
-    },
-    // -------------------验证部分------------------
-    // 营业有效期需要大于成立日期
-    validateSetup_date(rule, value, callback) {
-      const _data = Date.parse(value)
-      if (!isNaN(Date.parse(value))) {
-        if (_data > Date.parse(this.dataJson.tempJson.end_date)) {
-          return callback(new Error('输入的营业有效期应大于成立日期'))
-        }
-
-        return callback()
-      }
-    },
-    validateEnd_date(rule, value, callback) {
-      const _data = Date.parse(value)
-      if (!isNaN(Date.parse(value))) {
-        if (_data <= Date.parse(this.dataJson.tempJson.setup_date)) {
-          return callback(new Error('输入的营业有效期应大于成立日期'))
-        }
-        return callback()
-      }
-    },
-    handleSetup_dateChange() {
-      this.$refs.dataSubmitForm.validateField('setup_date')
-      this.$refs.dataSubmitForm.validateField('end_date')
-    },
-    handleEnd_dateChange() {
-      this.$refs.dataSubmitForm.validateField('setup_date')
-      this.$refs.dataSubmitForm.validateField('end_date')
-    },
-    getAddressDataByid() {
-      getDataByIdApi({ id: this.dataJson.tempJson.address_id }).then(response => {
-        this.popSettingsData.searchDialogData.selectedDataJson = Object.assign({}, response.data)
-      })
-    },
     // --------------弹出查询框：开始--------------
-    // 企业：关闭对话框：确定
-    handleCompanyCloseOk(val) {
-      this.popSettingsData.searchDialogData.selectedDataJson = val
-      this.popSettingsData.searchDialogData.dialogVisible = false
+    handleEdit(val) {
+      this.popSettings.one.props.data = Object.assign({}, val)
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
+    },
+    handleView(val) {
+      this.popSettings.one.props.data = Object.assign({}, val)
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettings.one.visible = true
+    },
+    handleCloseDialogOneOk(val) {
       // 通知兄弟组件
       this.$off(this.EMITS.EMIT_ORG_LEFT)
       this.$emit(this.EMITS.EMIT_ORG_LEFT)
-      // 查询数据并返回
+
+      switch (this.popSettings.one.props.dialogStatus) {
+        case this.PARAMETERS.STATUS_INSERT:
+          this.doInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_UPDATE:
+          this.doUpdateModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_COPY_INSERT:
+          this.doCopyInsertModelCallBack(val)
+          break
+        case this.PARAMETERS.STATUS_VIEW:
+          break
+      }
     },
-    // 企业：关闭对话框：取消
-    handleCompanyCloseCancel() {
-      this.popSettingsData.searchDialogData.dialogVisible = false
+    handleCloseDialogOneCancel() {
+      this.popSettings.one.visible = false
     },
-    // 编辑按钮
-    handleEdit(val) {
-      this.popSettingsData.searchDialogData.dialogVisible = true
-      this.popSettingsData.searchDialogData.id = val
+    // 处理插入回调
+    doInsertModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.push(val.data.data)
+        this.$notify({
+          title: '新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理复制新增回调
+    doCopyInsertModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '复制新增处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '复制新增处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
+    },
+    // 处理更新回调
+    doUpdateModelCallBack(val) {
+      if (val.return_flag) {
+        this.popSettings.one.visible = false
+
+        // 设置到table中绑定的json数据源
+        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        // 设置到currentjson中
+        this.dataJson.currentJson = Object.assign({}, val.data.data)
+        this.$notify({
+          title: '更新处理成功',
+          message: val.data.message,
+          type: 'success',
+          duration: this.settings.duration
+        })
+      } else {
+        this.$notify({
+          title: '更新处理失败',
+          message: val.error.message,
+          type: 'error',
+          duration: this.settings.duration
+        })
+      }
     }
   }
 }

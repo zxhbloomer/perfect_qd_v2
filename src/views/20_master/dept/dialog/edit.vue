@@ -427,7 +427,6 @@ export default {
       this.unWatch()
       // 监听页面上面是否有修改，有修改按钮高亮
       this.watch.unwatch_tempJson = this.$watch('dataJson.tempJson', (newVal, oldVal) => {
-        debugger
         this.settings.btnDisabledStatus.disabledReset = false
         this.settings.btnDisabledStatus.disabledInsert = false
         this.settings.btnDisabledStatus.disabledUpdate = false
