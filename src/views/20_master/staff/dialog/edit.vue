@@ -445,6 +445,7 @@ import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictCom
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
+import { getUserBeanByIdApi } from '@/api/user'
 import deepCopy from 'deep-copy'
 
 export default {
@@ -567,19 +568,42 @@ export default {
     }
   },
   computed: {
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_INSERT || this.settings.dialogStatus === this.PARAMETERS.STATUS_COPY_INSERT) {
+    listenVisible() {
+      return this.visible
+    },
+    // 是否已经设置了密码
+    isPsdSetUp() {
+      if (this.dataJson.tempJson.user.pwd === '' || this.dataJson.tempJson.user.pwd === null || this.dataJson.tempJson.user.pwd === undefined) {
         return false
       } else {
         return true
       }
     },
-    listenVisible() {
-      return this.visible
+    // 是否为更新模式
+    isUpdateModel() {
+      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
+        return false
+      } else {
+        return true
+      }
     },
+    isAccountLoginType() {
+      if (this.dataJson.tempJson.user.is_enable === {}) {
+        return false
+      } else {
+        return this.dataJson.tempJson.user.is_enable
+      }
+    },
+    isLoginEnabled() {
+      if (this.dataJson.tempJson.user.is_enable === true) {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 是否为查看模式
     isViewModel() {
-      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_VIEW) {
+      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
         return true
       } else {
         return false
@@ -799,6 +823,96 @@ export default {
           })
         }
       })
+    },
+    async getUserBeanById() {
+      return await getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
+        // this.dataJson.tempJson.user = Object.assign({}, response.data)
+        return response.data
+      })
+    },
+    // -------------------不同的页签，标签进行的验证 s------------------
+    handleSexDictChange(val) {
+      this.dataJson.tempJson.sex = val
+    },
+    handleSysLoginTypeChange(val) {
+      this.dataJson.tempJson.user.login_type = val
+    },
+    handleWedDictChange(val) {
+      this.dataJson.tempJson.is_wed = val
+    },
+    handelSetPassword() {
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+    },
+    handlePsdDialogCloseOk(val) {
+      this.dataJson.tempJson.user.pwd = val
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+    },
+    handlePsdDialogCloseCancel() {
+      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+    },
+    // -------------------不同的页签，标签进行的验证 e------------------
+    // 弹出框关闭
+    handleDialogClose() {
+      this.popSettingsData.dialogFormVisible = false
+    },
+    // 返回数据后，并关闭弹出页面，企业
+    handleCompanyReturnData(val) {
+      this.dataJson.tempJson.company_id = val.serial_id
+      this.dataJson.tempJson.company_name = val.name
+      this.dataJson.tempJson.company_simple_name = val.simple_name
+    },
+    // 返回数据后，并关闭弹出页面，部门
+    handleDeptReturnData(val) {
+      this.dataJson.tempJson.dept_id = val.serial_id
+      this.dataJson.tempJson.dept_name = val.name
+      this.dataJson.tempJson.dept_simple_name = val.simple_name
+    },
+    handlePositionClick(val) {
+      this.popSettingsData.dialogFormVisible = false
+      // 通知路由，打开岗位页面
+      this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
+    },
+    // 开始综合验证
+    doValidateByTabs() {
+      // 第一个tabs
+      this.popSettingsData.rules = this.popSettingsData.rulesOne
+      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+      this.$refs['dataSubmitForm'].clearValidate()
+      this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
+        if (valid === false) {
+          this.popSettingsData.badge.countOne = Object.keys(validateItems).length
+        } else {
+          this.popSettingsData.badge.countOne = 0
+        }
+      })
+      // 第二个tabs
+      if (this.isLoginEnabled) {
+        if (this.isAccountLoginType) {
+          this.popSettingsData.rules = this.popSettingsData.rulesTwo
+          this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+          this.$refs['dataSubmitForm'].clearValidate()
+          this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
+            if (valid === false) {
+              this.popSettingsData.badge.countTwo = Object.keys(validateItems).length
+            } else {
+              this.popSettingsData.badge.countTwo = 0
+            }
+          })
+        }
+      }
+      // 所有的数据进行验证
+      this.doValidateAllRules()
+    },
+    // 所有的数据开始validate
+    doValidateAllRules() {
+      if (this.isLoginEnabled) {
+        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne, ...this.popSettingsData.rulesTwo }
+      } else {
+        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne }
+      }
+
+      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+      this.$refs['dataSubmitForm'].clearValidate()
     }
   }
 }

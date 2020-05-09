@@ -68,7 +68,24 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
+      <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除">
+        <template slot="header">
+          <span>
+            删除
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom"
+            >
+              <div slot="content">
+                删除状态提示：<br>
+                绿色：未删除  <br>
+                红色：已删除
+              </div>
+              <svg-icon icon-class="perfect-icon-question1_btn" style="margin-left: 5px" />
+            </el-tooltip>
+          </span>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
@@ -78,6 +95,7 @@
               :active-value="true"
               :inactive-value="false"
               :width="30"
+              :disabled="meDialogStatus"
               @change="handleDel(scope.row)"
             />
           </el-tooltip>
@@ -113,8 +131,7 @@
 
 <script>
 import constants_program from '@/common/constants/constants_program'
-import { getListApi, updateApi, insertApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/staff/staff'
-import { getUserBeanByIdApi } from '@/api/user'
+import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/staff/staff'
 import resizeMixin from './staffResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -228,44 +245,7 @@ export default {
     }
   },
   computed: {
-    // 是否已经设置了密码
-    isPsdSetUp() {
-      if (this.dataJson.tempJson.user.pwd === '' || this.dataJson.tempJson.user.pwd === null || this.dataJson.tempJson.user.pwd === undefined) {
-        return false
-      } else {
-        return true
-      }
-    },
-    // 是否为更新模式
-    isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
-        return false
-      } else {
-        return true
-      }
-    },
-    isAccountLoginType() {
-      if (this.dataJson.tempJson.user.is_enable === {}) {
-        return false
-      } else {
-        return this.dataJson.tempJson.user.is_enable
-      }
-    },
-    isLoginEnabled() {
-      if (this.dataJson.tempJson.user.is_enable === true) {
-        return true
-      } else {
-        return false
-      }
-    },
-    // 是否为查看模式
-    isViewModel() {
-      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
-        return true
-      } else {
-        return false
-      }
-    }
+
   },
   // 监听器
   watch: {
@@ -276,15 +256,6 @@ export default {
           this.settings.btnShowStatus.showExport = true
         } else {
           this.settings.btnShowStatus.showExport = false
-        }
-      }
-    },
-    'popSettingsData.searchDialogDataOne.selectedDataJson': {
-      handler(newVal, oldVal) {
-        if (newVal !== {}) {
-          this.dataJson.tempJson.address_id = this.popSettingsData.searchDialogDataOne.selectedDataJson.id
-        } else {
-          this.popSettingsData.searchDialogDataOne.selectedDataJson.id = undefined
         }
       }
     }
@@ -357,15 +328,6 @@ export default {
       this.dataJson.multipleSelection = []
       this.$refs.multipleTable.clearSelection()
     },
-    handleRowUpdate(row, _rowIndex) {
-      // 修改
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
-      this.dataJson.rowIndex = _rowIndex
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      // reset所有验证
-      this.doResetValidate()
-    },
     // 删除操作
     handleDel(row) {
       let _message = ''
@@ -411,59 +373,28 @@ export default {
     // 点击按钮 新增
     handleInsert() {
       // 新增
-      this.popSettingsData.dialogStatus = 'insert'
-      // 数据初始化
-      this.initTempJsonOriginal()
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-      // reset所有验证
-      this.doResetValidate()
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = true
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 初始化弹出页面
-      this.doReset()
-      this.popSettingsData.dialogFormVisible = true
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
-      })
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_INSERT
+      this.popSettings.one.visible = true
     },
     // 点击按钮 更新
-    async handleUpdate() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
-      var userData = await this.getUserBeanById()
-      this.dataJson.tempJson.user = Object.assign({}, userData)
-      if (this.dataJson.tempJson.id === undefined) {
+    handleUpdate() {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      // 修改
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
-      // reset所有验证
-      this.doResetValidate()
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = true
-      this.popSettingsData.btnShowStatus.showCopyInsert = false
-      // 控件focus
-      this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
-      })
+      // 更新
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.one.visible = true
     },
-    async handleView() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.popSettingsData.searchDialogDataOne.selectedDataJson = {}
-      var userData = await this.getUserBeanById()
-      this.dataJson.tempJson.user = Object.assign({}, userData)
-      if (this.dataJson.tempJson.id === undefined) {
+    handleView() {
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.one.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
-      this.popSettingsData.dialogStatus = 'view'
-      this.popSettingsData.dialogFormVisible = true
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_VIEW
+      this.popSettings.one.visible = true
     },
     // 导出按钮
     handleExport() {
@@ -521,29 +452,14 @@ export default {
     },
     // 点击按钮 复制新增
     handleCopyInsert() {
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.currentJson)
-      this.dataJson.tempJson.id = undefined
-      this.dataJson.tempJson.template_id = undefined
-      this.dataJson.tempJson.u_id = ''
-      this.dataJson.tempJson.u_time = ''
-      // 修改
-      this.popSettingsData.dialogStatus = 'copyInsert'
-      this.popSettingsData.dialogFormVisible = true
-      // reset所有验证
-      this.doResetValidate()
-      // 设置按钮
-      this.popSettingsData.btnShowStatus.showInsert = false
-      this.popSettingsData.btnShowStatus.showUpdate = false
-      this.popSettingsData.btnShowStatus.showCopyInsert = true
-      // 复制新增时focus
-      this.$nextTick(() => {
-        this.$refs['refFocus'].focus()
-      })
+      this.popSettings.one.props.data = Object.assign({}, this.dataJson.currentJson)
+      // 复制新增
+      this.popSettings.one.props.dialogStatus = this.PARAMETERS.STATUS_COPY_INSERT
+      this.popSettings.one.visible = true
     },
     handleCurrentChange(row) {
       this.dataJson.currentJson = Object.assign({}, row) // copy obj
       this.dataJson.currentJson.index = this.getRowIndex(row)
-      this.dataJson.tempJsonOriginal = Object.assign({}, row) // copy obj
 
       if (this.dataJson.currentJson.id !== undefined) {
         // this.settings.btnShowStatus.doInsert = true
@@ -554,8 +470,6 @@ export default {
         this.settings.btnShowStatus.showUpdate = false
         this.settings.btnShowStatus.showCopyInsert = false
       }
-      // 设置dialog的返回
-      this.$store.dispatch('popUpSearchDialog/selectedDataJson', Object.assign({}, row))
     },
     handleSortChange(column) {
       // 服务器端排序
@@ -584,98 +498,9 @@ export default {
         this.settings.listLoading = false
       })
     },
-    // 更新逻辑
-    doUpdate() {
-      // 开始综合验证
-      this.doValidateByTabs()
-      this.$refs['dataSubmitForm'].validate((valid, items) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          updateApi(tempData).then((_data) => {
-            this.dataJson.tempJson = Object.assign({}, _data.data)
-            // 设置到table中绑定的json数据源
-            this.dataJson.listData.splice(this.dataJson.rowIndex, 1, this.dataJson.tempJson)
-            // 设置到currentjson中
-            this.dataJson.currentJson = Object.assign({}, this.dataJson.tempJson)
-            this.$notify({
-              title: '更新处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-          }, (_error) => {
-            this.$notify({
-              title: '更新处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
     // 重置查询区域
     doResetSearch() {
       this.dataJson.searchForm = this.$options.data.call(this).dataJson.searchForm
-    },
-    // 重置按钮
-    doReset() {
-      this.popSettingsData.btnResetStatus = true
-      switch (this.popSettingsData.dialogStatus) {
-        case 'update':
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          break
-        default:
-          // 数据初始化
-          this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
-          break
-      }
-
-      // 去除validate信息
-      // reset所有验证
-      this.doResetValidate()
-    },
-    // 插入逻辑
-    doInsert() {
-      // 开始综合验证
-      this.doValidateByTabs()
-      this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.dataJson.tempJson)
-          this.settings.listLoading = true
-          insertApi(tempData).then((_data) => {
-            this.dataJson.listData.push(_data.data)
-            this.$notify({
-              title: '新增处理成功',
-              message: _data.message,
-              type: 'success',
-              duration: this.settings.duration
-            })
-            this.popSettingsData.dialogFormVisible = false
-          }, (_error) => {
-            this.$notify({
-              title: '新增处理失败',
-              message: _error.message,
-              type: 'error',
-              duration: this.settings.duration
-            })
-            // this.popSettingsData.dialogFormVisible = false
-          }).finally(() => {
-            this.settings.listLoading = false
-          })
-        }
-      })
-    },
-    // 关闭弹出窗口
-    handlCloseDialog() {
-      this.popSettingsImport.dialogFormVisible = false
-      this.popSettingsData.dialogFormVisible = false
     },
     // 获取row-key
     getRowKeys(row) {
@@ -684,144 +509,6 @@ export default {
     // table选择框
     handleSelectionChange(val) {
       this.dataJson.multipleSelection = val
-    },
-    renderHeaderIsDel: function(h, { column }) {
-      return (
-        <span>{column.label}
-          <el-tooltip
-            class='item'
-            effect='dark'
-            placement='bottom'
-          >
-            <div slot='content'>
-            删除状态提示：<br/>
-            绿色：未删除  <br/>
-            红色：已删除
-            </div>
-            <svg-icon icon-class='perfect-icon-question1_btn' style='margin-left: 5px'/>
-          </el-tooltip>
-        </span>
-      )
-    },
-    // -------------------不同的页签，标签进行的验证------------------
-    // 所有的数据开始validate
-    doValidateAllRules() {
-      if (this.isLoginEnabled) {
-        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne, ...this.popSettingsData.rulesTwo }
-      } else {
-        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne }
-      }
-
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
-      this.$refs['dataSubmitForm'].clearValidate()
-    },
-    // 开始综合验证
-    doValidateByTabs() {
-      // 第一个tabs
-      this.popSettingsData.rules = this.popSettingsData.rulesOne
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
-      this.$refs['dataSubmitForm'].clearValidate()
-      this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
-        if (valid === false) {
-          this.popSettingsData.badge.countOne = Object.keys(validateItems).length
-        } else {
-          this.popSettingsData.badge.countOne = 0
-        }
-      })
-      // 第二个tabs
-      if (this.isLoginEnabled) {
-        if (this.isAccountLoginType) {
-          this.popSettingsData.rules = this.popSettingsData.rulesTwo
-          this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
-          this.$refs['dataSubmitForm'].clearValidate()
-          this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
-            if (valid === false) {
-              this.popSettingsData.badge.countTwo = Object.keys(validateItems).length
-            } else {
-              this.popSettingsData.badge.countTwo = 0
-            }
-          })
-        }
-      }
-
-      // 所有的数据进行验证
-      this.doValidateAllRules()
-    },
-    // reset所有验证
-    doResetValidate() {
-      this.popSettingsData.badge.countOne = 0
-      this.popSettingsData.badge.countTwo = 0
-      this.$nextTick(() => {
-        this.doValidateAllRules()
-      })
-    },
-    // -------------------不同的页签，标签进行的验证 s------------------
-    async getUserBeanById() {
-      return await getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
-        // this.dataJson.tempJson.user = Object.assign({}, response.data)
-        return response.data
-      })
-    },
-    handleSexDictChange(val) {
-      this.dataJson.tempJson.sex = val
-    },
-    handleSysLoginTypeChange(val) {
-      this.dataJson.tempJson.user.login_type = val
-    },
-    handleWedDictChange(val) {
-      this.dataJson.tempJson.is_wed = val
-    },
-    handelSetPassword() {
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = true
-    },
-    handlePsdDialogCloseOk(val) {
-      this.dataJson.tempJson.user.pwd = val
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
-    },
-    handlePsdDialogCloseCancel() {
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
-    },
-    // -------------------不同的页签，标签进行的验证 e------------------
-    // 弹出框关闭
-    handleDialogClose() {
-      this.popSettingsData.dialogFormVisible = false
-    },
-    // 返回数据后，并关闭弹出页面，企业
-    handleCompanyReturnData(val) {
-      this.dataJson.tempJson.company_id = val.serial_id
-      this.dataJson.tempJson.company_name = val.name
-      this.dataJson.tempJson.company_simple_name = val.simple_name
-    },
-    // 返回数据后，并关闭弹出页面，部门
-    handleDeptReturnData(val) {
-      this.dataJson.tempJson.dept_id = val.serial_id
-      this.dataJson.tempJson.dept_name = val.name
-      this.dataJson.tempJson.dept_simple_name = val.simple_name
-    },
-
-    // -------------------验证部分------------------
-    // validateLogin_name(rule, value, callback) {
-    //   if (!this.isAccountLoginType) {
-    //     return callback()
-    //   } else {
-    //     if (this.dataJson.tempJson.user.login_name === '') {
-    //       return callback(new Error('请输入登录用户名'))
-    //     }
-    //   }
-    // }
-    // -------------------验证部分------------------
-    // Placeholder设置
-    isPlaceholderShow(val) {
-      if (this.isViewModel) {
-        return ''
-      } else {
-        return val
-      }
-    },
-    handlePositionClick(val) {
-      this.popSettingsData.dialogFormVisible = false
-      // 通知路由，打开岗位页面
-      this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
     }
   }
 }
