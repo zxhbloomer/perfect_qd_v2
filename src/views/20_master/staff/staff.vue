@@ -255,15 +255,6 @@ export default {
             dialogStatus: ''
           }
         }
-      },
-      // 导入窗口的状态
-      popSettingsImport: {
-        // 弹出窗口会否显示
-        dialogFormVisible: false,
-        // 模版文件地址
-        templateFilePath: process.env.VUE_APP_BASE_API + '/api/v1/template.html?id=P00000030',
-        // 错误数据文件
-        errorFileUrl: ''
       }
     }
   },
@@ -619,8 +610,15 @@ export default {
           duration: this.settings.duration
         })
       }
-    }
+    },
     // ------------------编辑弹出框 end--------------------
+    handlePositionClick(val) {
+      if (this.meDialogStatus) {
+        return
+      }
+      // 通知路由，打开岗位页面
+      this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
+    }
   }
 }
 </script>

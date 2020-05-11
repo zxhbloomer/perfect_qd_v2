@@ -609,7 +609,7 @@ export default {
     },
     // 是否为查看模式
     isViewModel() {
-      if ((this.settings.dialogStatus === 'view') && (this.settings.dialogFormVisible === true)) {
+      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_VIEW) {
         return true
       } else {
         return false
@@ -859,7 +859,9 @@ export default {
     // -------------------不同的页签，标签进行的验证 e------------------
     // 弹出框关闭
     handleDialogClose() {
-      this.settings.dialogFormVisible = false
+      this.settings.visible = false
+      // 关闭页面
+      this.handleCancel()
     },
     // 返回数据后，并关闭弹出页面，企业
     handleCompanyReturnData(val) {
@@ -874,9 +876,10 @@ export default {
       this.dataJson.tempJson.dept_simple_name = val.simple_name
     },
     handlePositionClick(val) {
-      this.settings.dialogFormVisible = false
       // 通知路由，打开岗位页面
       this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
+      // 关闭页面
+      this.handleCancel()
     },
     // 开始综合验证
     doValidateByTabs() {

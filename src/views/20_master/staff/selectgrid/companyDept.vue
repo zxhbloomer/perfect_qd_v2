@@ -312,6 +312,8 @@ export default {
   data() {
     return {
       dataJson: {
+        // 下拉树的对象
+        element: null,
         // 下拉选项json
         selectOptions: [],
         filterText: '',
@@ -484,26 +486,28 @@ export default {
     // 获取当前的选中的节点
     getCurrentElement(treeData, val) {
       for (const element of treeData) {
+        this.dataJson.element = element
         switch (this.type) {
           case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
             // 企业
             if (element.serial_id === val && element.serial_type === 'm_company') {
-              return element
+              return this.dataJson.element
             }
             break
           case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
             // 部门
             if (element.serial_id === val && element.serial_type === 'm_dept') {
-              return element
+              return this.dataJson.element
             }
             break
           default:
             return null
         }
         if (element.children.length > 0) {
-          return this.getCurrentElement(element.children, val)
+          this.getCurrentElement(element.children, val)
         }
       }
+      return this.dataJson.element
     },
     filterNode(value, data) {
       if (!value) return true
