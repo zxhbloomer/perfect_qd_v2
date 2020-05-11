@@ -629,7 +629,7 @@ export default {
   },
   methods: {
     // 初始化处理
-    init() {
+    async init() {
       this.initButtonShowStatus()
       this.initButtonDisabledStatus()
       switch (this.dialogStatus) {
@@ -637,13 +637,13 @@ export default {
           this.initInsertModel()
           break
         case this.PARAMETERS.STATUS_UPDATE:
-          this.initUpdateModel()
+          await this.initUpdateModel()
           break
         case this.PARAMETERS.STATUS_COPY_INSERT:
-          this.initCopyInsertModel()
+          await this.initCopyInsertModel()
           break
         case this.PARAMETERS.STATUS_VIEW:
-          this.initViewModel()
+          await this.initViewModel()
           break
       }
       // 初始化watch
@@ -675,12 +675,12 @@ export default {
       })
     },
     // 复制新增时的初始化
-    initCopyInsertModel() {
+    async initCopyInsertModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJson.code = ''
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
-      var userData = this.getUserBeanById()
+      var userData = await this.getUserBeanById()
       this.dataJson.tempJson.user = Object.assign({}, userData)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
@@ -690,13 +690,12 @@ export default {
       })
     },
     // 修改时的初始化
-    initUpdateModel() {
+    async initUpdateModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
-      debugger
-      var userData = this.getUserBeanById()
-      this.dataJson.tempJson.user = Object.assign({}, userData)
+      var userData = await this.getUserBeanById()
+      this.dataJson.tempJson.user = deepCopy(userData)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
@@ -705,10 +704,10 @@ export default {
       })
     },
     // 查看时的初始化
-    initViewModel() {
+    async initViewModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
-      var userData = this.getUserBeanById()
+      var userData = await this.getUserBeanById()
       this.dataJson.tempJson.user = Object.assign({}, userData)
     },
     // 设置监听器
@@ -837,7 +836,6 @@ export default {
       })
     },
     async getUserBeanById() {
-      debugger
       return await getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
         // this.dataJson.tempJson.user = Object.assign({}, response.data)
         return response.data
