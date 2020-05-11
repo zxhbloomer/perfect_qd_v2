@@ -155,7 +155,7 @@
               </el-col>
             </el-row>
 
-            <el-row v-show="settings.dialogStatus === 'update'">
+            <el-row v-show="settings.dialogStatus === PARAMETERS.STATUS_UPDATE">
               <el-col :span="12">
                 <el-form-item label="更新人：" prop="u_name">
                   <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -587,7 +587,7 @@ export default {
     },
     // 是否为更新模式
     isUpdateModel() {
-      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
+      if (this.settings.dialogStatus === this.PARAMETERS.STATUS_INSERT || this.settings.dialogStatus === this.PARAMETERS.STATUS_COPY_INSERT) {
         return false
       } else {
         return true
