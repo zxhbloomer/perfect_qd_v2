@@ -46,8 +46,8 @@
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="员工姓名">
         <template slot-scope="scope">
+          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
           <span> {{ scope.row.name }} </span>
-          <el-link type="primary" @click="handleShowInfo(scope.row)"><i class="el-icon-info" /></el-link>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="simple_name" label="姓名简称" />
@@ -916,7 +916,7 @@ export default {
       }
       this.dataJson.searchForm.active_tabs_index = tab.index
     },
-    async handleShowInfo(val) {
+    async handleView(val) {
       this.settings.listLoading = true
       var staffData = await this.getUserDataById(val)
       this.dataJson.tempJson = Object.assign({}, staffData)

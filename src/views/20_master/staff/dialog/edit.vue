@@ -680,6 +680,8 @@ export default {
       this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJson.code = ''
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
+      var userData = this.getUserBeanById()
+      this.dataJson.tempJson.user = Object.assign({}, userData)
       // 设置按钮
       this.settings.btnShowStatus.showCopyInsert = true
       // 控件focus
@@ -692,6 +694,9 @@ export default {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
       this.dataJson.tempJsonOriginal = deepCopy(this.data)
+      debugger
+      var userData = this.getUserBeanById()
+      this.dataJson.tempJson.user = Object.assign({}, userData)
       // 设置按钮
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
@@ -703,6 +708,8 @@ export default {
     initViewModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
+      var userData = this.getUserBeanById()
+      this.dataJson.tempJson.user = Object.assign({}, userData)
     },
     // 设置监听器
     setWatch() {
@@ -739,7 +746,6 @@ export default {
       switch (this.settings.dialogStatus) {
         case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
-          // this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
           this.dataJson.tempJson = deepCopy(this.dataJson.tempJsonOriginal)
           // 设置控件焦点focus
           this.$nextTick(() => {
@@ -831,6 +837,7 @@ export default {
       })
     },
     async getUserBeanById() {
+      debugger
       return await getUserBeanByIdApi({ id: this.dataJson.tempJson.user_id }).then(response => {
         // this.dataJson.tempJson.user = Object.assign({}, response.data)
         return response.data
