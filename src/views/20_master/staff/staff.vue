@@ -386,7 +386,6 @@ export default {
           })
           row.is_del = !row.is_del
         }).finally(() => {
-          this.popSettingsData.dialogFormVisible = false
           this.settings.listLoading = false
         })
       }).catch(action => {
