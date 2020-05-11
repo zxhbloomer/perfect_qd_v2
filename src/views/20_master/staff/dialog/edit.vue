@@ -19,7 +19,7 @@
     >
       <el-form
         ref="dataSubmitForm"
-        :rules="popSettingsData.rules"
+        :rules="settings.rules"
         :model="dataJson.tempJson"
         label-position="rigth"
         label-width="155px"
@@ -29,11 +29,11 @@
         <el-tabs style="height: 500px;">
           <br>
           <el-tab-pane>
-            <template slot="label">基本信息<el-badge v-show="popSettingsData.badge.countOne>0" :value="popSettingsData.badge.countOne" type="danger" /></template>
+            <template slot="label">基本信息<el-badge v-show="settings.badge.countOne>0" :value="settings.badge.countOne" type="danger" /></template>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="员工姓名：" prop="name">
-                  <el-input ref="refFocus" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
+                  <el-input ref="refFocusOne" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :placeholder="isPlaceholderShow('请输入')" :disabled="isViewModel" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -155,7 +155,7 @@
               </el-col>
             </el-row>
 
-            <el-row v-show="popSettingsData.dialogStatus === 'update'">
+            <el-row v-show="settings.dialogStatus === 'update'">
               <el-col :span="12">
                 <el-form-item label="更新人：" prop="u_name">
                   <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -171,7 +171,7 @@
           </el-tab-pane>
 
           <el-tab-pane>
-            <template slot="label">登录账号信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
+            <template slot="label">登录账号信息<el-badge v-show="settings.badge.countTwo > 0" :value="settings.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="开启账号登录：" prop="is_enable">
@@ -300,7 +300,7 @@
           </el-tab-pane>
 
           <el-tab-pane>
-            <template slot="label">所属信息<el-badge v-show="popSettingsData.badge.countTwo > 0" :value="popSettingsData.badge.countTwo" type="danger" /></template>
+            <template slot="label">所属信息<el-badge v-show="settings.badge.countTwo > 0" :value="settings.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="所属公司：">
@@ -368,17 +368,17 @@
       <div slot="footer" class="dialog-footer">
         <el-divider />
         <div class="floatLeft">
-          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+          <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
         </div>
-        <el-button plain :disabled="settings.listLoading" @click="handleDialogClose">取消</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showUpdate && !isViewModel" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
-        <el-button v-show="popSettingsData.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || popSettingsData.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
+        <el-button plain :disabled="settings.listLoading" @click="handleCancel">取消</el-button>
+        <el-button v-show="settings.btnShowStatus.showInsert" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+        <el-button v-show="settings.btnShowStatus.showUpdate && !isViewModel" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledUpdate " @click="doUpdate()">确定</el-button>
+        <el-button v-show="settings.btnShowStatus.showCopyInsert" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledCopyInsert " @click="doCopyInsert()">确定</el-button>
       </div>
     </el-dialog>
 
     <psd-dialog
-      :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
+      :visible="popSettings.two.visible"
       @closeMeOk="handlePsdDialogCloseOk"
       @closeMeCancel="handlePsdDialogCloseCancel"
     />
@@ -440,7 +440,7 @@
 
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
-import { updateApi, insertApi } from '@/api/20_master/group/group'
+import { updateApi, insertApi } from '@/api/20_master/staff/staff'
 import RadioDict from '@/layout/components/00_common/RedioComponent/RadioDictComponent'
 import SelectDict from '@/layout/components/00_common/SelectComponent/SelectDictComponent'
 import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
@@ -484,7 +484,13 @@ export default {
           name: '',
           code: '',
           descr: '',
-          dbversion: 0
+          sex: '',
+          is_wed: '',
+          user: {
+            is_enable: false,
+            login_type: '',
+            pwd: ''
+          }
         },
         // 单条数据 json
         tempJson: null,
@@ -581,7 +587,7 @@ export default {
     },
     // 是否为更新模式
     isUpdateModel() {
-      if (this.popSettingsData.dialogStatus === 'insert' || this.popSettingsData.dialogStatus === 'copyInsert') {
+      if (this.settings.dialogStatus === 'insert' || this.settings.dialogStatus === 'copyInsert') {
         return false
       } else {
         return true
@@ -603,7 +609,7 @@ export default {
     },
     // 是否为查看模式
     isViewModel() {
-      if ((this.popSettingsData.dialogStatus === 'view') && (this.popSettingsData.dialogFormVisible === true)) {
+      if ((this.settings.dialogStatus === 'view') && (this.settings.dialogFormVisible === true)) {
         return true
       } else {
         return false
@@ -678,7 +684,7 @@ export default {
       this.settings.btnShowStatus.showCopyInsert = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocusTwo'].focus()
+        this.$refs['refFocusOne'].focus()
       })
     },
     // 修改时的初始化
@@ -690,7 +696,7 @@ export default {
       this.settings.btnShowStatus.showUpdate = true
       // 控件focus
       this.$nextTick(() => {
-        this.$refs['refFocusTwo'].focus()
+        this.$refs['refFocusOne'].focus()
       })
     },
     // 查看时的初始化
@@ -747,7 +753,7 @@ export default {
           this.dataJson.tempJson.code = ''
           // 设置控件焦点focus
           this.$nextTick(() => {
-            this.$refs['refFocusTwo'].focus()
+            this.$refs['refFocusOne'].focus()
           })
           break
         default:
@@ -841,19 +847,19 @@ export default {
       this.dataJson.tempJson.is_wed = val
     },
     handelSetPassword() {
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+      this.popSettings.two.visible = true
     },
     handlePsdDialogCloseOk(val) {
       this.dataJson.tempJson.user.pwd = val
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+      this.popSettings.two.visible = false
     },
     handlePsdDialogCloseCancel() {
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+      this.popSettings.two.visible = false
     },
     // -------------------不同的页签，标签进行的验证 e------------------
     // 弹出框关闭
     handleDialogClose() {
-      this.popSettingsData.dialogFormVisible = false
+      this.settings.dialogFormVisible = false
     },
     // 返回数据后，并关闭弹出页面，企业
     handleCompanyReturnData(val) {
@@ -868,34 +874,34 @@ export default {
       this.dataJson.tempJson.dept_simple_name = val.simple_name
     },
     handlePositionClick(val) {
-      this.popSettingsData.dialogFormVisible = false
+      this.settings.dialogFormVisible = false
       // 通知路由，打开岗位页面
       this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
     },
     // 开始综合验证
     doValidateByTabs() {
       // 第一个tabs
-      this.popSettingsData.rules = this.popSettingsData.rulesOne
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+      this.settings.rules = this.settings.rulesOne
+      this.$refs['dataSubmitForm'].rules = this.settings.rules
       this.$refs['dataSubmitForm'].clearValidate()
       this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
         if (valid === false) {
-          this.popSettingsData.badge.countOne = Object.keys(validateItems).length
+          this.settings.badge.countOne = Object.keys(validateItems).length
         } else {
-          this.popSettingsData.badge.countOne = 0
+          this.settings.badge.countOne = 0
         }
       })
       // 第二个tabs
       if (this.isLoginEnabled) {
         if (this.isAccountLoginType) {
-          this.popSettingsData.rules = this.popSettingsData.rulesTwo
-          this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+          this.settings.rules = this.settings.rulesTwo
+          this.$refs['dataSubmitForm'].rules = this.settings.rules
           this.$refs['dataSubmitForm'].clearValidate()
           this.$refs['dataSubmitForm'].validate((valid, validateItems) => {
             if (valid === false) {
-              this.popSettingsData.badge.countTwo = Object.keys(validateItems).length
+              this.settings.badge.countTwo = Object.keys(validateItems).length
             } else {
-              this.popSettingsData.badge.countTwo = 0
+              this.settings.badge.countTwo = 0
             }
           })
         }
@@ -906,12 +912,12 @@ export default {
     // 所有的数据开始validate
     doValidateAllRules() {
       if (this.isLoginEnabled) {
-        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne, ...this.popSettingsData.rulesTwo }
+        this.settings.rules = { ...this.settings.rulesOne, ...this.settings.rulesTwo }
       } else {
-        this.popSettingsData.rules = { ...this.popSettingsData.rulesOne }
+        this.settings.rules = { ...this.settings.rulesOne }
       }
 
-      this.$refs['dataSubmitForm'].rules = this.popSettingsData.rules
+      this.$refs['dataSubmitForm'].rules = this.settings.rules
       this.$refs['dataSubmitForm'].clearValidate()
     }
   }
