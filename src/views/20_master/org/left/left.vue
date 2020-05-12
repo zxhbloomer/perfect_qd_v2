@@ -126,12 +126,14 @@
       @closeMeCancel="handlePositionCloseCancel"
     />
 
-    <staff-dialog
+    <set-position-dialog
       v-if="popSettingsData.searchDialogDataFive.dialogVisible"
+      :id="popSettingsData.searchDialogDataFive.id"
+      :data="popSettingsData.searchDialogDataFive.data"
       :visible="popSettingsData.searchDialogDataFive.dialogVisible"
-      :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
-      @closeMeOk="handleStaffCloseOk"
-      @closeMeCancel="handleStaffCloseCancel"
+      :model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
+      @closeMeOk="handleSetPositionOk"
+      @closeMeCancel="handleSetPositionCancel"
     />
 
   </div>
@@ -305,12 +307,13 @@ import groupDialog from '@/views/20_master/group/dialog/dialog'
 import companyDialog from '@/views/20_master/company/dialog/dialog'
 import deptDialog from '@/views/20_master/dept/dialog/dialog'
 import positionDialog from '@/views/20_master/position/dialog/dialog'
-import staffDialog from '@/views/20_master/staff/dialog/dialog'
+import setPositionDialog from '@/views/20_master/position/dialog/setPosistion'
 import { isNotEmpty } from '@/utils/index.js'
+import { getDataByIdApi } from '@/api/20_master/position/position'
 
 export default {
   // name: 'P00000171', // 页面id，和router中的name需要一致，作为缓存
-  components: { groupDialog, companyDialog, deptDialog, positionDialog, staffDialog },
+  components: { groupDialog, companyDialog, deptDialog, positionDialog, setPositionDialog },
   directives: { elDragDialog },
   props: {
     height: {
@@ -389,6 +392,8 @@ export default {
         },
         // 弹出的查询框参数设置
         searchDialogDataFive: {
+          id: undefined,
+          data: null,
           // 弹出框显示参数
           dialogVisible: false,
           // 点击确定以后返回的值
@@ -414,9 +419,16 @@ export default {
             this.settings.btnDisabledStatus.disabledUpdate = true
             this.settings.btnDisabledStatus.disabledDelete = true
           } else {
-            this.settings.btnDisabledStatus.disabledInsert = false
-            this.settings.btnDisabledStatus.disabledUpdate = false
-            this.settings.btnDisabledStatus.disabledDelete = false
+            // 判断是否是岗位结点
+            if (this.dataJson.currentJson.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION) {
+              this.settings.btnDisabledStatus.disabledInsert = false
+              this.settings.btnDisabledStatus.disabledUpdate = false
+              this.settings.btnDisabledStatus.disabledDelete = false
+            } else {
+              this.settings.btnDisabledStatus.disabledInsert = false
+              this.settings.btnDisabledStatus.disabledUpdate = false
+              this.settings.btnDisabledStatus.disabledDelete = false
+            }
           }
         } else {
           this.settings.btnDisabledStatus.disabledInsert = true
@@ -429,36 +441,44 @@ export default {
       handler(newVal, oldVal) {
         if (newVal === true) {
           const arr = []
-          arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
-          // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+          // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
           switch (this.dataJson.currentJson.type) {
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION)
-              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
           }
           this.dataJson.tempJson.org_type = ''
@@ -560,14 +580,30 @@ export default {
     // 点击新增子结构按钮
     handleInsert() {
       // 新增
-      this.popSettingsData.dialogStatus = 'insert'
+      this.popSettingsData.dialogStatus = this.PARAMETERS.STATUS_INSERT
       this.popSettingsData.dialogFormVisible = true
     },
     // 修改当前节点按钮
     handleUpdate() {
       // 修改
-      this.popSettingsData.dialogStatus = 'update'
-      this.popSettingsData.dialogFormVisible = true
+      // this.popSettingsData.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      // this.popSettingsData.dialogFormVisible = true
+      switch (this.dataJson.currentJson.type) {
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+          this.popSettingsData.searchDialogDataOne.dialogVisible = true
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+          this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+          this.popSettingsData.searchDialogDataThree.dialogVisible = true
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
+          this.popSettingsData.searchDialogDataFour.dialogVisible = true
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
+          break
+      }
     },
     handleRadioDictChange(val) {
       this.dataJson.tempJson.org_type = val
@@ -589,7 +625,12 @@ export default {
           this.popSettingsData.searchDialogDataFour.dialogVisible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
-          this.popSettingsData.searchDialogDataFive.dialogVisible = true
+          getDataByIdApi({ id: this.dataJson.currentJson.serial_id }).then(response => {
+            this.popSettingsData.searchDialogDataFive.id = response.data.id
+            this.popSettingsData.searchDialogDataFive.data = response.data
+            this.popSettingsData.searchDialogDataFive.dialogVisible = true
+          }).finally(() => {
+          })
           break
       }
     },
@@ -906,13 +947,15 @@ export default {
     handlePositionCloseCancel() {
       this.popSettingsData.searchDialogDataFour.dialogVisible = false
     },
-    // 员工：关闭对话框：确定
-    handleStaffCloseOk(val) {
-      this.popSettingsData.searchDialogDataFive.selectedDataJson = val
+    // 员工岗位设置：关闭对话框：确定
+    handleSetPositionOk(val) {
+      // 通知兄弟组件
+      this.$off(this.EMITS.EMIT_ORG_CHANGE)
+      this.$emit(this.EMITS.EMIT_ORG_CHANGE, this.dataJson.currentJson)
       this.popSettingsData.searchDialogDataFive.dialogVisible = false
     },
-    // 员工：关闭对话框：取消
-    handleStaffCloseCancel() {
+    // 员工岗位设置：关闭对话框：取消
+    handleSetPositionCancel() {
       this.popSettingsData.searchDialogDataFive.dialogVisible = false
     },
     // --------------弹出查询框：结束--------------

@@ -4,6 +4,18 @@ import request from '@/utils/request'
  * 查询逻辑
  * @param {*} data
  */
+export function getDataByIdApi(query) {
+  return request({
+    url: '/api/v1/org/position/id',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
+ * 查询逻辑
+ * @param {*} data
+ */
 export function getListApi(query) {
   return request({
     url: '/api/v1/org/position/list',

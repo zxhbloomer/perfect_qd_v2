@@ -21,17 +21,18 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="岗位编号">
-        <template v-slot="scope">
-          <el-button-group style="float: right">
-            <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
-          </el-button-group>
-          {{ scope.row.code }}
+      <!-- <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" /> -->
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="集团名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="企业名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="部门名称" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称">
+        <template slot-scope="scope">
+          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
+          <span> {{ scope.row.name }} </span>
         </template>
       </el-table-column>
-
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
       <el-table-column show-overflow-tooltip min-width="130" prop="" label="操作">
         <template v-slot="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
@@ -46,16 +47,15 @@
           </span>
         </template>
       </el-table-column>
-
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="岗位编号">
+        <template v-slot="scope">
+          <el-button-group style="float: right">
+            <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
+          </el-button-group>
+          {{ scope.row.code }}
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
+      <el-table-column min-width="100" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
             删除
@@ -433,6 +433,7 @@ export default {
       this.popSettings.two.visible = true
     },
     handleEditStaffMember(val, row) {
+      debugger
       this.popSettings.two.props.id = val
       this.popSettings.two.props.data = row
       this.popSettings.two.props.model = constants_para.MODEL_EDIT
