@@ -707,7 +707,9 @@ export default {
     async initViewModel() {
       // 数据初始化
       this.dataJson.tempJson = deepCopy(this.data)
+      debugger
       var userData = await this.getUserBeanById()
+      debugger
       this.dataJson.tempJson.user = Object.assign({}, userData)
     },
     // 设置监听器
