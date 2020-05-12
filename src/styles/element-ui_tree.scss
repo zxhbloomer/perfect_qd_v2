@@ -98,7 +98,8 @@
       display: block; }
   
   .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
-    background-color: #9fbfd4; 
+    background-color: #0099ff;
+    color: white; 
   }
 
   .mytree /deep/{
