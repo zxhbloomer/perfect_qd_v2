@@ -85,12 +85,12 @@
           <span>{{ (dataJson.searchForm.pageCondition.current - 1) * dataJson.searchForm.pageCondition.size + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="code" label="组织机构" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
-      <el-table-column min-width="60" :sort-orders="settings.sortOrders" label="删除">
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="code" label="所属组织机构" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
+      <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" />
+      <el-table-column header-align="center" min-width="60" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
             删除
@@ -123,8 +123,8 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="180" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间">
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="50" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="180" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间">
         <template v-slot="scope">
           {{ formatDateTime(scope.row.u_time) }}
         </template>
@@ -529,8 +529,9 @@ export default {
     doCopyInsertModelCallBack(val) {
       if (val.return_flag) {
         this.popSettings.one.visible = false
+        debugger
         // 设置到table中绑定的json数据源
-        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        this.dataJson.listData.push(val.data.data)
         // 设置到currentjson中
         this.dataJson.currentJson = Object.assign({}, val.data.data)
         this.$notify({

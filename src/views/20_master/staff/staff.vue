@@ -571,7 +571,7 @@ export default {
       if (val.return_flag) {
         this.popSettings.one.visible = false
         // 设置到table中绑定的json数据源
-        this.dataJson.listData.splice(this.dataJson.rowIndex, 1, val.data.data)
+        this.dataJson.listData.push(val.data.data)
         // 设置到currentjson中
         this.dataJson.currentJson = Object.assign({}, val.data.data)
         this.$notify({
