@@ -88,8 +88,8 @@ export default {
     }
   },
   created() {
-    // 设置当前打开的页面
-
+    // 设置dialog的返回
+    this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
   },
   methods: {
     handleRowDbClick(val) {

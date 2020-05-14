@@ -95,42 +95,42 @@
     </el-dialog>
 
     <group-dialog
-      v-if="popSettingsData.searchDialogDataOne.dialogVisible"
-      :visible="popSettingsData.searchDialogDataOne.dialogVisible"
+      v-if="popSettingsData.searchDialogDataOne.visible"
+      :visible="popSettingsData.searchDialogDataOne.visible"
       :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleGroupCloseOk"
       @closeMeCancel="handleGroupCloseCancel"
     />
 
     <company-dialog
-      v-if="popSettingsData.searchDialogDataTwo.dialogVisible"
-      :visible="popSettingsData.searchDialogDataTwo.dialogVisible"
+      v-if="popSettingsData.searchDialogDataTwo.visible"
+      :visible="popSettingsData.searchDialogDataTwo.visible"
       :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleCompanyCloseOk"
       @closeMeCancel="handleCompanyCloseCancel"
     />
 
     <dept-dialog
-      v-if="popSettingsData.searchDialogDataThree.dialogVisible"
-      :visible="popSettingsData.searchDialogDataThree.dialogVisible"
+      v-if="popSettingsData.searchDialogDataThree.visible"
+      :visible="popSettingsData.searchDialogDataThree.visible"
       :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleDeptCloseOk"
       @closeMeCancel="handleDeptCloseCancel"
     />
 
     <position-dialog
-      v-if="popSettingsData.searchDialogDataFour.dialogVisible"
-      :visible="popSettingsData.searchDialogDataFour.dialogVisible"
+      v-if="popSettingsData.searchDialogDataFour.visible"
+      :visible="popSettingsData.searchDialogDataFour.visible"
       :data-model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handlePositionCloseOk"
       @closeMeCancel="handlePositionCloseCancel"
     />
 
     <set-position-dialog
-      v-if="popSettingsData.searchDialogDataFive.dialogVisible"
+      v-if="popSettingsData.searchDialogDataFive.visible"
       :id="popSettingsData.searchDialogDataFive.id"
       :data="popSettingsData.searchDialogDataFive.data"
-      :visible="popSettingsData.searchDialogDataFive.dialogVisible"
+      :visible="popSettingsData.searchDialogDataFive.visible"
       :model="CONSTANTS.DICT_ORG_USED_TYPE_SHOW_UNUSED"
       @closeMeOk="handleSetPositionOk"
       @closeMeCancel="handleSetPositionCancel"
@@ -365,28 +365,28 @@ export default {
         // 弹出的查询框参数设置
         searchDialogDataOne: {
           // 弹出框显示参数
-          dialogVisible: false,
+          visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
         // 弹出的查询框参数设置
         searchDialogDataTwo: {
           // 弹出框显示参数
-          dialogVisible: false,
+          visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
         // 弹出的查询框参数设置
         searchDialogDataThree: {
           // 弹出框显示参数
-          dialogVisible: false,
+          visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
         // 弹出的查询框参数设置
         searchDialogDataFour: {
           // 弹出框显示参数
-          dialogVisible: false,
+          visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         },
@@ -395,7 +395,7 @@ export default {
           id: undefined,
           data: null,
           // 弹出框显示参数
-          dialogVisible: false,
+          visible: false,
           // 点击确定以后返回的值
           selectedDataJson: {}
         }
@@ -590,16 +590,16 @@ export default {
       // this.popSettingsData.dialogFormVisible = true
       switch (this.dataJson.currentJson.type) {
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
-          this.popSettingsData.searchDialogDataOne.dialogVisible = true
+          this.popSettingsData.searchDialogDataOne.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
-          this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+          this.popSettingsData.searchDialogDataTwo.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
-          this.popSettingsData.searchDialogDataThree.dialogVisible = true
+          this.popSettingsData.searchDialogDataThree.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
-          this.popSettingsData.searchDialogDataFour.dialogVisible = true
+          this.popSettingsData.searchDialogDataFour.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
           break
@@ -613,22 +613,22 @@ export default {
       this.popSettingsData.dialogFormVisible = false
       switch (this.dataJson.tempJson.org_type) {
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
-          this.popSettingsData.searchDialogDataOne.dialogVisible = true
+          this.popSettingsData.searchDialogDataOne.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
-          this.popSettingsData.searchDialogDataTwo.dialogVisible = true
+          this.popSettingsData.searchDialogDataTwo.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
-          this.popSettingsData.searchDialogDataThree.dialogVisible = true
+          this.popSettingsData.searchDialogDataThree.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
-          this.popSettingsData.searchDialogDataFour.dialogVisible = true
+          this.popSettingsData.searchDialogDataFour.visible = true
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
           getDataByIdApi({ id: this.dataJson.currentJson.serial_id }).then(response => {
             this.popSettingsData.searchDialogDataFive.id = response.data.id
             this.popSettingsData.searchDialogDataFive.data = response.data
-            this.popSettingsData.searchDialogDataFive.dialogVisible = true
+            this.popSettingsData.searchDialogDataFive.visible = true
           }).finally(() => {
           })
           break
@@ -682,9 +682,9 @@ export default {
     // 集团：关闭对话框：确定
     handleGroupCloseOk(val) {
       this.popSettingsData.searchDialogDataOne.selectedDataJson = val
-      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+      this.popSettingsData.searchDialogDataOne.visible = false
       this.settings.listLoading = true
-      if (this.popSettingsData.dialogStatus === 'insert') {
+      if (this.popSettingsData.dialogStatus === this.PARAMETERS.STATUS_INSERT) {
         insertApi({
           serial_id: this.popSettingsData.searchDialogDataOne.selectedDataJson.id,
           type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP,
@@ -744,14 +744,14 @@ export default {
     },
     // 集团：关闭对话框：取消
     handleGroupCloseCancel() {
-      this.popSettingsData.searchDialogDataOne.dialogVisible = false
+      this.popSettingsData.searchDialogDataOne.visible = false
     },
     // 企业：关闭对话框：确定
     handleCompanyCloseOk(val) {
       this.popSettingsData.searchDialogDataTwo.selectedDataJson = val
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+      this.popSettingsData.searchDialogDataTwo.visible = false
       this.settings.listLoading = true
-      if (this.popSettingsData.dialogStatus === 'insert') {
+      if (this.popSettingsData.dialogStatus === this.PARAMETERS.STATUS_INSERT) {
         insertApi({
           serial_id: this.popSettingsData.searchDialogDataTwo.selectedDataJson.id,
           type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY,
@@ -811,14 +811,14 @@ export default {
     },
     // 企业：关闭对话框：取消
     handleCompanyCloseCancel() {
-      this.popSettingsData.searchDialogDataTwo.dialogVisible = false
+      this.popSettingsData.searchDialogDataTwo.visible = false
     },
     // 部门：关闭对话框：确定
     handleDeptCloseOk(val) {
       this.popSettingsData.searchDialogDataThree.selectedDataJson = val
-      this.popSettingsData.searchDialogDataThree.dialogVisible = false
+      this.popSettingsData.searchDialogDataThree.visible = false
       this.settings.listLoading = true
-      if (this.popSettingsData.dialogStatus === 'insert') {
+      if (this.popSettingsData.dialogStatus === this.PARAMETERS.STATUS_INSERT) {
         insertApi({
           serial_id: this.popSettingsData.searchDialogDataThree.selectedDataJson.id,
           type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT,
@@ -878,14 +878,14 @@ export default {
     },
     // 部门：关闭对话框：取消
     handleDeptCloseCancel() {
-      this.popSettingsData.searchDialogDataThree.dialogVisible = false
+      this.popSettingsData.searchDialogDataThree.visible = false
     },
     // 岗位：关闭对话框：确定
     handlePositionCloseOk(val) {
       this.popSettingsData.searchDialogDataFour.selectedDataJson = val
-      this.popSettingsData.searchDialogDataFour.dialogVisible = false
+      this.popSettingsData.searchDialogDataFour.visible = false
       this.settings.listLoading = true
-      if (this.popSettingsData.dialogStatus === 'insert') {
+      if (this.popSettingsData.dialogStatus === this.PARAMETERS.STATUS_INSERT) {
         insertApi({
           serial_id: this.popSettingsData.searchDialogDataFour.selectedDataJson.id,
           type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION,
@@ -945,18 +945,18 @@ export default {
     },
     // 岗位：关闭对话框：取消
     handlePositionCloseCancel() {
-      this.popSettingsData.searchDialogDataFour.dialogVisible = false
+      this.popSettingsData.searchDialogDataFour.visible = false
     },
     // 员工岗位设置：关闭对话框：确定
     handleSetPositionOk(val) {
       // 通知兄弟组件
       this.$off(this.EMITS.EMIT_ORG_CHANGE)
       this.$emit(this.EMITS.EMIT_ORG_CHANGE, this.dataJson.currentJson)
-      this.popSettingsData.searchDialogDataFive.dialogVisible = false
+      this.popSettingsData.searchDialogDataFive.visible = false
     },
     // 员工岗位设置：关闭对话框：取消
     handleSetPositionCancel() {
-      this.popSettingsData.searchDialogDataFive.dialogVisible = false
+      this.popSettingsData.searchDialogDataFive.visible = false
     },
     // --------------弹出查询框：结束--------------
     getCorrectTypeByInsertStatus(_code, _type, _filter_para) {

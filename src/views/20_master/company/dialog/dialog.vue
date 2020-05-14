@@ -103,8 +103,8 @@ export default {
     }
   },
   created() {
-    // 设置当前打开的页面
-
+    // 设置dialog的返回
+    this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
   },
   methods: {
     handleRowDbClick(val) {
@@ -112,7 +112,6 @@ export default {
     },
     // 确定
     handleDoOk() {
-      // this.$emit('update:visible', false)
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 取消

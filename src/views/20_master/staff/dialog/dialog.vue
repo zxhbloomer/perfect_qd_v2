@@ -28,7 +28,6 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import myPage from '@/views/20_master/staff/staff'
 
 export default {
-  name: 'COM000010',
   components: { myPage },
   directives: { elDragDialog },
   props: {
@@ -78,8 +77,6 @@ export default {
       handler(newVal, oldVal) {
         if (newVal) {
           // dialog打开后初始化
-          this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'open' })
-          this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
           this.$nextTick(() => {
             this.$refs.dialogRef.initDialogStatus()
             this.$refs.dialogRef.initShow()
@@ -91,24 +88,21 @@ export default {
     }
   },
   created() {
-    // 设置当前打开的页面
-
+    // 设置dialog的返回
+    this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
   },
   methods: {
     handleRowDbClick(val) {
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 确定
     handleDoOk() {
       // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$emit('closeMeOk', this.$store.getters.selectedDataJson)
     },
     // 取消
     handleDoCancel() {
       // this.$emit('update:visible', false)
-      this.$store.dispatch('popUpSearchDialog/program', { programId: 'COM000010', status: 'closed' })
       this.$store.dispatch('popUpSearchDialog/selectedDataJson', null)
       this.$emit('closeMeCancel')
     }
