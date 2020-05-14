@@ -116,8 +116,8 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable="custom" min-width="90" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
-      <el-table-column sortable="custom" min-width="200" :sort-orders="settings.sortOrders" show-overflow-tooltip prop="u_time" label="更新时间">
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="90" :sort-orders="settings.sortOrders" prop="u_name" label="更新人" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="200" :sort-orders="settings.sortOrders" prop="u_time" label="更新时间">
         <template v-slot="scope">
           {{ formatDateTime(scope.row.u_time) }}
         </template>
