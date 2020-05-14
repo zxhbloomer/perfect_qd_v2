@@ -85,11 +85,23 @@
           <span>{{ (dataJson.searchForm.pageCondition.current - 1) * dataJson.searchForm.pageCondition.size + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="code" label="所属组织机构" />
+      <el-table-column header-align="center" show-overflow-tooltip min-width="120" label="所属组织机构">
+        <template v-slot="column_lists">
+          <span v-for="(item, index) in column_lists.row.org_route" :key="item.org_id">
+            <!-- 如果是租户字段则忽略显示 -->
+            <span v-if="item.code.length !== 4">
+              {{ item.simple_name }}
+            </span>
+            <span v-if="(index !== column_lists.row.org_route.length - 1) && (item.code.length !== 4)">
+              >
+            </span>
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
-      <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" />
+      <!-- <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" /> -->
       <el-table-column header-align="center" min-width="60" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
