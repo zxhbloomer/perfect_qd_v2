@@ -467,7 +467,7 @@ export default {
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY)
-              arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
+              // arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)
               arr.push(this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF)
               break
             case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
