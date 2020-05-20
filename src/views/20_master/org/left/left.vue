@@ -11,10 +11,18 @@
     </el-input>
     <div class="floatRight">
       <el-button-group>
-        <el-button type="primary" icon="el-icon-plus" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledInsert" @click="handleInsert" />
-        <el-button type="primary" icon="el-icon-edit" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledUpdate" @click="handleUpdate" />
-        <el-button type="danger" icon="el-icon-delete" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledDelete" @click="handleDelete" />
-        <el-button type="info" icon="el-icon-refresh-right" style="padding:7px 7px" @click="handleRefresh" />
+        <el-tooltip class="item" effect="dark" content="新增子组织" placement="top-start">
+          <el-button type="primary" icon="el-icon-plus" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledInsert" @click="handleInsert" />
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="更换当前选中的组织" placement="top">
+          <el-button type="primary" icon="el-icon-edit" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledUpdate" @click="handleUpdate" />
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="删除当前选中的组织和子组织" placement="top">
+          <el-button type="danger" icon="el-icon-delete" style="padding:7px 7px" :disabled="settings.btnDisabledStatus.disabledDelete" @click="handleDelete" />
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="刷新所有组织" placement="top-end">
+          <el-button type="info" icon="el-icon-refresh-right" style="padding:7px 7px" @click="handleRefresh" />
+        </el-tooltip>
       </el-button-group>
     </div>
     <div :style="{height: height + 'px'}" style="overflow-y:auto;overflow-x:auto;" class="mytree">
@@ -990,7 +998,6 @@ export default {
      * ev:event
      */
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drop: ', dropNode.label, dropType)
       // 进入结点，作为子节点
       if (dropType === 'inner') {
         // 获取老子的id
@@ -1013,6 +1020,7 @@ export default {
       this.doDragSave()
     },
     doDragSave() {
+      this.settings.listLoading = true
       this.$off(this.EMITS.EMIT_LOADING)
       this.$emit(this.EMITS.EMIT_LOADING)
       dragsaveApi(this.dataJson.treeData).then((_data) => {
@@ -1043,15 +1051,42 @@ export default {
       })
     },
     allowDrop(draggingNode, dropNode, type) {
+      if (type !== 'inner') {
+        return false
+      }
       // 不得放到根目录之前
-      if (type === 'prev' && !isNotEmpty(dropNode.data.parent_id)) {
+      if (!isNotEmpty(dropNode.data.parent_id)) {
         return false
       }
       // 不得放到根目录之后，平级
-      if (type === 'next' && !isNotEmpty(dropNode.data.parent_id)) {
+      if (!isNotEmpty(dropNode.data.parent_id)) {
         return false
       }
-      return true
+      switch (draggingNode.data.type) {
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP) || (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)) {
+            return true
+          }
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)) {
+            return true
+          }
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY) || (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)) {
+            return true
+          }
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)) {
+            return true
+          }
+          break
+        case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
+          break
+      }
+      return false
     },
     // 允许拖拽的情况
     allowDrag(draggingNode) {
