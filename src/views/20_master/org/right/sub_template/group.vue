@@ -21,9 +21,8 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级名称" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_type_text" label="上级类型" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级集团" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="200" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
         <template v-slot="scope">
           <el-button-group style="float: right">
             <el-button type="primary" icon="el-icon-edit" style="padding:4px 4px; " @click="handleEdit(scope.row)" />
@@ -38,7 +37,6 @@
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
-      <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="80" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>

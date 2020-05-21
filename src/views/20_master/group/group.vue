@@ -85,19 +85,7 @@
           <span>{{ (dataJson.searchForm.pageCondition.current - 1) * dataJson.searchForm.pageCondition.size + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" show-overflow-tooltip min-width="120" label="所属组织机构">
-        <template v-slot="column_lists">
-          <span v-for="(item, index) in column_lists.row.org_route" :key="item.org_id">
-            <!-- 如果是租户字段则忽略显示 -->
-            <span v-if="item.code.length !== 4">
-              {{ item.simple_name }}
-            </span>
-            <span v-if="(index !== column_lists.row.org_route.length - 1) && (item.code.length !== 4)">
-              >
-            </span>
-          </span>
-        </template>
-      </el-table-column>
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级集团" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="集团名称" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="140" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
