@@ -22,6 +22,13 @@
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级集团" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="name" label="集团名称">
+        <template slot-scope="scope">
+          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
+          <span> {{ scope.row.name }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="200" :sort-orders="settings.sortOrders" prop="code" label="集团编号">
         <template v-slot="scope">
           <el-button-group style="float: right">
@@ -30,13 +37,6 @@
           {{ scope.row.code }}
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="name" label="集团名称">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="simple_name" label="集团简称" />
       <el-table-column min-width="80" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
