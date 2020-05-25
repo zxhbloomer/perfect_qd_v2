@@ -30,7 +30,7 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="250" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称">
         <template slot-scope="scope">
           <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
