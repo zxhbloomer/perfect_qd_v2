@@ -55,7 +55,7 @@
             <svg-icon v-else-if="data.type === '30'" icon-class="perfect-icon-company" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '40'" icon-class="perfect-icon-dept" class="el-icon--right" />
             <svg-icon v-else-if="data.type === '50'" icon-class="perfect-icon-position" class="el-icon--right" />
-            {{ node.label }}
+            {{ data.simple_name }}
           </span>
           <span>[{{ data.type_text }}]</span>
         </span>
