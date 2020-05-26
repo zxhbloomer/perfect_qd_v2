@@ -115,6 +115,10 @@
 </style>
 
 <style scoped>
+  .mytree{
+    max-height: 300px;
+    overflow: auto;
+  }
 .el-header {
   padding: 10px 10px 10px 10px;
   background: #115aa5;
