@@ -21,7 +21,7 @@
     >
       <!-- <el-table-column type="selection" width="45" prop="id" /> -->
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="parent_simple_name" label="上级集团" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="230" :sort-orders="settings.sortOrders" prop="parent_group_simple_name" label="上级集团" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="160" :sort-orders="settings.sortOrders" prop="name" label="集团名称">
         <template slot-scope="scope">
           <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
