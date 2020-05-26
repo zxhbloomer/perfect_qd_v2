@@ -75,10 +75,11 @@
     >
       <el-table-column v-if="!meDialogStatus" type="selection" width="45" prop="id" />
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="280" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="company_simple_name" label="企业信息" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="180" :sort-orders="settings.sortOrders" prop="dept_full_simple_name" label="部门信息" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
-
       <el-table-column show-overflow-tooltip min-width="120" prop="" label="操作">
         <template slot-scope="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
@@ -93,8 +94,7 @@
           </span>
         </template>
       </el-table-column>
-
-      <el-table-column show-overflow-tooltip min-width="90" prop="descr" label="描述" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
         <template slot="header">
           <span>
