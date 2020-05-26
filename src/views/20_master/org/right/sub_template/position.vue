@@ -431,7 +431,6 @@ export default {
       this.popSettings.two.visible = true
     },
     handleEditStaffMember(val, row) {
-      debugger
       this.popSettings.two.props.id = val
       this.popSettings.two.props.data = row
       this.popSettings.two.props.model = constants_para.MODEL_EDIT

@@ -80,7 +80,7 @@
     >
       <el-table-column v-if="!meDialogStatus" header-align="center" type="selection" width="45" prop="id" />
       <el-table-column header-align="center" type="index" width="45" label="No" />
-      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="280" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
+      <el-table-column v-if="!meDialogStatus" header-align="center" show-overflow-tooltip sortable="custom" min-width="280" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="企业名称" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="simple_name" label="企业简称" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="社会信用代码" />

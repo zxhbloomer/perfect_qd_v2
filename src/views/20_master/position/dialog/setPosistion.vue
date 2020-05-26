@@ -8,7 +8,7 @@
     :close-on-press-escape="PARAMETERS.DIALOG_CLOSE_BY_ESC"
     :show-close="false"
     :append-to-body="true"
-    :modal-append-to-body="false"
+    :modal-append-to-body="true"
     width="740px"
   >
     <el-form
