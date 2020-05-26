@@ -28,7 +28,7 @@
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-info" :loading="settings.listLoading" @click="handleView">查看</el-button>
     </el-button-group>
     <el-button-group>
-      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-user-solid" :loading="settings.listLoading" @click="handleUpdate">调整岗位</el-button>
+      <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-user-solid" :loading="settings.listLoading" @click="handleSetPosition">设置岗位员工</el-button>
       <el-button :disabled="!settings.btnShowStatus.showUpdate" type="primary" icon="el-icon-user" :loading="settings.listLoading" @click="handleUpdate">设置角色</el-button>
     </el-button-group>
     <el-table
@@ -120,6 +120,13 @@
       @closeMeCancel="handleCloseDialogOneCancel"
     />
 
+    <set-position
+      v-if="popSettings.two.visible"
+      :visible="popSettings.two.visible"
+      @closeMeOk="handleCloseDialogTwoOk"
+      @closeMeCancel="handleCloseDialogTwoCancel"
+    />
+
     <iframe id="refIframe" ref="refIframe" scrolling="no" frameborder="0" style="display:none" name="refIframe">x</iframe>
   </div>
 </template>
@@ -148,11 +155,12 @@ import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 import DeleteTypeNormal from '@/layout/components/00_common/SelectComponent/SelectComponentDeleteTypeNormal'
 import editDialog from '@/views/20_master/staff/dialog/edit'
+import setPosition from '@/views/20_master/staff/dialog/setPosition'
 import deepCopy from 'deep-copy'
 
 export default {
   name: constants_program.P_STAFF, // 页面id，和router中的name需要一致，作为缓存
-  components: { Pagination, DeleteTypeNormal, editDialog },
+  components: { Pagination, DeleteTypeNormal, editDialog, setPosition },
   directives: { elDragDialog },
   mixins: [resizeMixin],
   props: {
@@ -248,6 +256,14 @@ export default {
       popSettings: {
         // 弹出编辑页面
         one: {
+          visible: false,
+          props: {
+            id: undefined,
+            data: {},
+            dialogStatus: ''
+          }
+        },
+        two: {
           visible: false,
           props: {
             id: undefined,
@@ -620,6 +636,23 @@ export default {
       }
       // 通知路由，打开岗位页面
       this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
+    },
+    // -------------------岗位调整 弹出框 start-----
+    handleSetPosition(val) {
+      this.popSettings.two.props.data = Object.assign({}, this.dataJson.currentJson)
+      if (this.popSettings.two.props.data.id === undefined) {
+        this.showErrorMsg('请选择一条数据')
+        return
+      }
+      // 更新
+      this.popSettings.two.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
+      this.popSettings.two.visible = true
+    },
+    handleCloseDialogTwoOk() {
+      this.popSettings.two.visible = false
+    },
+    handleCloseDialogTwoCancel() {
+      this.popSettings.two.visible = false
     }
   }
 }
