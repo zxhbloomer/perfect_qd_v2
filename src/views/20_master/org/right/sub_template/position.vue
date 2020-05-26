@@ -23,7 +23,7 @@
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="280" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团信息" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="company_simple_name" label="企业信息" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="dept_full_simple_name" label="部门信息" />
+      <el-table-column show-overflow-tooltip sortable="custom" min-width="180" :sort-orders="settings.sortOrders" prop="dept_full_simple_name" label="部门信息" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="岗位名称">
         <template slot-scope="scope">
           <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
