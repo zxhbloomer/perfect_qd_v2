@@ -122,6 +122,7 @@
 
     <set-position
       v-if="popSettings.two.visible"
+      :data="popSettings.two.props.data"
       :visible="popSettings.two.visible"
       @closeMeOk="handleCloseDialogTwoOk"
       @closeMeCancel="handleCloseDialogTwoCancel"
@@ -266,9 +267,7 @@ export default {
         two: {
           visible: false,
           props: {
-            id: undefined,
-            data: {},
-            dialogStatus: ''
+            data: {}
           }
         }
       }
@@ -639,13 +638,12 @@ export default {
     },
     // -------------------岗位调整 弹出框 start-----
     handleSetPosition(val) {
-      this.popSettings.two.props.data = Object.assign({}, this.dataJson.currentJson)
+      this.popSettings.two.props.data = deepCopy(this.dataJson.currentJson)
       if (this.popSettings.two.props.data.id === undefined) {
         this.showErrorMsg('请选择一条数据')
         return
       }
       // 更新
-      this.popSettings.two.props.dialogStatus = this.PARAMETERS.STATUS_UPDATE
       this.popSettings.two.visible = true
     },
     handleCloseDialogTwoOk() {

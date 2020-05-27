@@ -37,7 +37,7 @@
         <template slot="label">已设置岗位<el-badge :value="dataJson.tabs.count.settled" type="danger" /></template>
       </el-tab-pane>
       <el-tab-pane>
-        <template slot="label">未设置岗位<el-badge :value="dataJson.tabs.count.settled" type="danger" /></template>
+        <template slot="label">未设置岗位<el-badge :value="dataJson.tabs.count.unsettled" type="danger" /></template>
       </el-tab-pane>
     </el-tabs>
     <el-table
@@ -46,42 +46,23 @@
       :data="dataJson.listData"
       :element-loading-text="'正在拼命加载中...'"
       element-loading-background="rgba(255, 255, 255, 0.5)"
-      :height="height"
+      :height="400"
       stripe
       border
       fit
       highlight-current-row
-      :default-sort="{prop: 'u_time', order: 'descending'}"
+      :default-sort="{prop: 'name', order: 'descending'}"
       style="width: 100%"
       @sort-change="handleSortChange"
     >
       <el-table-column type="index" width="45" label="No" />
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="name" label="集团">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="sex_text" label="企业">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="birthday" label="部门">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="email" label="岗位">
-        <template slot-scope="scope">
-          <el-link style="float: right" type="primary" @click="handleView(scope.row)"><i class="el-icon-info" /></el-link>
-          <span> {{ scope.row.name }} </span>
-        </template>
-      </el-table-column>
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="group_full_simple_name" label="集团" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="company_simple_name" label="企业" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="dept_full_simple_name" label="部门" />
+      <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="name" label="岗位" />
 
     </el-table>
+    <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <el-button plain @click="handleDoCancel()">取消</el-button>
@@ -101,15 +82,22 @@
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
+import { getPositionStaffData } from '@/api/20_master/staff/staff'
+import deepCopy from 'deep-copy'
+import Pagination from '@/components/Pagination'
 
 export default {
-  components: { },
+  components: { Pagination },
   directives: { elDragDialog },
   props: {
     // 页面是否显示参数
     visible: {
       type: Boolean,
       default: false
+    },
+    data: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -117,8 +105,14 @@ export default {
       dataJson: {
         // 查询使用的json
         searchForm: {
-          position_name: ''
+          // 分页控件的json
+          pageCondition: deepCopy(this.PARAMETERS.PAGE_JSON),
+          id: undefined,
+          position_name: '',
+          active_tabs_index: 0
         },
+        // 分页控件的json
+        paging: deepCopy(this.PARAMETERS.PAGE_JSON),
         // 页签cout数量
         tabs: {
           count: {
@@ -157,7 +151,28 @@ export default {
     getDataList() {
       // 查询逻辑
       this.settings.loading = true
-      this.settings.loading = false
+      this.dataJson.searchForm.pageCondition.current = this.dataJson.paging.current
+      this.dataJson.searchForm.pageCondition.size = this.dataJson.paging.size
+      this.dataJson.searchForm.id = this.data.id
+      getPositionStaffData(this.dataJson.searchForm).then(response => {
+        this.dataJson.tabs.count.all = response.data.all
+        this.dataJson.tabs.count.settled = response.data.settled
+        this.dataJson.tabs.count.unsettled = response.data.unsettled
+        this.dataJson.listData = response.data.list.records
+        this.dataJson.paging = response.data.list
+        this.dataJson.paging.records = {}
+      }).finally(() => {
+        this.settings.loading = false
+      })
+    },
+    handleSortChange(column) {
+      // 服务器端排序
+      if (column.order === 'ascending') {
+        this.dataJson.searchForm.pageCondition.sort = column.prop
+      } else if (column.order === 'descending') {
+        this.dataJson.searchForm.pageCondition.sort = '-' + column.prop
+      }
+      this.getDataList()
     },
     handleSearch() {
       this.getDataList()
@@ -167,21 +182,9 @@ export default {
       if (this.dataJson.tabs.active_tabs_index === tab.index) {
         return
       }
-      switch (tab.index) {
-        case '0':
-          // 全部岗位
-          this.initShow()
-          break
-        case '1':
-          // 已设置岗位
-          this.initShow()
-          break
-        case '2':
-          // 未设置岗位
-          this.initShow()
-          break
-      }
       this.dataJson.tabs.active_tabs_index = tab.index
+      this.dataJson.searchForm.active_tabs_index = tab.index
+      this.initShow()
     },
     // 确定
     handleDoOk() {

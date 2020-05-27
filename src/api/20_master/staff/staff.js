@@ -86,3 +86,14 @@ export function enableApi(data) {
   })
 }
 
+/**
+ * 查询岗位员工
+ * @param {*} data
+ */
+export function getPositionStaffData(data) {
+  return request({
+    url: '/api/v1/staff/list_position',
+    method: 'post',
+    data
+  })
+}
