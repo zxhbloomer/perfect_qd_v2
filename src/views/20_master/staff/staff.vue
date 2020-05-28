@@ -299,31 +299,9 @@ export default {
     // 描绘完成
   },
   methods: {
-    initTempJsonOriginal() {
-      // 单条数据 json的，初始化原始数据
-      this.dataJson.tempJsonOriginal =
-      {
-        id: undefined,
-        name: '',
-        code: '',
-        descr: '',
-        sex: '',
-        is_wed: '',
-        user: {
-          is_enable: false,
-          login_type: '',
-          pwd: ''
-        }
-      }
-    },
     initShow() {
       // 初始化查询
       this.getDataList()
-
-      // 数据初始化
-      this.initTempJsonOriginal()
-      // 数据初始化
-      this.dataJson.tempJson = Object.assign({}, this.dataJson.tempJsonOriginal)
     },
     // 弹出框设置初始化
     initDialogStatus() {
@@ -338,7 +316,6 @@ export default {
     },
     // 行点击
     handleRowClick(row) {
-      this.dataJson.tempJson = Object.assign({}, row) // copy obj
       this.dataJson.rowIndex = this.getRowIndex(row)
     },
     // 行双点击，仅在dialog中有效

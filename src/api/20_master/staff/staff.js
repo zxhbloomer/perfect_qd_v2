@@ -92,7 +92,19 @@ export function enableApi(data) {
  */
 export function getPositionStaffData(data) {
   return request({
-    url: '/api/v1/staff/list_position',
+    url: '/api/v1/staff/position/list',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 设置岗位员工
+ * @param {*} data
+ */
+export function setPositionStaff(data) {
+  return request({
+    url: '/api/v1/staff/position/save',
     method: 'post',
     data
   })

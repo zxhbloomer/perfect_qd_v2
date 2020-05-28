@@ -36,10 +36,10 @@
     <div slot="footer" class="dialog-footer">
       <el-divider />
       <div class="floatLeft">
-        <el-button v-show="!isViewModel" type="danger" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
+        <el-button v-show="!isViewModel" type="danger" :disabled="settings.loading || settings.btnDisabledStatus.disabledReset" @click="doReset()">重置</el-button>
       </div>
-      <el-button plain :disabled="settings.listLoading" @click="handleCancel()">取消</el-button>
-      <el-button v-show="settings.btnShowStatus.showInsert && !isViewModel" plain type="primary" :disabled="settings.listLoading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
+      <el-button plain :disabled="settings.loading" @click="handleCancel()">取消</el-button>
+      <el-button v-show="settings.btnShowStatus.showInsert && !isViewModel" plain type="primary" :disabled="settings.loading || settings.btnDisabledStatus.disabledInsert " @click="doInsert()">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -92,7 +92,7 @@ export default {
       // 页面设置json
       settings: {
         // loading 状态
-        listLoading: true,
+        loading: true,
         duration: 4000,
 
         // 按钮状态
@@ -196,7 +196,7 @@ export default {
         this.settings.transfer.staff_positions = response.data.staff_positions
         this.settings.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
       }).finally(() => {
-        this.settings.listLoading = false
+        this.settings.loading = false
       })
       this.settings.btnDisabledStatus.disabledReset = true
     },
@@ -223,7 +223,7 @@ export default {
         this.settings.transfer.staff_positions = response.data.staff_positions
         this.settings.transfer.old_staff_positions = deepcopy(response.data.staff_positions)
       }).finally(() => {
-        this.settings.listLoading = false
+        this.settings.loading = false
       })
       this.settings.btnDisabledStatus.disabledReset = true
     },
@@ -242,7 +242,7 @@ export default {
     // 插入逻辑：岗位成员维护，点击确定按钮
     doInsert() {
       setStaffTransferApi(this.settings.transfer).then((_data) => {
-        this.settings.listLoading = true
+        this.settings.loading = true
         this.settings.transfer.current_row.staff_count = _data.data.staff_positions_count
         this.$notify({
           title: '更新处理成功',
@@ -259,7 +259,7 @@ export default {
           duration: this.settings.duration
         })
       }).finally(() => {
-        this.settings.listLoading = false
+        this.settings.loading = false
       })
     },
     // 点击跳转到组织机构页面，并关闭本页面
