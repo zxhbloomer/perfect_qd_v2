@@ -60,7 +60,39 @@
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="company_simple_name" label="企业" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="80" :sort-orders="settings.sortOrders" prop="dept_full_simple_name" label="部门" />
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="100" :sort-orders="settings.sortOrders" prop="name" label="岗位" />
-
+      <el-table-column header-align="center" min-width="60" :sort-orders="settings.sortOrders" label="删除">
+        <template v-slot:header>
+          <span>
+            岗位设置
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom"
+            >
+              <div slot="content">
+                删除状态提示：<br>
+                绿色：未删除  <br>
+                红色：已删除
+              </div>
+              <svg-icon icon-class="perfect-icon-question1_btn" style="margin-left: 5px" />
+            </el-tooltip>
+          </span>
+        </template>
+        <template v-slot="scope">
+          <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
+            <el-switch
+              v-model="scope.row.is_del"
+              active-color="#ff4949"
+              inactive-color="#13ce66"
+              :active-value="true"
+              :inactive-value="false"
+              :width="30"
+              :disabled="meDialogStatus"
+              @change="handleDel(scope.row)"
+            />
+          </el-tooltip>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination ref="minusPaging" :total="dataJson.paging.total" :page.sync="dataJson.paging.current" :limit.sync="dataJson.paging.size" @pagination="getDataList" />
     <div slot="footer" class="dialog-footer">

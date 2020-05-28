@@ -91,7 +91,7 @@
       <el-table-column header-align="center" show-overflow-tooltip sortable="custom" min-width="130" :sort-orders="settings.sortOrders" prop="code" label="集团编号" />
       <!-- <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" /> -->
       <el-table-column header-align="center" min-width="60" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

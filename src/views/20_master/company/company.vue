@@ -98,7 +98,7 @@
       </el-table-column>
       <el-table-column header-align="center" show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column header-align="center" min-width="80" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

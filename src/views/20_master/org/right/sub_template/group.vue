@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column min-width="80" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

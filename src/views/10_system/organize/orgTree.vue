@@ -19,7 +19,7 @@
         node-key="id"
         default-expand-all
       >
-        <span slot-scope="{ node, data }" class="custom-tree-node">
+        <span v-slot="{ node, data }" class="custom-tree-node">
           <span>{{ node.label }}</span>
           <span>
             <el-dropdown

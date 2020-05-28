@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="code" label="岗位编号" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

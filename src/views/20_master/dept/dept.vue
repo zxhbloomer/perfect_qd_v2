@@ -87,7 +87,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="response_leader_id_name" label="上级分管领导" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

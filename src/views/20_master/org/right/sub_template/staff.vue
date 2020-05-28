@@ -57,7 +57,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="company_simple_name" label="所属公司" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" prop="dept_simple_name" label="默认部门" />
       <el-table-column min-width="90" :sort-orders="settings.sortOrders" label="删除">
-        <template slot="header">
+        <template v-slot:header>
           <span>
             删除
             <el-tooltip

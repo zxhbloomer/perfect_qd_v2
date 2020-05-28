@@ -97,7 +97,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="270" :sort-orders="settings.sortOrders" prop="descr" label="描述" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="170" :sort-orders="settings.sortOrders" prop="simple_name" label="简称" />
       <el-table-column min-width="45" :sort-orders="settings.sortOrders" label="删除">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="'删除状态: ' + scope.row.isdel" placement="top">
             <el-switch
               v-model="scope.row.isdel"
@@ -112,7 +112,7 @@
         </template>
       </el-table-column>
       <el-table-column min-width="65" :sort-orders="settings.sortOrders" label="启用">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="'启用状态: ' + scope.row.isenable" placement="top">
             <el-switch
               v-model="scope.row.isenable"
@@ -132,7 +132,7 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120" fixed="right">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button-group>
             <el-button type="primary" icon="el-icon-edit" @click="handleRowUpdate(scope.row, scope.$index)" />
             <el-button type="danger" icon="el-icon-delete" @click="onDel(scope.row)" />

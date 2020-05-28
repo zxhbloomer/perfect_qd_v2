@@ -50,7 +50,7 @@
       <el-table-column show-overflow-tooltip min-width="80" prop="code" label="按钮编号" />
       <el-table-column show-overflow-tooltip min-width="80" prop="name" label="按钮名称" />
       <el-table-column show-overflow-tooltip min-width="80" prop="sort" label="排序">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.sort }}</span>
           <div class="floatRight">
             <el-button class="el-icon-top" type="text" style="font-size: 16px" :disabled="scope.row.sort===scope.row.min_sort" @click="handleSortUp(scope, scope.$index)" />

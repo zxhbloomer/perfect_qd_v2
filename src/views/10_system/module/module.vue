@@ -84,7 +84,7 @@
       <el-table-column type="index" width="45" label="No" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="110" :sort-orders="settings.sortOrders" prop="type_name" label="模块类型" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="rowcount" label="按钮设置">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>已有（</span>
           <el-link type="primary" :href="'#/sys/module/button?module_code=' + scope.row.code">{{ scope.row.rowcount }}
             <svg-icon v-show="scope.row.columnTypeShowIcon" icon-class="perfect-icon-eye-open1" class="el-icon--right" />
@@ -100,7 +100,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="150" :sort-orders="settings.sortOrders" prop="perms" label="权限标识" />
       <el-table-column show-overflow-tooltip min-width="150" prop="descr" label="描述" />
       <el-table-column min-width="70" :sort-orders="settings.sortOrders" label="删除" :render-header="renderHeaderIsDel">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"

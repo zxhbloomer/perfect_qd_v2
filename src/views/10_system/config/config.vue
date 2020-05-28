@@ -56,7 +56,7 @@
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="130" prop="config_key" label="参数键名" />
       <el-table-column sortable="custom" :sort-orders="settings.sortOrders" show-overflow-tooltip min-width="120" prop="value" label="参数键值" />
       <el-table-column min-width="50" :sort-orders="settings.sortOrders" label="启用状态" :render-header="renderHeaderIsEnabled">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="scope.row.is_enable === 'false' ? '启用状态：未启用' : '启用状态：已启用' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_enable"

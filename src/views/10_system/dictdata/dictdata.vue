@@ -66,7 +66,7 @@
       <el-table-column show-overflow-tooltip min-width="120" prop="extra3" label="额外配置3" />
       <el-table-column show-overflow-tooltip min-width="120" prop="extra4" label="额外配置4" />
       <el-table-column show-overflow-tooltip min-width="120" prop="sort" label="字典排序">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <span>{{ scope.row.sort }}</span>
           <div class="floatRight">
             <el-button class="el-icon-top" type="text" style="font-size: 16px" :disabled="scope.row.sort===scope.row.min_sort" @click="handleSortUp(scope, scope.$index)" />
@@ -76,7 +76,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip min-width="180" prop="descr" label="字典描述" />
       <el-table-column min-width="70" label="删除" :render-header="renderHeaderIsDel">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
