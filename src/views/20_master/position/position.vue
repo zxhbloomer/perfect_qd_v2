@@ -81,7 +81,7 @@
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="name" label="岗位名称" />
       <el-table-column show-overflow-tooltip sortable="custom" min-width="120" :sort-orders="settings.sortOrders" prop="simple_name" label="岗位简称" />
       <el-table-column show-overflow-tooltip min-width="130" prop="" label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-link type="primary" @click="handleEditStaffMember(scope.row.id, scope.row)">
             添加员工
           </el-link>
@@ -113,7 +113,7 @@
             </el-tooltip>
           </span>
         </template>
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip :content="scope.row.is_del === 'false' ? '删除状态：已删除' : '删除状态：未删除' " placement="top" :open-delay="500">
             <el-switch
               v-model="scope.row.is_del"
