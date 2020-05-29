@@ -14,9 +14,9 @@
       @keydown.native.tab="settings.visible = false"
     >
       <template slot="suffix">
-        <i v-if="isDataSet && !disabled" class="el-input__icon el-icon-circle-close el-input__clear" @click.stop="clearMe" />
+        <i v-if="isDataSet() && !disabled" class="el-input__icon el-icon-circle-close el-input__clear" @click.stop="clearMe" />
         <i v-show="!showClose" :class="['el-select__caret', 'el-input__icon', 'el-icon-' + iconClass]" />
-        <i v-if="showClose" class="el-select__caret el-input__icon el-icon-circle-close" @click="handleClearClick" />
+        <i v-if="showClose" class="el-select__caret el-input__icon el-icon-circle-close" />
       </template>
     </el-input>
     <el-popover
@@ -311,13 +311,24 @@ export default {
     currentId: {
       type: Number,
       default: null
+    },
+    // 父节点id
+    parentId: {
+      type: Number,
+      default: null
     }
   },
   data() {
     return {
       dataJson: {
+        // 查询使用的json
+        searchForm: {
+          type: this.type,
+          parent_id: this.parentId
+        },
         // 下拉树的对象
         element: null,
+        node: null,
         // 下拉选项json
         selectOptions: [],
         filterText: '',
@@ -352,13 +363,6 @@ export default {
     showClose() {
       const hasValue = false
       return hasValue
-    },
-    isDataSet() {
-      if (isNotEmpty(this.dataJson.tempJson.inputData)) {
-        return true
-      } else {
-        return false
-      }
     },
     iconClass() {
       return (this.settings.visible ? 'arrow-up is-reverse' : 'arrow-up')
@@ -421,6 +425,13 @@ export default {
     this.$refs['refSelectGrid'].$el.children[0].className = newClass
   },
   methods: {
+    isDataSet() {
+      if (isNotEmpty(this.dataJson.tempJson.inputData)) {
+        return true
+      } else {
+        return false
+      }
+    },
     // 页面初始化
     initCreated() {
       // 初始化
@@ -465,6 +476,7 @@ export default {
       if (this.settings.visible === false) {
         return
       }
+      debugger
       // 查询逻辑
       this.settings.listLoading = true
       getTreeListApi(this.dataJson.searchForm).then(response => {
@@ -478,7 +490,8 @@ export default {
             this.$refs.treeObject.setCurrentKey(this.dataJson.treeData[0].id)
             this.$refs.treeObject.getCurrentNode(current_node)
           } else {
-            var _node = this.getCurrentElement(this.dataJson.treeData, this.currentId)
+            this.getCurrentElement(this.dataJson.treeData, this.currentId)
+            var _node = this.dataJson.node
             this.$refs.treeObject.setCurrentKey(_node.id)
             this.$refs.treeObject.getCurrentNode(_node)
             // this.$refs.treeObject.setCurrentKey(this.currentId)
@@ -489,18 +502,23 @@ export default {
     },
     // 获取当前的选中的节点
     getCurrentElement(treeData, val) {
+      if (isNotEmpty(this.dataJson.node)) {
+        return this.dataJson.node
+      }
       for (const element of treeData) {
         this.dataJson.element = element
         switch (this.type) {
           case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
             // 企业
             if (element.serial_id === val && element.serial_type === 'm_company') {
+              this.dataJson.node = this.dataJson.element
               return this.dataJson.element
             }
             break
           case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
             // 部门
             if (element.serial_id === val && element.serial_type === 'm_dept') {
+              this.dataJson.node = this.dataJson.element
               return this.dataJson.element
             }
             break
@@ -559,6 +577,7 @@ export default {
     },
     // 删除数据
     clearMe() {
+      debugger
       if (this.disabled) {
         return
       }

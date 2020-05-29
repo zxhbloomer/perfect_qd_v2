@@ -323,6 +323,7 @@
                     :type="CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT"
                     :current-id="dataJson.tempJson.dept_id"
                     :disabled="isViewModel"
+                    :parent-id="dataJson.tempJson.company_id"
                     @closeParentDialog="handleDialogClose"
                     @onReturnData="handleDeptReturnData"
                   />
@@ -649,6 +650,7 @@ export default {
       // 初始化watch
       this.setWatch()
       this.settings.loading = false
+      debugger
     },
     initTempJsonOriginal() {
       // 单条数据 json的，初始化原始数据
