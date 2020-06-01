@@ -650,7 +650,6 @@ export default {
       // 初始化watch
       this.setWatch()
       this.settings.loading = false
-      debugger
     },
     initTempJsonOriginal() {
       // 单条数据 json的，初始化原始数据

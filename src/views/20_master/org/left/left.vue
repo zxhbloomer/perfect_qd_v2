@@ -332,6 +332,10 @@ export default {
   data() {
     return {
       dataJson: {
+        // 查询使用的json
+        searchForm: {
+          type: this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT
+        },
         // 下拉选项json
         selectOptions: [],
         filterText: '',

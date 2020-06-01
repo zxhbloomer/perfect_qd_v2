@@ -312,7 +312,6 @@ export default {
       type: Number,
       default: null
     },
-    // 父节点id
     parentId: {
       type: Number,
       default: null
@@ -324,7 +323,8 @@ export default {
         // 查询使用的json
         searchForm: {
           type: this.type,
-          parent_id: this.parentId
+          serial_id: null,
+          serial_type: null
         },
         // 下拉树的对象
         element: null,
@@ -434,19 +434,6 @@ export default {
     },
     // 页面初始化
     initCreated() {
-      // 初始化
-      // this.dataJson = {
-      //   // 下拉选项json
-      //   selectOptions: [],
-      //   filterText: '',
-      //   treeData: [],
-      //   // 单条数据 json
-      //   currentJson: null,
-      //   tempJson: {
-      //     org_type: ''
-      //   },
-      //   tempJsonOriginal: null
-      // }
       Object.assign(this.$data.dataJson, this.$options.data.call(this).dataJson)
       this.settings.btnDisabledStatus.disabledOk = true
       // 展开时，调用查询
@@ -476,7 +463,11 @@ export default {
       if (this.settings.visible === false) {
         return
       }
-      debugger
+      if (this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT === this.type) {
+        // 部门
+        this.dataJson.searchForm.serial_type = 'm_company'
+        this.dataJson.searchForm.serial_id = this.parentId
+      }
       // 查询逻辑
       this.settings.listLoading = true
       getTreeListApi(this.dataJson.searchForm).then(response => {
@@ -577,7 +568,6 @@ export default {
     },
     // 删除数据
     clearMe() {
-      debugger
       if (this.disabled) {
         return
       }
