@@ -118,6 +118,9 @@
 </template>
 
 <style scoped>
+  .position_tag{
+   cursor: pointer;
+  }
   .floatRight {
     float: right;
   }
@@ -345,6 +348,10 @@ export default {
     },
     handleCloseDialogOneOk() {
       this.popSettings.one.visible = false
+    },
+    handlePositionClick(val) {
+      // 通知路由，打开岗位页面
+      this.$router.push({ name: this.PROGRAMS.P_POSITION, query: { name: val }})
     }
   }
 }
