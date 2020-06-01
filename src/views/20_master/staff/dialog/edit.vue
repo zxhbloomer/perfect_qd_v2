@@ -304,15 +304,28 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="所属公司：">
-                  <select-company-dept
-                    v-model.trim="dataJson.tempJson.company_name"
-                    :placeholder="isPlaceholderShow('请选择所属公司')"
-                    :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY"
-                    :current-id="dataJson.tempJson.company_id"
-                    :disabled="isViewModel"
-                    @closeParentDialog="handleDialogClose"
-                    @onReturnData="handleCompanyReturnData"
-                  />
+                  <el-popover
+                    v-model="settings.popover.visible"
+                    placement="top"
+                    width="200"
+                    trigger="manual"
+                  >
+                    <p>您修改了所属公司，请您重新选择默认部门！</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button type="primary" size="mini" @click="settings.popover.visible = false">确定</el-button>
+                    </div>
+
+                    <select-company-dept
+                      slot="reference"
+                      v-model.trim="dataJson.tempJson.company_name"
+                      :placeholder="isPlaceholderShow('请选择所属公司')"
+                      :type="CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY"
+                      :current-id="dataJson.tempJson.company_id"
+                      :disabled="isViewModel"
+                      @closeParentDialog="handleDialogClose"
+                      @onReturnData="handleCompanyReturnData"
+                    />
+                  </el-popover>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -448,6 +461,7 @@ import SelectCompanyDept from '@/views/20_master/staff/selectgrid/companyDept'
 import psdDialog from '@/views/20_master/staff/dialog/setPsdDialog'
 import { getUserBeanByIdApi } from '@/api/user'
 import deepCopy from 'deep-copy'
+import { isNotEmpty } from '@/utils/index.js'
 
 export default {
   // name: '', // 页面id，和router中的name需要一致，作为缓存
@@ -520,6 +534,9 @@ export default {
         }
       },
       settings: {
+        popover: {
+          visible: false
+        },
         // loading 状态
         loading: true,
         // 按钮是否显示，默认不显示，false：不显示，true：显示
@@ -871,6 +888,12 @@ export default {
     },
     // 返回数据后，并关闭弹出页面，企业
     handleCompanyReturnData(val) {
+      if ((this.data.company_id !== val.serial_id) && isNotEmpty(this.dataJson.tempJson.dept_id)) {
+        this.settings.popover.visible = true
+        this.dataJson.tempJson.dept_id = null
+        this.dataJson.tempJson.dept_name = null
+        this.dataJson.tempJson.dept_simple_name = null
+      }
       this.dataJson.tempJson.company_id = val.serial_id
       this.dataJson.tempJson.company_name = val.name
       this.dataJson.tempJson.company_simple_name = val.simple_name

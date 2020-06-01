@@ -483,8 +483,10 @@ export default {
           } else {
             this.getCurrentElement(this.dataJson.treeData, this.currentId)
             var _node = this.dataJson.node
-            this.$refs.treeObject.setCurrentKey(_node.id)
-            this.$refs.treeObject.getCurrentNode(_node)
+            if (_node !== null) {
+              this.$refs.treeObject.setCurrentKey(_node.id)
+              this.$refs.treeObject.getCurrentNode(_node)
+            }
             // this.$refs.treeObject.setCurrentKey(this.currentId)
             // this.$refs.treeObject.getCurrentNode(current_node)
           }
