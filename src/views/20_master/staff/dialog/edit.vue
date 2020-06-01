@@ -26,7 +26,7 @@
         status-icon
         :validate-on-rule-change="false"
       >
-        <el-tabs style="height: 500px;">
+        <el-tabs style="height: 500px;" @tab-click="handleTabsClick">
           <br>
           <el-tab-pane>
             <template slot="label">基本信息<el-badge v-show="settings.badge.countOne>0" :value="settings.badge.countOne" type="danger" /></template>
@@ -303,7 +303,7 @@
             <template slot="label">所属信息<el-badge v-show="settings.badge.countTwo > 0" :value="settings.badge.countTwo" type="danger" /></template>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="所属公司：">
+                <el-form-item label="所属公司：" prop="company_name">
                   <el-popover
                     v-model="settings.popover.visible"
                     placement="top"
@@ -329,7 +329,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="默认部门：">
+                <el-form-item label="默认部门：" prop="dept_name">
                   <select-company-dept
                     v-model.trim="dataJson.tempJson.dept_name"
                     :placeholder="isPlaceholderShow('请选择默认部门')"
@@ -564,6 +564,10 @@ export default {
         rulesTwo: {
           'user.login_name': [{ required: true, message: '请输入登录用户名', trigger: 'change' }]
         },
+        rulesThree: {
+          dept_name: [{ required: true, message: '请选择默认部门', trigger: 'change' }],
+          company_name: [{ required: true, message: '请选择所属公司', trigger: 'change' }]
+        },
         rules_disable: {
           // 默认可用
           end_date: false
@@ -666,6 +670,8 @@ export default {
       }
       // 初始化watch
       this.setWatch()
+      // 初始化tabs的rules
+      this.settings.rules = this.settings.rulesOne
       this.settings.loading = false
     },
     initTempJsonOriginal() {
@@ -760,6 +766,10 @@ export default {
     },
     // 重置按钮
     doReset() {
+      this.settings.badge.countOne = 0
+      this.settings.badge.countTwo = 0
+      this.settings.badge.countThree = 0
+      this.settings.badge.countFour = 0
       switch (this.settings.dialogStatus) {
         case this.PARAMETERS.STATUS_UPDATE:
           // 数据初始化
@@ -800,6 +810,8 @@ export default {
     },
     // 插入逻辑
     doInsert() {
+      // 开始综合验证
+      this.doValidateByTabs()
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
           // const tempData = Object.assign({}, this.dataJson.tempJson)
@@ -817,6 +829,8 @@ export default {
     },
     // 更新逻辑
     doUpdate() {
+      // 开始综合验证
+      this.doValidateByTabs()
       this.$refs['dataSubmitForm'].validate((valid) => {
         if (valid) {
           // const tempData = Object.assign({}, this.dataJson.tempJson)
@@ -860,6 +874,28 @@ export default {
       })
     },
     // -------------------不同的页签，标签进行的验证 s------------------
+    handleTabsClick(tab, event) {
+      switch (tab.index) {
+        case '0':
+          // 基本信息
+          this.settings.rules = this.settings.rulesOne
+          break
+        case '1':
+          // 联系方式
+          break
+        case '2':
+          // 登录账号信息
+          this.settings.rules = this.settings.rulesTwo
+          break
+        case '3':
+          // 所属信息
+          this.settings.rules = this.settings.rulesThree
+          break
+        case '5':
+          // 权限信息
+          break
+      }
+    },
     handleSexDictChange(val) {
       this.dataJson.tempJson.sex = val
     },
