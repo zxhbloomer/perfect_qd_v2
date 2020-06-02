@@ -1064,18 +1064,26 @@ export default {
       switch (draggingNode.data.type) {
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
           // 集团可嵌套，必须在租户下
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP) ||
-              (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
-          ) {
-            return true
+          switch (dropNode.data.type) {
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+              return true
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT:
+              return true
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
           // 企业必须在集团下
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP || dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY) &&
-             (dropNode.data.code.length > 8)
-          ) {
-            return true
+          switch (dropNode.data.type) {
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+              if (dropNode.data.code.length <= 8 && type === 'prev') {
+                return false
+              }
+              return true
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+              if (type === 'inner') {
+                return false
+              }
+              return true
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
