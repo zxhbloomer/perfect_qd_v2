@@ -102,6 +102,14 @@
     color: white; 
   }
 
+  .el-tree__drop-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #409eff
+  }
+
   .mytree /deep/{
     .el-tree > .el-tree-node:after {
     border-top: none;

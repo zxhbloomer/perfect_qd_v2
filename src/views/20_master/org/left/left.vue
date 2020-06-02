@@ -980,19 +980,14 @@ export default {
       })
     },
     handleDragStart(node, ev) {
-      console.log('drag start', node)
     },
     handleDragEnter(draggingNode, dropNode, ev) {
-      console.log('tree drag enter: ', dropNode.label)
     },
     handleDragLeave(draggingNode, dropNode, ev) {
-      console.log('tree drag leave: ', dropNode.label)
     },
     handleDragOver(draggingNode, dropNode, ev) {
-      console.log('tree drag over: ', dropNode.label)
     },
     handleDragEnd(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drag end: ', dropNode && dropNode.label, dropType)
     },
     /**
      * 拖拽结束后事件
@@ -1055,9 +1050,9 @@ export default {
       })
     },
     allowDrop(draggingNode, dropNode, type) {
-      if (type !== 'inner') {
-        return false
-      }
+      // if (type !== 'inner') {
+      //   return false
+      // }
       // 不得放到根目录之前
       if (!isNotEmpty(dropNode.data.parent_id)) {
         return false
@@ -1068,23 +1063,50 @@ export default {
       }
       switch (draggingNode.data.type) {
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP) || (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)) {
+          // 集团可嵌套，必须在租户下
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP) ||
+              (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_TENANT)
+          ) {
             return true
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP)) {
+          // 企业必须在集团下
+          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP || dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY) &&
+             (dropNode.data.code.length > 8)
+          ) {
             return true
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY) || (dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)) {
-            return true
+          switch (dropNode.data.type) {
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+              return false
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+              if (type === 'inner') {
+                return true
+              }
+              break
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+              return true
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
-          if ((dropNode.data.type === this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT)) {
-            return true
+          switch (dropNode.data.type) {
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_GROUP:
+              return false
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_COMPANY:
+              return false
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_DEPT:
+              if (type === 'inner') {
+                return true
+              }
+              break
+            case this.CONSTANTS.DICT_ORG_SETTING_TYPE_POSITION:
+              if (type !== 'inner') {
+                return true
+              }
+              break
           }
           break
         case this.CONSTANTS.DICT_ORG_SETTING_TYPE_STAFF:
