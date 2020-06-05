@@ -193,6 +193,21 @@ export const asyncRoutes = [
         name: 'P00000080',
         meta: { title: '租户管理', icon: 'tenant' }
       },
+      {
+        path: 'fun',
+        // component: subMenu,
+        redirect: 'noRedirect',
+        alwaysShow: true,
+        meta: { title: '功能操作管理', icon: 'pages', noCache: true },
+        children: [
+          {
+            path: 'pages',
+            component: () => import('@/views/10_system/pages/page/page'),
+            name: 'P00000200',
+            meta: { title: '页面维护' }
+          }
+        ]
+      },
       { path: 'sysmenu',
         component: () => import('@/views/10_system/sysmenu/sysmenu'),
         name: 'P00000120',

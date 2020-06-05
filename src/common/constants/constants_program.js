@@ -36,6 +36,9 @@ const P_ROLE = 'P00000000'
 /** VUE Name 页面维护 */
 const P_VUE_SETTING = 'P00000190'
 
+/** 页面维护 */
+const P_SYS_PAGES = 'P00000200'
+
 export default {
   /** 组织机构 */
   P_ORG,
@@ -72,5 +75,7 @@ export default {
   /** 角色 */
   P_ROLE,
   /** VUE Name 页面编号维护 */
-  P_VUE_SETTING
+  P_VUE_SETTING,
+  /** 页面维护 */
+  P_SYS_PAGES
 }
