@@ -21,7 +21,7 @@
       :rules="settings.rules"
       :model="dataJson.tempJson"
       label-position="rigth"
-      label-width="120px"
+      label-width="140px"
       status-icon
     >
       <el-alert
@@ -32,27 +32,38 @@
       <br>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="集团编号：" prop="code">
-            <el-input ref="refFocusOne" v-model.trim="dataJson.tempJson.code" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="isUpdateModel" :placeholder="isPlaceholderShow('请输入')" />
+          <el-form-item label="页面编号：" prop="code">
+            <el-input ref="refFocusOne" v-model.trim="dataJson.tempJson.code" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.code" :disabled="settings.dialogStatus==='update'" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="集团名称：" prop="name">
-            <el-input ref="refFocusTwo" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
+          <el-form-item label="页面名称：" prop="name">
+            <el-input ref="refFocusTwo" v-model.trim="dataJson.tempJson.name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.name" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="集团简称：" prop="simple_name">
-            <el-input v-model.trim="dataJson.tempJson.simple_name" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.simple_name" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
+          <el-form-item label="菜单中显示名称：" prop="meta_title">
+            <el-input v-model.trim="dataJson.tempJson.meta_title" controls-position="right" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_title" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="菜单icon：" prop="meta_icon">
+            <el-input v-model.trim="dataJson.tempJson.meta_icon" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.meta_icon" />
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="描述：" prop="descr">
-        <el-input v-model.trim="dataJson.tempJson.descr" clearable type="textarea" show-word-limit :maxlength="dataJson.inputSettings.maxLength.descr" :disabled="isViewModel" :placeholder="isPlaceholderShow('请输入')" />
+      <el-form-item label="页面地址：" prop="component">
+        <el-input v-model.trim="dataJson.tempJson.component" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.component" />
       </el-form-item>
-      <el-row v-show="settings.dialogStatus === 'update' || isViewModel">
+      <el-form-item label="权限标识：" prop="perms">
+        <el-input v-model.trim="dataJson.tempJson.perms" clearable show-word-limit :maxlength="dataJson.inputSettings.maxLength.perms" />
+      </el-form-item>
+      <el-form-item label="描述：" prop="descr">
+        <el-input v-model.trim="dataJson.tempJson.descr" clearable show-word-limit type="textarea" :maxlength="dataJson.inputSettings.maxLength.descr" />
+      </el-form-item>
+      <el-row v-show="settings.dialogStatus === 'update'">
         <el-col :span="12">
           <el-form-item label="更新人：" prop="u_name">
             <el-input v-model.trim="dataJson.tempJson.u_name" disabled />
@@ -94,7 +105,7 @@
 
 import constants_para from '@/common/constants/constants_para'
 import elDragDialog from '@/directive/el-drag-dialog'
-import { updateApi, insertApi } from '@/api/20_master/group/group'
+import { updateApi, insertApi } from '@/api/10_system/pages/page'
 import deepCopy from 'deep-copy'
 
 export default {
@@ -132,7 +143,6 @@ export default {
           id: undefined,
           name: '',
           code: '',
-          descr: '',
           dbversion: 0
         },
         // 单条数据 json
@@ -141,8 +151,11 @@ export default {
           maxLength: {
             name: 20,
             code: 20,
-            descr: 200,
-            simple_name: 20
+            component: 100,
+            meta_title: 20,
+            meta_icon: 20,
+            perms: 20,
+            descr: 200
           }
         }
       },
@@ -167,8 +180,11 @@ export default {
         dialogStatus: this.dialogStatus,
         // pop的check内容
         rules: {
-          name: [{ required: true, message: '请输入集团名称', trigger: 'change' }],
-          simple_name: [{ required: true, message: '请输入集团简称', trigger: 'change' }]
+          code: [{ required: true, message: '请输入页面编号', trigger: 'change' }],
+          name: [{ required: true, message: '请输入页面名称', trigger: 'change' }],
+          meta_title: [{ required: true, message: '请输入菜单中显示名称', trigger: 'change' }],
+          component: [{ required: true, message: '请输入页面地址', trigger: 'change' }],
+          perms: [{ required: true, message: '请输入权限标识', trigger: 'change' }]
         }
       }
     }
