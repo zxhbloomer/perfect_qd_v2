@@ -6,6 +6,8 @@ export default {
   mounted() {
     this.setUIheight()
   },
+  created() {
+  },
   updated() {
     this.setUIheight()
   },
@@ -39,6 +41,10 @@ export default {
       } catch (error) {
         console.log('mixin error')
       }
+    },
+    // 表格宽度发生变化时
+    handleHeaderDragend(newWidth, oldWidth, column, event) {
+      debugger
     }
   }
 }

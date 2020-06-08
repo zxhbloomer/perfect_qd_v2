@@ -47,6 +47,7 @@
       @current-change="handleCurrentChange"
       @sort-change="handleSortChange"
       @selection-change="handleSelectionChange"
+      @header-dragend="handleHeaderDragend"
     >
       <el-table-column v-if="!meDialogStatus" type="selection" width="45" prop="id" />
       <el-table-column
