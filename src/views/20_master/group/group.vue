@@ -159,7 +159,7 @@
 </style>
 
 <script>
-import constants_program from '@/common/constants/constants_program'
+// import constants_program from '@/common/constants/constants_program'
 import { getListApi, exportAllApi, exportSelectionApi, deleteApi } from '@/api/20_master/group/group'
 import resizeMixin from './groupResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -169,7 +169,7 @@ import editDialog from '@/views/20_master/group/dialog/edit'
 import deepCopy from 'deep-copy'
 
 export default {
-  name: constants_program.P_GROUP, // 页面id，和router中的name需要一致，作为缓存
+  // name: constants_program.P_GROUP, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, DeleteTypeNormal, SelectDict, editDialog },
   directives: { },
   mixins: [resizeMixin],

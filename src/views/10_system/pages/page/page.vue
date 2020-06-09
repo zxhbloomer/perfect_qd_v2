@@ -100,7 +100,7 @@
 </style>
 
 <script>
-import constants_program from '@/common/constants/constants_program'
+// import constants_program from '@/common/constants/constants_program'
 import { getListApi, realDeleteSelectionApi, exportAllApi, exportSelectionApi } from '@/api/10_system/pages/page'
 import resizeMixin from './pageResizeHandlerMixin'
 import Pagination from '@/components/Pagination'
@@ -108,7 +108,7 @@ import editDialog from '@/views/10_system/pages/page/dialog/edit'
 import deepCopy from 'deep-copy'
 
 export default {
-  name: constants_program.P_SYS_PAGES, // 页面id，和router中的name需要一致，作为缓存
+  // name: constants_program.P_SYS_PAGES, // 页面id，和router中的name需要一致，作为缓存
   components: { Pagination, editDialog },
   directives: { },
   mixins: [resizeMixin],
