@@ -5,10 +5,6 @@ exports.install = function(Vue, options) {
   Vue.prototype.getSize = function() {
     return this.$store.getters.size
   }
-  /** 设置翻页页数 */
-  Vue.prototype.getPageSizes = function() {
-    return [20, 50, 100]
-  }
   /** 对齐 */
   Vue.prototype.getLabelPosition = function() {
     return 'right'

@@ -1,4 +1,3 @@
-// add by zxh
 export default {
   beforeMount() {
     window.addEventListener('resize', this.resizeHandler)
@@ -7,6 +6,8 @@ export default {
     this.setUIheight()
   },
   created() {
+    // 初始化表格中列的宽度
+    this.setColumnsSize()
   },
   updated() {
     this.setUIheight()
@@ -44,7 +45,7 @@ export default {
     },
     // 表格宽度发生变化时
     handleHeaderDragend(newWidth, oldWidth, column, event) {
-      debugger
+      // 保存列的宽度
     }
   }
 }
