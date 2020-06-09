@@ -1,5 +1,5 @@
 exports.install = function(Vue, options) {
-  Vue.prototype.setColumnsSize = function(page_info, refTables) {
+  Vue.prototype.setColumnsSize = function(refTables, page_info) {
     debugger
     return null
   }

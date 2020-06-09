@@ -8,10 +8,10 @@ export default {
   },
   mounted() {
     this.setUIheight()
+    // 初始化表格中列的宽度
+    this.setColumnsSize(this.$refs.multipleTable)
   },
   created() {
-    // 初始化表格中列的宽度
-    this.setColumnsSize()
   },
   updated() {
     this.setUIheight()
